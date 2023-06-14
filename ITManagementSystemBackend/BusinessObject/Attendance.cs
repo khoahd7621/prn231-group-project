@@ -19,6 +19,8 @@ namespace BusinessObject
         [Required]
         public string Status { get; set; }
         [Required]
+        public int Type { get; set; }
+        [Required]
         public int EmployeeId { get; set; }
 
         public virtual User User { get; set; }

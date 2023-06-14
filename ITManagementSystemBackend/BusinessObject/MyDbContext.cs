@@ -29,7 +29,6 @@ namespace BusinessObject
         public virtual DbSet<Current> Currents { get; set; }
         public virtual DbSet<Level> Levels { get; set; }
         public virtual DbSet<PayRoll> Payrolls { get; set; }
-        public virtual DbSet<PayRollTmp> PayrollTmps { get; set;}
         public virtual DbSet<TakeLeave> TakeLeaves { get; set;}
         public virtual DbSet<Position> Positions { get; set; }
     }
