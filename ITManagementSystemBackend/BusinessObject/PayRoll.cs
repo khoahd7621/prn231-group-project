@@ -32,6 +32,8 @@ namespace BusinessObject
         public Decimal OTWorkingHours { get; set; }
         public Decimal Bonus { get; set; }
         [Required]
+        public int Status { get; set; }
+        [Required]
         public Decimal Total { get; set; }
 
         public virtual User User { get; set; }
