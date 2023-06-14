@@ -46,7 +46,6 @@ namespace BusinessObject
         public virtual ICollection<BaseSalary> BaseSalarys { get; set;}
         [JsonIgnore]
         public virtual ICollection<TakeLeave> TakeLeaves { get; set;}
-
         [JsonIgnore]
         public virtual ICollection<PayRoll> PayRolls { get; set;}
     }
