@@ -11,14 +11,18 @@ using System.Threading.Tasks;
 namespace BusinessObject
 {
     [Index(nameof(Email), IsUnique = true)]
-    public class User
+    public class Employee
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required] 
-        public string CustomerName { get; set; }
+        public string EmployeeName { get; set; }
+        [Required] 
+        public string EmployeeCode { get; set; }
         [Required]
-        public bool Gender{ get; set; }
+        public int Gender{ get; set; }
+        [Required]
+        public int Role { get; set; }
         [Required]
         public DateTime Dob { get; set; }
         [Required, MinLength(10), MaxLength(12)]
@@ -34,16 +38,14 @@ namespace BusinessObject
         [Required]
         public string Email { get; set; }
         [Required]
-        public string Status { get; set; }
+        public int Status { get; set; }
+        [Required]
+        public bool IsfirstLogin { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Attendance> Attendances { get; set; }
         [JsonIgnore]
         public virtual ICollection<Contract> Contracts { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Current> Currents { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<BaseSalary> BaseSalarys { get; set;}
         [JsonIgnore]
         public virtual ICollection<TakeLeave> TakeLeaves { get; set;}
         [JsonIgnore]

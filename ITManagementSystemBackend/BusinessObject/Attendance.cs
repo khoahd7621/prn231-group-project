@@ -15,14 +15,16 @@ namespace BusinessObject
         [Required]
         public DateTime Date { get; set; }
         [Required]
-        public String Hour { get; set; }
+        public double Hour { get; set; }
         [Required]
-        public string Status { get; set; }
+        public double OTHour { get; set; }
+        [Required]
+        public int Status { get; set; }
         [Required]
         public int Type { get; set; }
         [Required]
         public int EmployeeId { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual Employee User { get; set; }
     }
 }

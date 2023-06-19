@@ -16,6 +16,6 @@ namespace BusinessObject
         [Required] 
         public string PositionName { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Current> Currents { get; set; }
+        public virtual ICollection<Contract> Contracts { get; set; }
     }
 }

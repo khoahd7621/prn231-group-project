@@ -19,23 +19,23 @@ namespace BusinessObject
         [Required]
         public DateTime EndDate { get; set; }
         [Required]
-        public int Tax { get; set; }
+        public double Tax { get; set; }
         [Required]
         public Decimal BaseSalaryPerHours { get; set; }
         [Required]
         public Decimal OTSalaryPerHours { get; set; }
         [Required]
-        public Decimal BaseWorkingHours { get; set; }
+        public double BaseWorkingHours { get; set; }
         [Required]
-        public Decimal RealWorkingHours { get; set; }
+        public double RealWorkingHours { get; set; }
         [Required]
-        public Decimal OTWorkingHours { get; set; }
+        public double OTWorkingHours { get; set; }
         public Decimal Bonus { get; set; }
         [Required]
         public int Status { get; set; }
         [Required]
         public Decimal Total { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual Employee User { get; set; }
     }
 }

@@ -22,11 +22,9 @@ namespace BusinessObject
             IConfigurationRoot configuration = builder.Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("ITManagementSystemDB"));
         }
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Employee> Users { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
-        public virtual DbSet<BaseSalary> BaseSalaries { get; set; }
         public virtual DbSet<Contract> Contracts { get; set; }
-        public virtual DbSet<Current> Currents { get; set; }
         public virtual DbSet<Level> Levels { get; set; }
         public virtual DbSet<PayRoll> Payrolls { get; set; }
         public virtual DbSet<TakeLeave> TakeLeaves { get; set;}
