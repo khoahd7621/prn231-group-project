@@ -9,7 +9,11 @@ type AppRouteType = {
 
 export enum AppRouteEnum {
   DashBoard = "DashBoard",
+  ManagePosition = "ManagePosition",
+  ManageLevel = "ManageLevel",
   ManageEmployee = "ManageEmployee",
+  ManageAttendance = "ManageAttendance",
+  ManageLeave = "ManageLeave",
 }
 
 const AppRoute: {
@@ -20,9 +24,29 @@ const AppRoute: {
     name: "Dashboard",
     icon: <UserOutlined />,
   },
+  [AppRouteEnum.ManagePosition]: {
+    path: "/manage-position",
+    name: "Manage Position",
+    icon: <UserOutlined />,
+  },
+  [AppRouteEnum.ManageLevel]: {
+    path: "/manage-level",
+    name: "Manage Level",
+    icon: <UserOutlined />,
+  },
   [AppRouteEnum.ManageEmployee]: {
     path: "/manage-employee",
     name: "Manage Employee",
+    icon: <UserOutlined />,
+  },
+  [AppRouteEnum.ManageAttendance]: {
+    path: "/manage-attendance",
+    name: "Manage Attendance",
+    icon: <UserOutlined />,
+  },
+  [AppRouteEnum.ManageLeave]: {
+    path: "/manage-leave",
+    name: "Manage Leave",
     icon: <UserOutlined />,
   },
 };
