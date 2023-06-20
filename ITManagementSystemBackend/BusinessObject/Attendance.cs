@@ -19,12 +19,19 @@ namespace BusinessObject
         [Required]
         public double OTHour { get; set; }
         [Required]
-        public int Status { get; set; }
+        public AttendanceStatus Status { get; set; }
         [Required]
         public int Type { get; set; }
         [Required]
         public int EmployeeId { get; set; }
 
         public virtual Employee User { get; set; }
+    }
+    public enum AttendanceStatus
+    {
+        Deleted, 
+        Waiting,
+        Approved,
+        Rejected
     }
 }
