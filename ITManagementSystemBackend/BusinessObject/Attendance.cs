@@ -19,7 +19,7 @@ namespace BusinessObject
         [Required]
         public double OTHour { get; set; }
         [Required]
-        public AttendanceStatus Status { get; set; }
+        public Enum.EnumList.AttendanceStatus Status { get; set; }
         [Required]
         public int Type { get; set; }
         [Required]
@@ -27,11 +27,5 @@ namespace BusinessObject
 
         public virtual Employee User { get; set; }
     }
-    public enum AttendanceStatus
-    {
-        Deleted, 
-        Waiting,
-        Approved,
-        Rejected
-    }
+   
 }

@@ -32,16 +32,11 @@ namespace BusinessObject
         public double OTWorkingHours { get; set; }
         public Decimal Bonus { get; set; }
         [Required]
-        public PayrollStatus Status { get; set; }
+        public Enum.EnumList.PayrollStatus Status { get; set; }
         [Required]
         public Decimal Total { get; set; }
 
         public virtual Employee User { get; set; }
     }
-    public enum PayrollStatus
-    {
-        Deleted,
-        Approved,
-        Rejected
-    }
+   
 }

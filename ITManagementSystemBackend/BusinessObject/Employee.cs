@@ -37,11 +37,11 @@ namespace BusinessObject
         [Required]
         public string Password { get; set; }
         [Required]
-        public EmployeeType EmployeeType { get; set; }
+        public Enum.EnumList.EmployeeType EmployeeType { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
-        public EmployeeStatus Status { get; set; }
+        public Enum.EnumList.EmployeeStatus Status { get; set; }
         [Required]
         public bool IsfirstLogin { get; set; }
 
@@ -54,20 +54,5 @@ namespace BusinessObject
         [JsonIgnore]
         public virtual ICollection<PayRoll> PayRolls { get; set;}
     }
-    public enum Role
-    {
-        Admin,
-        Employee
-    }
-    public enum EmployeeStatus
-    {
-        Deleted,
-        Active,
-        Passive
-    }
-    public enum EmployeeType
-    {
-        FullTime,
-        PartTime
-    }
+   
 }

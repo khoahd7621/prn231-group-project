@@ -27,18 +27,11 @@ namespace BusinessObject
         [Required] 
         public int PositionId { get; set; }
         [Required]
-        public ContractStatus Status { get; set; }
+        public Enum.EnumList.ContractStatus Status { get; set; }
 
         public virtual Employee User { get; set; }
         public virtual Level Level { get; set; }
         public virtual Position Position { get; set; }
     }
-    public enum ContractStatus
-    {
-        Deleted,
-        Waiting,
-        Active,
-        Expired,
-        Canceled
-    }
+   
 }
