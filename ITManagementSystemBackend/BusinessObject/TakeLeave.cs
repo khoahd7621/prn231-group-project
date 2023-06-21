@@ -22,6 +22,6 @@ namespace BusinessObject
         public string? Reason { get; set; }
         [Required]
         public int EmployeeId { get; set; }
-        public virtual User User { get; set; }
+        public virtual Employee User { get; set; }
     }
 }

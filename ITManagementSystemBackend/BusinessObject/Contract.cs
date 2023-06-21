@@ -19,14 +19,19 @@ namespace BusinessObject
         [Required]
         public DateTime EndDate { get; set; }
         [Required]
-        public string BHYT { get; set; }
-        [Required]
-        public string BHTN { get; set; }
+        public decimal BaseSalary { get; set; }
         [Required]
         public int DateOffPerYear { get; set; }
         [Required]
-        public string Status { get; set; }
+        public int LevelId { get; set; }
+        [Required] 
+        public int PositionId { get; set; }
+        [Required]
+        public Enum.EnumList.ContractStatus Status { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual Employee User { get; set; }
+        public virtual Level Level { get; set; }
+        public virtual Position Position { get; set; }
     }
+   
 }
