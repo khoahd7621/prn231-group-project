@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessObject
 {
     public class Contract
     {
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public int EmployeeId { get; set; }
@@ -24,7 +19,7 @@ namespace BusinessObject
         public int DateOffPerYear { get; set; }
         [Required]
         public int LevelId { get; set; }
-        [Required] 
+        [Required]
         public int PositionId { get; set; }
         [Required]
         public Enum.EnumList.ContractStatus Status { get; set; }
@@ -33,5 +28,5 @@ namespace BusinessObject
         public virtual Level Level { get; set; }
         public virtual Position Position { get; set; }
     }
-   
+
 }
