@@ -2,15 +2,26 @@ using BusinessObject;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 
+// Config OData
 var builder = WebApplication.CreateBuilder(args);
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Employee>("Employee");
+modelBuilder.EntitySet<Position>("Position");
+modelBuilder.EntitySet<Level>("Level");
 //modelBuilder.EntitySet<Contract>("Contract");
 //modelBuilder.EntitySet<Attendance>("Attendance");
-//modelBuilder.EntitySet<Level>("Level");
 //modelBuilder.EntitySet<PayRoll>("PayRoll");
-//modelBuilder.EntitySet<Position>("Position");
 //modelBuilder.EntitySet<TakeLeave>("TakeLeave");
+
+// Config CORS
+builder.Services.AddCors(option =>
+{
+    option.AddDefaultPolicy(p =>
+            p.WithOrigins("http://127.0.0.1:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -31,6 +42,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseODataBatching();
 app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors();
 
 app.UseAuthorization();
 

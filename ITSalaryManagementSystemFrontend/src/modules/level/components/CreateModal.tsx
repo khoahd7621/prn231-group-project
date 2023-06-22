@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Form, Input, Modal } from "antd";
+import LevelApis from "../apis/LevelApis";
 
-export const CreateModal: React.FC = () => {
+type Props = {
+  successCallback?: () => void;
+};
+
+export const CreateModal = ({ successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [submittable, setSubmittable] = useState<boolean>(false);
@@ -27,11 +32,17 @@ export const CreateModal: React.FC = () => {
 
   const handleOk = () => {
     setSending(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setSending(false);
-      form.resetFields();
-    }, 5000);
+    LevelApis.post({ levelName: values.levelName })
+      .then(() => {
+        form.resetFields();
+        setIsModalOpen(false);
+        successCallback?.();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
+      });
+    setSending(false);
   };
 
   const handleCancel = () => {
@@ -65,7 +76,6 @@ export const CreateModal: React.FC = () => {
         <Form
           disabled={sending}
           form={form}
-          name="basic"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
           style={{ maxWidth: 600, margin: "2rem 0" }}

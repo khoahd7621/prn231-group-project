@@ -2,13 +2,15 @@ import { useState } from "react";
 
 import { Button, Modal } from "antd";
 
+import LevelApis from "../apis/LevelApis";
 import { LevelModel } from "../models";
 
 type Props = {
   data: LevelModel;
+  successCallback?: () => void;
 };
 
-export const DeleteModal = ({ data }: Props) => {
+export const DeleteModal = ({ data, successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,10 +20,16 @@ export const DeleteModal = ({ data }: Props) => {
 
   const handleOk = () => {
     setSending(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setSending(false);
-    }, 5000);
+    LevelApis.delete(data.Id)
+      .then(() => {
+        setIsModalOpen(false);
+        successCallback?.();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
+      })
+      .finally(() => setSending(false));
   };
 
   const handleCancel = () => {
@@ -51,7 +59,7 @@ export const DeleteModal = ({ data }: Props) => {
         }}
         onCancel={handleCancel}
       >
-        <p>Are you sure to delete level "{data.levelName}"</p>
+        <p>Are you sure to delete level "{data.LevelName}"</p>
       </Modal>
     </>
   );

@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 
 import { Button, Form, Input, Modal } from "antd";
 
+import LevelApis from "../apis/LevelApis";
 import { LevelModel } from "../models";
 
 type Props = {
   data: LevelModel;
+  successCallback?: () => void;
 };
 
-export const EditModal = ({ data }: Props) => {
+export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [submittable, setSubmittable] = useState<boolean>(false);
@@ -33,16 +35,22 @@ export const EditModal = ({ data }: Props) => {
 
   const handleOk = () => {
     setSending(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setSending(false);
-    }, 5000);
+    LevelApis.put(data.Id, { levelName: values.levelName })
+      .then(() => {
+        setIsModalOpen(false);
+        successCallback?.();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
+      })
+      .finally(() => setSending(false));
   };
 
   const handleCancel = () => {
     if (sending) return;
     setIsModalOpen(false);
-    form.setFieldValue("levelName", data.levelName);
+    form.setFieldValue("levelName", data.LevelName);
   };
 
   return (
@@ -61,7 +69,7 @@ export const EditModal = ({ data }: Props) => {
           disabled:
             !submittable ||
             form.isFieldTouched("levelName") === false ||
-            String(form.getFieldValue("levelName")).trim() === data.levelName,
+            String(form.getFieldValue("levelName")).trim() === data.LevelName,
           htmlType: "submit",
           loading: sending,
         }}
@@ -72,10 +80,9 @@ export const EditModal = ({ data }: Props) => {
       >
         <Form
           form={form}
-          name="basic"
           disabled={sending}
           initialValues={{
-            levelName: data.levelName,
+            levelName: data.LevelName,
           }}
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
