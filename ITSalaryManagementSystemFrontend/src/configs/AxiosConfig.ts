@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const AxiosClient = axios.create({
-  baseURL: "",
+  baseURL: "http://localhost:5265/odata/",
   headers: {
     "Content-Type": "application/json",
   },

@@ -2,13 +2,15 @@ import { useState } from "react";
 
 import { Button, Modal } from "antd";
 
+import PositionApis from "../apis/PositionApis";
 import { PositionModel } from "../models";
 
 type Props = {
   data: PositionModel;
+  successCallback?: () => void;
 };
 
-export const DeleteModal = ({ data }: Props) => {
+export const DeleteModal = ({ data, successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,10 +20,16 @@ export const DeleteModal = ({ data }: Props) => {
 
   const handleOk = () => {
     setSending(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setSending(false);
-    }, 5000);
+    PositionApis.delete(data.Id)
+      .then(() => {
+        setIsModalOpen(false);
+        successCallback?.();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
+      });
+    setSending(false);
   };
 
   const handleCancel = () => {
@@ -51,7 +59,7 @@ export const DeleteModal = ({ data }: Props) => {
         }}
         onCancel={handleCancel}
       >
-        <p>Are you sure to delete position "{data.positionName}"</p>
+        <p>Are you sure to delete position "{data.PositionName}"</p>
       </Modal>
     </>
   );

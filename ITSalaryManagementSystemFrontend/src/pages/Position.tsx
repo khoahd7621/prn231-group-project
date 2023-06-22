@@ -5,70 +5,11 @@ import type { ColumnsType } from "antd/es/table";
 
 import { CreateModal, DeleteModal, EditModal } from "../modules/position/components";
 import { PositionModel } from "../modules/position/models";
+import PositionApis from "../modules/position/apis/PositionApis";
 
 type DataType = {
   key: number;
 } & PositionModel;
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Position name",
-    dataIndex: "positionName",
-    sortDirections: ["descend", "ascend"],
-    sorter: (a, b) => a.positionName.localeCompare(b.positionName),
-  },
-  {
-    render: (_, record) => (
-      <Space size="middle">
-        <EditModal data={record} />
-        <DeleteModal data={record} />
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: 1,
-    id: 1,
-    positionName: "Software Engineer",
-  },
-  {
-    key: 2,
-    id: 2,
-    positionName: "Senior Software Engineer",
-  },
-  {
-    key: 3,
-    id: 3,
-    positionName: "Team Lead",
-  },
-  {
-    key: 4,
-    id: 4,
-    positionName: "Project Manager",
-  },
-  {
-    key: 5,
-    id: 5,
-    positionName: "Technical Lead",
-  },
-  {
-    key: 6,
-    id: 6,
-    positionName: "Technical Architect",
-  },
-  {
-    key: 7,
-    id: 7,
-    positionName: "Solution Architect",
-  },
-  {
-    key: 8,
-    id: 8,
-    positionName: "Chief Technology Officer",
-  },
-];
 
 const { Search } = Input;
 
@@ -84,11 +25,44 @@ export const Position: React.FC = () => {
     fetchPositions();
   }, []);
 
-  const fetchPositions = async () => {
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Position name",
+      dataIndex: "PositionName",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.PositionName.localeCompare(b.PositionName),
+    },
+    {
+      render: (_, record) => (
+        <Space size="middle">
+          <EditModal
+            data={record}
+            successCallback={successCallback}
+          />
+          <DeleteModal
+            data={record}
+            successCallback={successCallback}
+          />
+        </Space>
+      ),
+    },
+  ];
+
+  const fetchPositions = () => {
     setLoading(true);
-    setPositions(data);
-    setTotal(data.length);
+    PositionApis.getAll()
+      .then((res) => {
+        console.log("res: ", res);
+        setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
+        setTotal(res.value.length);
+      })
+      .catch((err) => console.log(err));
     setLoading(false);
+  };
+
+  const successCallback = () => {
+    setPage(1);
+    fetchPositions();
   };
 
   return (
@@ -108,7 +82,7 @@ export const Position: React.FC = () => {
           allowClear
         />
 
-        <CreateModal />
+        <CreateModal successCallback={successCallback} />
       </div>
       <Table
         columns={columns}

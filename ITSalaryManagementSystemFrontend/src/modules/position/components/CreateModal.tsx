@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button, Form, Input, Modal } from "antd";
+import PositionApis from "../apis/PositionApis";
 
-export const CreateModal: React.FC = () => {
+type Props = {
+  successCallback?: () => void;
+};
+
+export const CreateModal = ({ successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [submittable, setSubmittable] = useState<boolean>(false);
@@ -27,11 +32,16 @@ export const CreateModal: React.FC = () => {
 
   const handleOk = () => {
     setSending(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setSending(false);
-      form.resetFields();
-    }, 5000);
+    PositionApis.post({ positionName: values.positionName })
+      .then(() => {
+        setIsModalOpen(false);
+        form.resetFields();
+        successCallback?.();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
+      });
   };
 
   const handleCancel = () => {
