@@ -10,11 +10,6 @@ namespace Repositories.Impl
     {
         public string createUser(EmployeeDTO employee)
         {
-            var check = EmployeeDAO.FindEmployeeByEmail(employee.Email);
-            if (check != null)
-            {
-                return "Email Ready Exist";
-            }
             var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeDTO, Employee>().ReverseMap());
             var mapper = new Mapper(config);
             Employee employeeReal = mapper.Map<Employee>(employee);
@@ -25,6 +20,8 @@ namespace Repositories.Impl
             employeeReal.CreatedDate = DateTime.Now;
             employeeReal.EmployeeName = employee.LastName + " " + employee.FirstName;
             var password = Helper.UserHelper.GeneratedEmployeePassword(employeeReal.EmployeeName.ToLower(), employee.Dob);
+            var employeeEmail = Helper.UserHelper.GeneratedEmployeeEmail(employeeReal.EmployeeName.ToLower());
+            employeeReal.Email = employeeEmail;
             employeeReal.Password = password;
             employeeReal.Status = EnumList.EmployeeStatus.Active;
             EmployeeDAO.CreateEmployee(employeeReal);

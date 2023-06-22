@@ -1,4 +1,6 @@
-﻿namespace Repositories.Helper
+﻿using DataAccess;
+
+namespace Repositories.Helper
 {
     public class UserHelper
     {
@@ -37,7 +39,33 @@
             password += dob.Day.ToString() + dob.Month.ToString() + dob.Year.ToString();
             password = password[0].ToString().ToUpper() + password.Substring(1);
             return password;
+        }
+        public static string GeneratedEmployeeEmail(string fullName)
+        {
+            List<string> words = fullName.Split(' ').ToList();
+            var lastName = words[words.Count() - 1];
+            words.RemoveAt(words.Count() - 1);
+            words.Insert(0, lastName);
+            string email = "";
+            for (int i = 0; i < words.Count(); i++)
+            {
+                if (i == 0)
+                {
+                    email = email + words[i].ToString();
 
+                }
+                else {
+                    email = email + words[i].Select(x => x.ToString()).ToArray()[0];
+                }
+                
+            }
+            var count = EmployeeDAO.CountEmailSameName(email);
+            if(count == 0)
+            {
+                return email + "@projectx.com";
+            }
+
+            return email + count+"@projectx.com";
         }
 
     }
