@@ -1,13 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace BusinessObject
 {
@@ -15,15 +9,14 @@ namespace BusinessObject
     [Index(nameof(EmployeeCode), IsUnique = true)]
     public class Employee
     {
-
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required] 
+        [Required]
         public string EmployeeName { get; set; }
-        [Required] 
+        [Required]
         public string EmployeeCode { get; set; }
         [Required]
-        public Enum.EnumList.Gender Gender{ get; set; }
+        public Enum.EnumList.Gender Gender { get; set; }
         [Required]
         public Enum.EnumList.Role Role { get; set; }
         [Required]
@@ -41,18 +34,19 @@ namespace BusinessObject
         [Required]
         public string Email { get; set; }
         [Required]
+        public string Phone { get; set; }
+        [Required]
         public Enum.EnumList.EmployeeStatus Status { get; set; }
         [Required]
-        public bool IsfirstLogin { get; set; }
+        public bool IsFirstLogin { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Attendance> Attendances { get; set; }
         [JsonIgnore]
         public virtual ICollection<Contract> Contracts { get; set; }
         [JsonIgnore]
-        public virtual ICollection<TakeLeave> TakeLeaves { get; set;}
+        public virtual ICollection<TakeLeave> TakeLeaves { get; set; }
         [JsonIgnore]
-        public virtual ICollection<PayRoll> PayRolls { get; set;}
+        public virtual ICollection<PayRoll> PayRolls { get; set; }
     }
-   
 }

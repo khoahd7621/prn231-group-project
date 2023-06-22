@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessObject
 {
@@ -21,22 +16,22 @@ namespace BusinessObject
         [Required]
         public double Tax { get; set; }
         [Required]
-        public Decimal BaseSalaryPerHours { get; set; }
+        public decimal BaseSalaryPerHours { get; set; }
         [Required]
-        public Decimal OTSalaryPerHours { get; set; }
+        public decimal OTSalaryPerHours { get; set; }
         [Required]
         public double BaseWorkingHours { get; set; }
         [Required]
         public double RealWorkingHours { get; set; }
         [Required]
         public double OTWorkingHours { get; set; }
-        public Decimal Bonus { get; set; }
+        [Required]
+        public decimal Bonus { get; set; }
         [Required]
         public Enum.EnumList.PayrollStatus Status { get; set; }
         [Required]
-        public Decimal Total { get; set; }
+        public decimal Total { get; set; }
 
         public virtual Employee User { get; set; }
     }
-   
 }

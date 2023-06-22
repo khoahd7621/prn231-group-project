@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusinessObject.Enum
+﻿namespace BusinessObject.Enum
 {
     public class EnumList
     {
@@ -48,7 +42,8 @@ namespace BusinessObject.Enum
         public enum Gender
         {
             Male,
-            Female
+            Female,
+            Other
         }
     }
 }
