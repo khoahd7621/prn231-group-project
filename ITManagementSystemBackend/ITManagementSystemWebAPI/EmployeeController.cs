@@ -1,31 +1,34 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BusinessObject.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Repositories;
 
 namespace ITManagementSystemWebAPI
 {
 
     public class EmployeeController : ODataController
     {
-        //private IEmployeeRepository employeeRepository = new EmployeeRepository();
-        //[EnableQuery]
-        //public IActionResult Get()
-        //{
-        //    return Ok(employeeRepository.GetAll());
-        //}
-        //[EnableQuery]
-        //public IActionResult Get([FromRoute] int key)
-        //{
-        //    var check = employeeRepository.GetEmployeeById(key);
-        //    return check == null ? NotFound() : Ok(check);
-        //}
+        private IEmployeeRepository employeeRepository = new EmployeeRepository();
+        [EnableQuery]
+        public IActionResult Get()
+        {
+            return Ok(employeeRepository.GetAll());
+        }
+        [EnableQuery]
+        public IActionResult Get([FromRoute] int key)
+        {
+            //var check = employeeRepository.GetEmployeeById(key);
+            //return check == null ? NotFound() : Ok(check);
+            return Ok();
+        }
 
-        //public IActionResult Post([FromBody] EmployeeDTO employee)
-        //{
-        //    var check = employeeRepository.CreateEmployee(employee);
-        //    return check ? Ok() : BadRequest();
-        //}
+        public IActionResult Post([FromBody] EmployeeDTO employee)
+        {
+            var check = employeeRepository.createUser(employee);
+            return check == "success" ? Ok() : BadRequest("Email already exist");
+        }
         //[HttpPut("odata/Employee/{id}")]
         //public IActionResult Put(int id, [FromBody] EmployeeDTO employee)
         //{

@@ -23,9 +23,9 @@ namespace BusinessObject
         [Required] 
         public string EmployeeCode { get; set; }
         [Required]
-        public int Gender{ get; set; }
+        public Enum.EnumList.Gender Gender{ get; set; }
         [Required]
-        public Role Role { get; set; }
+        public Enum.EnumList.Role Role { get; set; }
         [Required]
         public DateTime Dob { get; set; }
         [Required, MinLength(10), MaxLength(12)]

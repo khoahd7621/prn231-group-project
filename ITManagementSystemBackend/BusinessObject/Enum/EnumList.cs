@@ -45,5 +45,10 @@ namespace BusinessObject.Enum
             Approved,
             Rejected
         }
+        public enum Gender
+        {
+            Male,
+            Female
+        }
     }
 }
