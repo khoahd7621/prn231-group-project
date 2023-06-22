@@ -34,12 +34,7 @@
                 password = password + words[i].ToString();
             }
             password = password + "@";
-            string[] date = dob.Date.ToString().Split(" ");
-            string[] dobs = date[0].Split("/");
-            for (int i = 0; i < dobs.Count(); i++)
-            {
-                password += dobs[i];
-            }
+            password += dob.Day.ToString() + dob.Month.ToString() + dob.Year.ToString();
             password = password[0].ToString().ToUpper() + password.Substring(1);
             return password;
 

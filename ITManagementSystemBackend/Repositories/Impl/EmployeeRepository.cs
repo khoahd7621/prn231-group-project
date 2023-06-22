@@ -4,7 +4,7 @@ using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataAccess;
 
-namespace Repositories
+namespace Repositories.Impl
 {
     public class EmployeeRepository : IEmployeeRepository
     {
@@ -22,6 +22,7 @@ namespace Repositories
             var employeeCode = Helper.UserHelper.GeneratedEmployeeCode(count);
             employeeReal.EmployeeCode = employeeCode;
             employeeReal.IsFirstLogin = true;
+            employeeReal.CreatedDate = DateTime.Now;
             employeeReal.EmployeeName = employee.LastName + " " + employee.FirstName;
             var password = Helper.UserHelper.GeneratedEmployeePassword(employeeReal.EmployeeName.ToLower(), employee.Dob);
             employeeReal.Password = password;
