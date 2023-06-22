@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Repositories.Helper
+﻿namespace Repositories.Helper
 {
     public class UserHelper
     {
@@ -28,21 +22,21 @@ namespace Repositories.Helper
             }
             return "SD" + count;
         }
-        public static string GeneratedEmployeePassword(string fullName,DateTime dob)
+        public static string GeneratedEmployeePassword(string fullName, DateTime dob)
         {
             List<string> words = fullName.Split(' ').ToList();
-            var lastName = words[words.Count()-1];
-            words.RemoveAt(words.Count()-1);
-            words.Insert(0,lastName);
-            string password="";
-            for(int i = 0; i<words.Count()  ; i++)
+            var lastName = words[words.Count() - 1];
+            words.RemoveAt(words.Count() - 1);
+            words.Insert(0, lastName);
+            string password = "";
+            for (int i = 0; i < words.Count(); i++)
             {
-                password = password+ words[i].ToString();
+                password = password + words[i].ToString();
             }
             password = password + "@";
             string[] date = dob.Date.ToString().Split(" ");
             string[] dobs = date[0].Split("/");
-            for(int i =0;i<dobs.Count(); i++)
+            for (int i = 0; i < dobs.Count(); i++)
             {
                 password += dobs[i];
             }

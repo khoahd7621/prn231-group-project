@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObject.DTO
 {
@@ -23,6 +18,8 @@ namespace BusinessObject.DTO
         public Enum.EnumList.Role Role { get; set; }
         [Required]
         public string CCCD { get; set; }
+        [Required]
+        public string Phone { get; set; }
         [Required]
         public string Address { get; set; }
         [Required]

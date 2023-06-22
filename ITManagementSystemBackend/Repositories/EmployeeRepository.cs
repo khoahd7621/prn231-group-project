@@ -3,11 +3,6 @@ using BusinessObject;
 using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories
 {
@@ -26,8 +21,8 @@ namespace Repositories
             var count = EmployeeDAO.CountEmployeeInCompany();
             var employeeCode = Helper.UserHelper.GeneratedEmployeeCode(count);
             employeeReal.EmployeeCode = employeeCode;
-            employeeReal.IsfirstLogin = true;
-            employeeReal.EmployeeName=employee.LastName+" "+employee.FirstName;
+            employeeReal.IsFirstLogin = true;
+            employeeReal.EmployeeName = employee.LastName + " " + employee.FirstName;
             var password = Helper.UserHelper.GeneratedEmployeePassword(employeeReal.EmployeeName.ToLower(), employee.Dob);
             employeeReal.Password = password;
             employeeReal.Status = EnumList.EmployeeStatus.Active;
