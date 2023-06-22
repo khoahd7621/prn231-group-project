@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace BusinessObject
 {
@@ -11,7 +10,6 @@ namespace BusinessObject
         [Required]
         public string PositionName { get; set; }
 
-        [JsonIgnore]
         public virtual ICollection<Contract> Contracts { get; set; }
     }
 }
