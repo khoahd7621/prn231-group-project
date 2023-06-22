@@ -1,3 +1,3 @@
 export type LevelReq = {
-  LevelName: string;
+  levelName: string;
 };

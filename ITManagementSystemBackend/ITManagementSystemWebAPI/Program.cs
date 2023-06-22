@@ -17,7 +17,7 @@ modelBuilder.EntitySet<Level>("Level");
 builder.Services.AddCors(option =>
 {
     option.AddDefaultPolicy(p =>
-            p.AllowAnyOrigin()
+            p.WithOrigins("http://127.0.0.1:5173")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 });
@@ -42,6 +42,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseODataBatching();
 app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors();
 
 app.UseAuthorization();
 

@@ -75,7 +75,6 @@ export const CreateModal = ({ successCallback }: Props) => {
         <Form
           disabled={sending}
           form={form}
-          name="basic"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
           style={{ maxWidth: 600, margin: "2rem 0" }}

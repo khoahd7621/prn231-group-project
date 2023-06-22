@@ -80,7 +80,6 @@ export const EditModal = ({ data, successCallback }: Props) => {
       >
         <Form
           form={form}
-          name="basic"
           disabled={sending}
           initialValues={{
             positionName: data.PositionName,

@@ -37,7 +37,7 @@ export const Position: React.FC = () => {
         <Space size="middle">
           <EditModal
             data={record}
-            successCallback={successCallback}
+            successCallback={fetchPositions}
           />
           <DeleteModal
             data={record}
@@ -52,7 +52,6 @@ export const Position: React.FC = () => {
     setLoading(true);
     PositionApis.getAll()
       .then((res) => {
-        console.log("res: ", res);
         setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
         setTotal(res.value.length);
       })

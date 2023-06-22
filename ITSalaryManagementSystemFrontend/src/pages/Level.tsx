@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Input, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
+import LevelApis from "../modules/level/apis/LevelApis";
 import { CreateModal, DeleteModal, EditModal } from "../modules/level/components";
 import { LevelModel } from "../modules/level/models";
 
@@ -10,54 +11,32 @@ type DataType = {
   key: number;
 } & LevelModel;
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Level name",
-    dataIndex: "levelName",
-    sortDirections: ["descend", "ascend"],
-    sorter: (a, b) => a.levelName.localeCompare(b.levelName),
-  },
-  {
-    render: (_, record) => (
-      <Space size="middle">
-        <EditModal data={record} />
-        <DeleteModal data={record} />
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: 1,
-    id: 1,
-    levelName: "Intern",
-  },
-  {
-    key: 2,
-    id: 2,
-    levelName: "Fresher",
-  },
-  {
-    key: 3,
-    id: 3,
-    levelName: "Junior",
-  },
-  {
-    key: 4,
-    id: 4,
-    levelName: "Senior",
-  },
-  {
-    key: 5,
-    id: 5,
-    levelName: "Leader",
-  },
-];
-
 const { Search } = Input;
 
 export const Level: React.FC = () => {
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Level name",
+      dataIndex: "LevelName",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.LevelName.localeCompare(b.LevelName),
+    },
+    {
+      render: (_, record) => (
+        <Space size="middle">
+          <EditModal
+            data={record}
+            successCallback={fetchLevels}
+          />
+          <DeleteModal
+            data={record}
+            successCallback={successCallback}
+          />
+        </Space>
+      ),
+    },
+  ];
+
   const [limit, setLimit] = React.useState<number>(5);
   const [page, setPage] = React.useState<number>(1);
   const [total, setTotal] = React.useState<number>(0);
@@ -66,14 +45,23 @@ export const Level: React.FC = () => {
   const [positions, setPositions] = React.useState<DataType[]>([]);
 
   useEffect(() => {
-    fetchPositions();
+    fetchLevels();
   }, []);
 
-  const fetchPositions = async () => {
+  const fetchLevels = () => {
     setLoading(true);
-    setPositions(data);
-    setTotal(data.length);
+    LevelApis.getAll()
+      .then((res) => {
+        setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
+        setTotal(res.value.length);
+      })
+      .catch((err) => console.log(err));
     setLoading(false);
+  };
+
+  const successCallback = () => {
+    setPage(1);
+    fetchLevels();
   };
 
   return (
@@ -93,7 +81,7 @@ export const Level: React.FC = () => {
           allowClear
         />
 
-        <CreateModal />
+        <CreateModal successCallback={successCallback} />
       </div>
       <Table
         columns={columns}
