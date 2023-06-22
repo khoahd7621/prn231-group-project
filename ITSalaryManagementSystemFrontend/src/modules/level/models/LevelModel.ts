@@ -1,4 +1,4 @@
 export type LevelModel = {
-  id: number;
-  levelName: string;
+  Id: number;
+  LevelName: string;
 };
