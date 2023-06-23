@@ -22,5 +22,4 @@ namespace BusinessObject
 
         public virtual Employee User { get; set; }
     }
-
 }
