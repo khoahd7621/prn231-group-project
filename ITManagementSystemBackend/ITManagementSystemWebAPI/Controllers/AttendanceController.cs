@@ -41,7 +41,6 @@ namespace ITManagementSystemWebAPI.Controllers
                 Date = attendanceRq.Date,
                 Hour = attendanceRq.Hour,
                 OTHour = attendanceRq.OTHour,
-                Status = attendanceRq.Status,
                 Type = attendanceRq.Type,
                 EmployeeId = attendanceRq.EmployeeId
             };
@@ -58,14 +57,11 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            //var employee = employeeRepository.get
             if (attendance.Status != EnumList.AttendanceStatus.Deleted)
             {
-                //if (DateTime.Parse(attendance.Date.ToString("yyyy-mm-dd")) == DateTime.Parse(attendanceReq.Date.ToString("yyyy-mm-dd"))) { 
                 attendance.Date = attendanceReq.Date;
                 attendance.Hour = attendanceReq.Hour;
                 attendance.OTHour = attendanceReq.OTHour;
-                attendance.Status = attendanceReq.Status;
                 attendance.Type = attendanceReq.Type;
                 attendance.EmployeeId = attendanceReq.EmployeeId;
                 //}
@@ -91,7 +87,7 @@ namespace ITManagementSystemWebAPI.Controllers
 
             if (attendance.Status == attendanceStatus)
             {
-                return BadRequest("Cannot update status");
+                return BadRequest("Change it staus");
             }
 
             attendanceRepository.UpdateStatusAttendance(key, attendanceStatus);

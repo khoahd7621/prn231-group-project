@@ -16,7 +16,7 @@ namespace Repositories
         public List<Attendance> FindAttendanceByUserAndTime(int userId, DateTime timeBegin, DateTime timeEnd);
         public Attendance FindAttendanceByUserAndDay(int userId, DateTime time);
         public void UpdateStatusAttendance(int id, EnumList.AttendanceStatus attendanceStatus);
-        public Attendance FindAttendanceByUser(string userId);
+        public Attendance FindAttendanceByUser(int userId);
         public void SaveAttendance(Attendance Attendance);
         public void UpdateAttendance(Attendance Attendance);
         public void DeleteAttendance(Attendance Attendance);

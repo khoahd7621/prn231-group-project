@@ -83,14 +83,14 @@ namespace DataAccess
             }
         }
 
-        public static Attendance FindAttendanceByUser(string userId)
+        public static Attendance FindAttendanceByUser(int userId)
         {
             try
             {
                 using (var context = new MyDbContext())
                 {
                     return context.Attendances.Include(s => s.User)
-                        .SingleOrDefault(c => c.User.Id.Equals(userId));
+                        .SingleOrDefault(c => c.EmployeeId == userId);
                 }
             }
             catch (Exception ex)
@@ -103,6 +103,7 @@ namespace DataAccess
         {
             try
             {
+                Attendance.Status = EnumList.AttendanceStatus.Waiting;
                 using (var context = new MyDbContext())
                 {
                     context.Attendances.Add(Attendance);
@@ -119,6 +120,7 @@ namespace DataAccess
         {
             try
             {
+                Attendance.Status = EnumList.AttendanceStatus.Waiting;
                 var context = new MyDbContext();
                 if (context.Users.SingleOrDefault(e => e.Id == Attendance.EmployeeId) == null) throw new Exception();
          
