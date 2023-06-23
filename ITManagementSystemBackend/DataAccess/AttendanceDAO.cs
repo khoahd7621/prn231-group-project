@@ -72,8 +72,8 @@ namespace DataAccess
                 {
                     list = context.Attendances
                        .Include(s => s.User)
-                       .SingleOrDefault(c => c.EmployeeId == userId
-                               & c.Date == time);
+                       .FirstOrDefault(c => c.EmployeeId == userId
+                               & c.Date.Date == time);
                 }
                 return list;
             }
