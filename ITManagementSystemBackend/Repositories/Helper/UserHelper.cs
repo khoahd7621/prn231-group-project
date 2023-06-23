@@ -54,18 +54,19 @@ namespace Repositories.Helper
                     email = email + words[i].ToString();
 
                 }
-                else {
+                else
+                {
                     email = email + words[i].Select(x => x.ToString()).ToArray()[0];
                 }
-                
+
             }
             var count = EmployeeDAO.CountEmailSameName(email);
-            if(count == 0)
+            if (count == 0)
             {
                 return email + "@projectx.com";
             }
 
-            return email + count+"@projectx.com";
+            return email + count + "@projectx.com";
         }
 
     }

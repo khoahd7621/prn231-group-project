@@ -31,7 +31,7 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             var count = context.Users.Where(x => x.Email.Contains(email)).ToList();
-            string pattern = @"[A-Za-z]";   
+            string pattern = @"[A-Za-z]";
             if (count.Count == 0)
             {
                 return 0;
@@ -41,7 +41,7 @@ namespace DataAccess
             {
                 var emailcheck = item.Email.Split("@")[0];
                 var emailWithoutNumber = string.Concat(Regex.Matches(emailcheck, pattern));
-                if(email.Equals(emailWithoutNumber))
+                if (email.Equals(emailWithoutNumber))
                 {
                     countEmail++;
                 }
