@@ -40,3 +40,10 @@ export enum PayrollStatus {
   Approved,
   Rejected,
 }
+
+export enum LeaveStatus {
+  DELETED = 0,
+  WAITING = 1,
+  APPROVED = 2,
+  REJECTED = 4
+}
