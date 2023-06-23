@@ -25,6 +25,7 @@ namespace BusinessObject
         public double RealWorkingHours { get; set; }
         [Required]
         public double OTWorkingHours { get; set; }
+        [Required]
         public decimal Bonus { get; set; }
         [Required]
         public Enum.EnumList.PayrollStatus Status { get; set; }
@@ -33,5 +34,4 @@ namespace BusinessObject
 
         public virtual Employee User { get; set; }
     }
-
 }

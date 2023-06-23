@@ -1,4 +1,4 @@
 export type PositionModel = {
-  id: number;
-  positionName: string;
+  Id: number;
+  PositionName: string;
 };

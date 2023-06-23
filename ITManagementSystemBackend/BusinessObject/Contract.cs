@@ -28,5 +28,4 @@ namespace BusinessObject
         public virtual Level Level { get; set; }
         public virtual Position Position { get; set; }
     }
-
 }

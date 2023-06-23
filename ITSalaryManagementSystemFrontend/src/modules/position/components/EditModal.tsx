@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 
 import { Button, Form, Input, Modal } from "antd";
 
+import PositionApis from "../apis/PositionApis";
 import { PositionModel } from "../models";
 
 type Props = {
   data: PositionModel;
+  successCallback?: () => void;
 };
 
-export const EditModal = ({ data }: Props) => {
+export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [submittable, setSubmittable] = useState<boolean>(false);
@@ -33,16 +35,22 @@ export const EditModal = ({ data }: Props) => {
 
   const handleOk = () => {
     setSending(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setSending(false);
-    }, 5000);
+    PositionApis.put(data.Id, { positionName: values.positionName })
+      .then(() => {
+        setIsModalOpen(false);
+        successCallback?.();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
+      });
+    setSending(false);
   };
 
   const handleCancel = () => {
     if (sending) return;
     setIsModalOpen(false);
-    form.setFieldValue("positionName", data.positionName);
+    form.setFieldValue("positionName", data.PositionName);
   };
 
   return (
@@ -61,7 +69,7 @@ export const EditModal = ({ data }: Props) => {
           disabled:
             !submittable ||
             form.isFieldTouched("positionName") === false ||
-            String(form.getFieldValue("positionName")).trim() === data.positionName,
+            String(form.getFieldValue("positionName")).trim() === data.PositionName,
           htmlType: "submit",
           loading: sending,
         }}
@@ -72,10 +80,9 @@ export const EditModal = ({ data }: Props) => {
       >
         <Form
           form={form}
-          name="basic"
           disabled={sending}
           initialValues={{
-            positionName: data.positionName,
+            positionName: data.PositionName,
           }}
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
