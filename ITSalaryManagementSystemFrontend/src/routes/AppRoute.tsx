@@ -1,4 +1,10 @@
-import { UserOutlined } from "@ant-design/icons";
+import {
+  AppstoreAddOutlined,
+  PieChartOutlined,
+  PullRequestOutlined,
+  UserOutlined,
+  UsergroupAddOutlined,
+} from "@ant-design/icons";
 import React from "react";
 
 type AppRouteType = {
@@ -22,22 +28,22 @@ const AppRoute: {
   [AppRouteEnum.DashBoard]: {
     path: "/",
     name: "Dashboard",
-    icon: <UserOutlined />,
+    icon: <PieChartOutlined />,
   },
   [AppRouteEnum.ManagePosition]: {
     path: "/manage-position",
     name: "Manage Position",
-    icon: <UserOutlined />,
+    icon: <AppstoreAddOutlined />,
   },
   [AppRouteEnum.ManageLevel]: {
     path: "/manage-level",
     name: "Manage Level",
-    icon: <UserOutlined />,
+    icon: <PullRequestOutlined />,
   },
   [AppRouteEnum.ManageEmployee]: {
     path: "/manage-employee",
     name: "Manage Employee",
-    icon: <UserOutlined />,
+    icon: <UsergroupAddOutlined />,
   },
   [AppRouteEnum.ManageAttendance]: {
     path: "/manage-attendance",
