@@ -52,6 +52,7 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             context.Entry<Employee>(employee).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
 
         }
         public static Employee FindEmployeeById(int id)

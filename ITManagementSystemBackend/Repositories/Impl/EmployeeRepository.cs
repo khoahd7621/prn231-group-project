@@ -43,9 +43,9 @@ namespace Repositories.Impl
             }
             var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeUpdateDTO, Employee>().ReverseMap());
             var mapper = new Mapper(config);
-            employeeReal = mapper.Map<Employee>(employee);
+            mapper.Map(employee, employeeReal);
             EmployeeDAO.UpdateEmployee(employeeReal);
             return true;
-        }
+        }   
     }
 }

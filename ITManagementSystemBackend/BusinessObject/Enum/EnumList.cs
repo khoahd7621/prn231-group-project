@@ -45,5 +45,10 @@
             Female,
             Other
         }
+        public enum SalaryType
+        {
+            Net,
+            Gross
+        }
     }
 }

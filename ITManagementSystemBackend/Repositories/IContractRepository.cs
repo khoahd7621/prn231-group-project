@@ -1,0 +1,15 @@
+﻿using DataTransfer.Request;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repositories
+{
+    public interface IContractRepository
+    {
+        string createContract(ContractReq req);
+        int updateStatusContract(int contractId,int status);
+    }
+}
