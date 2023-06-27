@@ -3,10 +3,10 @@ import React, { useEffect } from "react";
 import { Button, Image, Input, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
+import { EmployeeStatus, EmployeeType, Gender } from "../constants/enum";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
+import { CreateModal, DeleteModal, DetailModal, EditModal, EmployeeStatusTag } from "../modules/employee/components";
 import { EmployeeModel } from "../modules/employee/models";
-import { EmployeeType, Gender } from "../constants/enum";
-import { CreateModal, DeleteModal, EditModal } from "../modules/employee/components";
 
 type DataType = {
   key: number;
@@ -49,17 +49,40 @@ export const Employee: React.FC = () => {
       dataIndex: "EmployeeCode",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeCode.localeCompare(b.EmployeeCode),
+      render: (value: string, record: DataType) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => setCurrent(record)}
+        >
+          {value}
+        </div>
+      ),
     },
     {
       title: "Full Name",
       dataIndex: "EmployeeName",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeName.localeCompare(b.EmployeeName),
+      render: (value: string, record: DataType) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => setCurrent(record)}
+        >
+          {value}
+        </div>
+      ),
     },
     {
       title: "Job Title",
       dataIndex: "JobTitle",
-      render: (value: string) => value || " Not Available",
+      render: (value: string, record: DataType) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => setCurrent(record)}
+        >
+          {value || " Not Available"}
+        </div>
+      ),
       sortDirections: ["descend", "ascend"],
       sorter: {
         compare: () => 0,
@@ -70,23 +93,37 @@ export const Employee: React.FC = () => {
       dataIndex: "EmployeeType",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeType.toString().localeCompare(b.EmployeeType.toString()),
-      render: (value: string) => {
-        switch (EmployeeType[value as keyof typeof EmployeeType]) {
-          case EmployeeType.FullTime:
-            return "Full-time";
-          case EmployeeType.PartTime:
-            return "Part-time";
-          default:
-            return "Not Available";
-        }
-      },
+      render: (value: string, record: DataType) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => setCurrent(record)}
+        >
+          {EmployeeType[value as keyof typeof EmployeeType] === EmployeeType.FullTime
+            ? "Full-time"
+            : EmployeeType[value as keyof typeof EmployeeType] === EmployeeType.PartTime
+            ? "Part-time"
+            : "Not Available"}
+        </div>
+      ),
     },
     {
       title: "Company Join Date",
       dataIndex: "CreatedDate",
-      render: (value: string) => new Date(value).toLocaleString(),
+      render: (value: string, record: DataType) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => setCurrent(record)}
+        >
+          {new Date(value).toLocaleString()}
+        </div>
+      ),
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => new Date(a.CreatedDate).getTime() - new Date(b.CreatedDate).getTime(),
+    },
+    {
+      title: "Status",
+      dataIndex: "Status",
+      render: (value: EmployeeStatus) => <EmployeeStatusTag status={value} />,
     },
     {
       width: "2rem",
@@ -119,6 +156,7 @@ export const Employee: React.FC = () => {
 
   const [loading, setLoading] = React.useState<boolean>(true);
   const [positions, setPositions] = React.useState<DataType[]>([]);
+  const [current, setCurrent] = React.useState<DataType | null>(null);
 
   useEffect(() => {
     fetchLevels();
@@ -172,6 +210,10 @@ export const Employee: React.FC = () => {
             setLimit(pageSize || 5);
           },
         }}
+      />
+      <DetailModal
+        data={current}
+        setData={setCurrent}
       />
     </>
   );
