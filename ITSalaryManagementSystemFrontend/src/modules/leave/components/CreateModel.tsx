@@ -4,7 +4,7 @@ import LeaveApis from "../apis/LeaveApis";
 import { LeaveForm } from "../models";
 import moment from "moment";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
-import { LeaveStatus } from "../../../constants/enum";
+import { LeaveCategory, LeaveStatus, LeaveType } from "../../../constants/enum";
 const { TextArea } = Input;
 
 type Props = {
@@ -54,7 +54,8 @@ export const CreateModal = ({ successCallback }: Props) => {
         LeaveApis.post({
             ...value,
             status: LeaveStatus.WAITING,
-            date: value.date.toISOString(),
+            startDate: value.startDate.toISOString(),
+            endDate: value.endDate.toISOString()
         })
             .then(() => {
                 setIsModalOpen(false);
@@ -107,17 +108,17 @@ export const CreateModal = ({ successCallback }: Props) => {
                     >
                         <Select
                             options={options.map((key) => {
-                                    return {
-                                        value: key.value,
-                                        label: key.label,
-                                    };
-                                })}
+                                return {
+                                    value: key.value,
+                                    label: key.label,
+                                };
+                            })}
                         />
                     </Form.Item>
                     <Form.Item
-                        label="Leave Date"
-                        name="date"
-                        rules={[{ required: true, message: "Please input leave date!" }]}
+                        label="Start Date"
+                        name="startDate"
+                        rules={[{ required: true, message: "Please input start date!" }]}
                         initialValue={moment()}
                     >
                         <DatePicker
@@ -129,13 +130,52 @@ export const CreateModal = ({ successCallback }: Props) => {
                         />
                     </Form.Item>
                     <Form.Item
+                        label="End Date"
+                        name="endDate"
+                        rules={[{ required: true, message: "Please input end date!" }]}
+                        initialValue={moment()}
+                    >
+                        <DatePicker
+                            placeholder="Select end date"
+                            format={"DD/MM/YYYY"}
+                            style={{
+                                width: "100%",
+                            }}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Category"
+                        name="category"
+                        initialValue={LeaveCategory.SERVERAL_DAYS_LEAVE}
+                        rules={[{ required: true }]}
+                    >
+                        <Select
+                            options={Object.keys(LeaveCategory)
+                                .filter((v) => isNaN(Number(v)))
+                                .map((key) => {
+                                    return {
+                                        value: LeaveCategory[key as keyof typeof LeaveCategory],
+                                        label: key,
+                                    };
+                                })}
+                        />
+                    </Form.Item>
+                    <Form.Item
                         label="Type"
                         name="type"
-                        rules={[
-                            { required: true, message: "Please input type!" },
-                        ]}
+                        initialValue={LeaveType.ANNUAL_LEAVE}
+                        rules={[{ required: true }]}
                     >
-                        <Input />
+                        <Select
+                            options={Object.keys(LeaveType)
+                                .filter((v) => isNaN(Number(v)))
+                                .map((key) => {
+                                    return {
+                                        value: LeaveType[key as keyof typeof LeaveType],
+                                        label: key,
+                                    };
+                                })}
+                        />
                     </Form.Item>
                     <Form.Item
                         label="Reason"
@@ -144,7 +184,7 @@ export const CreateModal = ({ successCallback }: Props) => {
                             { required: true, message: "Please input reason!" },
                         ]}
                     >
-                        <TextArea showCount maxLength={100}/>
+                        <TextArea showCount maxLength={100} />
                     </Form.Item>
                     <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
                         <Space>

@@ -1,9 +1,11 @@
-import { LeaveStatus } from "../../../constants/enum";
+import { LeaveStatus, LeaveCategory, LeaveType } from "../../../constants/enum";
 
 export type LeaveModel = {
     Id: number;
-    Date: string;
-    Type: string;
+    StartDate: string;
+    EndDate: string;
+    Type: LeaveType;
+    Category: LeaveCategory
     Status: LeaveStatus;
     Reason: string;
     EmployyeeId: number;

@@ -1,8 +1,10 @@
-import { LeaveStatus } from "../../../constants/enum";
+import { LeaveStatus, LeaveCategory, LeaveType } from "../../../constants/enum";
 
 export type LeaveReq = {
-    date: string;
-    type: string;
+    startDate: string;
+    endDate: string;
+    type: LeaveType;
+    category: LeaveCategory;
     status: LeaveStatus;
     reason: string;
     employyeeId: number;

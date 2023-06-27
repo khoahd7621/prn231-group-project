@@ -152,14 +152,14 @@ namespace Repositories.Impl
             IQueryable<TEntity> query = _context.Set<TEntity>();
             if (filter != null)
             {
-                query = query.Where(filter);
+                query = query.AsNoTracking().Where(filter);
             }
 
             if (includeProperties != null)
             {
                 foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(includeProp);
+                    query = query.AsNoTracking().Include(includeProp);
                 }
             }
 
@@ -168,7 +168,7 @@ namespace Repositories.Impl
                 return options(query).ToList();
             }
 
-            return await query.ToListAsync();
+            return await query.AsNoTracking().ToListAsync();
         }
 
         public TEntity GetFirstOrDefault(Expression<Func<TEntity, bool>> filter = null, string includeProperties = null)
@@ -183,7 +183,7 @@ namespace Repositories.Impl
             {
                 foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(includeProp);
+                    query = query.AsNoTracking().Include(includeProp);
                 }
             }
 

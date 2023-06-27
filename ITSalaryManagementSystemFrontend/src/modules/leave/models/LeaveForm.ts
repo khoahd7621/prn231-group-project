@@ -1,10 +1,11 @@
 import { Dayjs } from "dayjs";
-import { LeaveStatus } from "../../../constants/enum";
+import { LeaveCategory, LeaveType } from "../../../constants/enum";
 
 export type LeaveForm = {
-    date: Dayjs;
-    type: string;
-    status: LeaveStatus;
+    startDate: Dayjs;
+    endDate: Dayjs;
+    type: LeaveType;
+    category: LeaveCategory;
     reason: string;
     employyeeId: number;
   };
