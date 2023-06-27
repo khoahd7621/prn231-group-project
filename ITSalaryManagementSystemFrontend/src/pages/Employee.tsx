@@ -6,7 +6,7 @@ import type { ColumnsType } from "antd/es/table";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 import { EmployeeModel } from "../modules/employee/models";
 import { EmployeeType, Gender } from "../constants/enum";
-import { CreateModal, EditModal } from "../modules/employee/components";
+import { CreateModal, DeleteModal, EditModal } from "../modules/employee/components";
 
 type DataType = {
   key: number;
@@ -98,10 +98,16 @@ export const Employee: React.FC = () => {
           />
           <Button
             type="primary"
-            danger
+            style={{
+              backgroundColor: "#2D4356",
+            }}
           >
-            Delete
+            Deactive
           </Button>
+          <DeleteModal
+            data={record}
+            successCallback={fetchLevels}
+          />
         </Space>
       ),
     },

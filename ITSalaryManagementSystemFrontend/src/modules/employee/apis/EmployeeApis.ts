@@ -8,6 +8,7 @@ const EmployeeApis = {
   getAll: (): Promise<Response<EmployeeModel[]>> => AxiosClient.get("/Employee"),
   post: (data: EmployeeReq): Promise<void> => AxiosClient.post("/Employee", data),
   put: (id: number, data: EmployeePut): Promise<void> => AxiosClient.put(`/Employee/${id}`, data),
+  delete: (id: number): Promise<void> => AxiosClient.delete(`/Employee/${id}`),
 };
 
 export default EmployeeApis;
