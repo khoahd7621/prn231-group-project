@@ -1,15 +1,18 @@
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import { Button, DatePicker, Form, Input, Modal, Select, Space } from "antd";
+
 import { EmployeeType, Gender, Role } from "../../../constants/enum";
 import EmployeeApis from "../apis/EmployeeApis";
-import { EmployeeForm } from "../models";
+import { EmployeeModel, EmployeePutForm } from "../models";
 
 type Props = {
+  data: EmployeeModel;
   successCallback?: () => void;
 };
 
-export const CreateModal = ({ successCallback }: Props) => {
+export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [submittable, setSubmittable] = useState<boolean>(false);
@@ -32,20 +35,16 @@ export const CreateModal = ({ successCallback }: Props) => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (value: EmployeeForm) => {
+  const handleSubmit = (value: EmployeePutForm) => {
     setSending(true);
-    EmployeeApis.post({
-      ...value,
-      dob: value.dob.toISOString(),
-    })
+    EmployeeApis.put(data.Id, { ...value, dob: value.dob.toISOString() })
       .then(() => {
         setIsModalOpen(false);
-        form.resetFields();
         successCallback?.();
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Create employee failed! Please refresh page and try again!");
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong! Please refresh page and try again later.");
       })
       .finally(() => setSending(false));
   };
@@ -62,10 +61,10 @@ export const CreateModal = ({ successCallback }: Props) => {
         type="primary"
         onClick={showModal}
       >
-        Create new employee
+        Edit
       </Button>
       <Modal
-        title="Create new employee"
+        title={`Edit employee ${data.EmployeeCode} - ${data.EmployeeName}`}
         open={isModalOpen}
         footer={null}
         cancelButtonProps={{
@@ -81,25 +80,27 @@ export const CreateModal = ({ successCallback }: Props) => {
           style={{ maxWidth: 600, margin: "2rem 0" }}
           autoComplete="off"
           onFinish={handleSubmit}
+          initialValues={{
+            employeeName: data.EmployeeName,
+            gender: Gender[data.Gender],
+            role: Role[data.Role],
+            cccd: data.CCCD,
+            dob: dayjs(data.Dob),
+            phone: data.Phone,
+            address: data.Address,
+            employeeType: EmployeeType[data.EmployeeType],
+          }}
         >
           <Form.Item
-            label="First Name"
-            name="firstName"
-            rules={[{ required: true, message: "Please input first name!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Last Name"
-            name="lastName"
-            rules={[{ required: true, message: "Please input last name!" }]}
+            label="Name"
+            name="employeeName"
+            rules={[{ required: true, message: "Please input employee name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Gender"
             name="gender"
-            initialValue={Gender.Male}
             rules={[{ required: true }]}
           >
             <Select
@@ -162,7 +163,6 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="Role"
             name="role"
-            initialValue={Role.Employee}
             rules={[{ required: true }]}
           >
             <Select
@@ -178,8 +178,7 @@ export const CreateModal = ({ successCallback }: Props) => {
           </Form.Item>
           <Form.Item
             label="Employee Type"
-            name="typeEmployee"
-            initialValue={EmployeeType.FullTime}
+            name="employeeType"
             rules={[{ required: true }]}
           >
             <Select

@@ -6,7 +6,7 @@ import type { ColumnsType } from "antd/es/table";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 import { EmployeeModel } from "../modules/employee/models";
 import { EmployeeType, Gender } from "../constants/enum";
-import { CreateModal } from "../modules/employee/components";
+import { CreateModal, EditModal } from "../modules/employee/components";
 
 type DataType = {
   key: number;
@@ -90,9 +90,12 @@ export const Employee: React.FC = () => {
     },
     {
       width: "2rem",
-      render: () => (
+      render: (_, record: DataType) => (
         <Space>
-          <Button type="primary">Edit</Button>
+          <EditModal
+            data={record}
+            successCallback={fetchLevels}
+          />
           <Button
             type="primary"
             danger
