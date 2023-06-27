@@ -9,5 +9,8 @@ namespace Repositories
         public string createUser(EmployeeReq employee);
         public List<Employee> GetAll();
         public bool updateUser(int id,EmployeeUpdateDTO employee);
+
+        public void deleteUser(int id);
+        public Employee GetEmployeeById(int id);
     }
 }

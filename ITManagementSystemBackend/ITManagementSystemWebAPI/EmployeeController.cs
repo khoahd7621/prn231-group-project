@@ -22,9 +22,8 @@ namespace ITManagementSystemWebAPI
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
-            //var check = employeeRepository.GetEmployeeById(key);
-            //return check == null ? NotFound() : Ok(check);
-            return Ok();
+            var check = employeeRepository.GetEmployeeById(key);
+            return check == null ? NotFound() : Ok(check);
         }
 
         public IActionResult Post([FromBody] EmployeeReq employee)
@@ -38,12 +37,12 @@ namespace ITManagementSystemWebAPI
             var check = employeeRepository.updateUser(id, employee);
             return check ? Ok() : BadRequest();
         }
-        //[HttpDelete("odata/Employee/{id}")]
-        //public IActionResult Delete(int id)
-        //{
-        //    var check = employeeRepository.DeleteEmployee(id);
-        //    return check ? Ok() : BadRequest();
-        //}
+        [HttpDelete("odata/Employee/{id}")]
+        public IActionResult Delete(int id)
+        {
+            employeeRepository.deleteUser(id);
+            return Ok();
+        }
         //[HttpPost("odata/Employee/Login")]
         //public IActionResult Login([FromBody] Login loginForm)
         //{

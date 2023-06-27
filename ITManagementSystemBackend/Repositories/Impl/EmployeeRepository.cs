@@ -29,9 +29,21 @@ namespace Repositories.Impl
             return "success";
         }
 
+        public void deleteUser(int id)
+        {
+            var employee = EmployeeDAO.FindEmployeeById(id);
+            employee.Status = EnumList.EmployeeStatus.Deleted;
+            EmployeeDAO.UpdateEmployee(employee);
+        }
+
         public List<Employee> GetAll()
         {
             return EmployeeDAO.GetAllEmployeeInCompany();
+        }
+
+        public Employee GetEmployeeById(int id)
+        {
+            return EmployeeDAO.FindEmployeeById(id);
         }
 
         public bool updateUser(int id,EmployeeUpdateDTO employee)
