@@ -3,14 +3,15 @@ using BusinessObject;
 using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataAccess;
+using DataTransfer.Request;
 
 namespace Repositories.Impl
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        public string createUser(EmployeeDTO employee)
+        public string createUser(EmployeeReq employee)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeDTO, Employee>().ReverseMap());
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeReq, Employee>().ReverseMap());
             var mapper = new Mapper(config);
             Employee employeeReal = mapper.Map<Employee>(employee);
             var count = EmployeeDAO.CountEmployeeInCompany();
@@ -31,6 +32,20 @@ namespace Repositories.Impl
         public List<Employee> GetAll()
         {
             return EmployeeDAO.GetAllEmployeeInCompany();
+        }
+
+        public bool updateUser(int id,EmployeeUpdateDTO employee)
+        {
+            var employeeReal = EmployeeDAO.FindEmployeeById(id);
+            if(employeeReal == null)
+            {
+                return false;
+            }
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeUpdateDTO, Employee>().ReverseMap());
+            var mapper = new Mapper(config);
+            employeeReal = mapper.Map<Employee>(employee);
+            EmployeeDAO.UpdateEmployee(employeeReal);
+            return true;
         }
     }
 }
