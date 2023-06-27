@@ -1,5 +1,7 @@
 ﻿
+
 using BusinessObject.DTO;
+using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -25,17 +27,17 @@ namespace ITManagementSystemWebAPI
             return Ok();
         }
 
-        public IActionResult Post([FromBody] EmployeeDTO employee)
+        public IActionResult Post([FromBody] EmployeeReq employee)
         {
             var check = employeeRepository.createUser(employee);
             return check == "success" ? Ok() : BadRequest("Email already exist");
         }
-        //[HttpPut("odata/Employee/{id}")]
-        //public IActionResult Put(int id, [FromBody] EmployeeDTO employee)
-        //{
-        //    var check = employeeRepository.UpdateEmployee(id, employee);
-        //    return check ? Ok() : BadRequest();
-        //}
+        [HttpPut("odata/Employee/{id}")]
+        public IActionResult Put(int id, [FromBody] EmployeeUpdateDTO employee)
+        {
+            var check = employeeRepository.updateUser(id, employee);
+            return check ? Ok() : BadRequest();
+        }
         //[HttpDelete("odata/Employee/{id}")]
         //public IActionResult Delete(int id)
         //{
