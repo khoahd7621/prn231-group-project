@@ -22,8 +22,9 @@ export const Level: React.FC = () => {
       sorter: (a, b) => a.LevelName.localeCompare(b.LevelName),
     },
     {
+      width: "20px",
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <EditModal
             data={record}
             successCallback={fetchLevels}
@@ -74,7 +75,7 @@ export const Level: React.FC = () => {
         }}
       >
         <Search
-          placeholder="Search position"
+          placeholder="Search level"
           style={{
             width: 400,
           }}

@@ -33,8 +33,9 @@ export const Position: React.FC = () => {
       sorter: (a, b) => a.PositionName.localeCompare(b.PositionName),
     },
     {
+      width: "20px",
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <EditModal
             data={record}
             successCallback={fetchPositions}

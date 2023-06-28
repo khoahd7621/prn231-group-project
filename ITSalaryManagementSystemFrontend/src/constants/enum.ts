@@ -40,3 +40,24 @@ export enum PayrollStatus {
   Approved,
   Rejected,
 }
+
+export enum LeaveStatus {
+  DELETED = 0,
+  WAITING = 1,
+  APPROVED = 2,
+  REJECTED = 4
+}
+
+export enum LeaveCategory {
+  ONE_DAY_LEAVE = 0,
+  SERVERAL_DAYS_LEAVE = 1
+}
+export enum LeaveType {
+  ANNUAL_LEAVE = 0,
+  SICK_LEAVE = 1,
+  MATERNITY_LEAVE = 2,
+  PATERNITY_LEAVE = 3,
+  BEREAVEMENT_LEAVE = 4,
+  PUBLIC_HOLIDAY = 5,
+  UNPAID_LEAVE
+}

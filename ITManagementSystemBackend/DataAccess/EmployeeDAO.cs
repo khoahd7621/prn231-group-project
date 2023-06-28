@@ -48,5 +48,18 @@ namespace DataAccess
             }
             return countEmail;
         }
+        public static void UpdateEmployee(Employee employee)
+        {
+            var context = new MyDbContext();
+            context.Entry<Employee>(employee).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
+
+        }
+        public static Employee FindEmployeeById(int id)
+        {
+            var context = new MyDbContext();
+            var employee = context.Users.SingleOrDefault(x => x.Id == id);
+            return employee;
+        }
     }
 }

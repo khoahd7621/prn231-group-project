@@ -1,6 +1,8 @@
 using BusinessObject;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
+using Repositories;
+using Repositories.Impl;
 
 // Config OData
 var builder = WebApplication.CreateBuilder(args);
@@ -8,21 +10,30 @@ var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Employee>("Employee");
 modelBuilder.EntitySet<Position>("Position");
 modelBuilder.EntitySet<Level>("Level");
-//modelBuilder.EntitySet<Contract>("Contract");
-//modelBuilder.EntitySet<Attendance>("Attendance");
+modelBuilder.EntitySet<Contract>("Contract");
+modelBuilder.EntitySet<Attendance>("Attendance");
 //modelBuilder.EntitySet<PayRoll>("PayRoll");
-//modelBuilder.EntitySet<TakeLeave>("TakeLeave");
+modelBuilder.EntitySet<TakeLeave>("TakeLeave");
 
 // Config CORS
 builder.Services.AddCors(option =>
 {
     option.AddDefaultPolicy(p =>
-            p.WithOrigins("http://127.0.0.1:5173")
+            p.WithOrigins(
+                "http://127.0.0.1:5173",
+                "http://localhost:5173"
+            ).SetIsOriginAllowedToAllowWildcardSubdomains()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 });
 
 // Add services to the container.
+
+
+builder.Services.AddTransient<ITakeLeaveRepository, TakeLeaveRepository>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BusinessObject.Enum;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObject
@@ -10,6 +11,8 @@ namespace BusinessObject
         [Required]
         public int EmployeeId { get; set; }
         [Required]
+        public Enum.EnumList.EmployeeType EmployeeType { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
@@ -19,6 +22,12 @@ namespace BusinessObject
         public int DateOffPerYear { get; set; }
         [Required]
         public int LevelId { get; set; }
+
+        public double InsuranceRate { get; set; }
+
+        public double TaxRate { get; set; }
+        [Required]
+        public EnumList.SalaryType SalaryType { get; set; }
         [Required]
         public int PositionId { get; set; }
         [Required]
