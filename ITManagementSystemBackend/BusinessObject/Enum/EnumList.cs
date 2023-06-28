@@ -9,9 +9,8 @@
         }
         public enum EmployeeStatus
         {
-            Deleted,
             Active,
-            Passive
+            Deactive
         }
         public enum EmployeeType
         {
@@ -44,6 +43,11 @@
             Male,
             Female,
             Other
+        }
+        public enum SalaryType
+        {
+            Net,
+            Gross
         }
     }
 }

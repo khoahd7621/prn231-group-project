@@ -29,8 +29,7 @@ namespace BusinessObject
         public DateTime CreatedDate { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
-        public Enum.EnumList.EmployeeType EmployeeType { get; set; }
+        
         [Required]
         public string Email { get; set; }
         [Required]

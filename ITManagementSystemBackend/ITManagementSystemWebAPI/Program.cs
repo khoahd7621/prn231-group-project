@@ -10,7 +10,7 @@ var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Employee>("Employee");
 modelBuilder.EntitySet<Position>("Position");
 modelBuilder.EntitySet<Level>("Level");
-//modelBuilder.EntitySet<Contract>("Contract");
+modelBuilder.EntitySet<Contract>("Contract");
 modelBuilder.EntitySet<Attendance>("Attendance");
 //modelBuilder.EntitySet<PayRoll>("PayRoll");
 modelBuilder.EntitySet<TakeLeave>("TakeLeave");
