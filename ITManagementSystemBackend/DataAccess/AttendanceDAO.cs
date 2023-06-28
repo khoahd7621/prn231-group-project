@@ -104,8 +104,13 @@ namespace DataAccess
             try
             {
                 Attendance.Status = EnumList.AttendanceStatus.Waiting;
+
                 using (var context = new MyDbContext())
                 {
+                    TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(c => c.Date.Date == Attendance.Date.Date 
+                    //&& c.Status == EnumList
+                    );
+                    if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
                     context.Attendances.Add(Attendance);
                     context.SaveChanges();
                 }
@@ -121,7 +126,16 @@ namespace DataAccess
             try
             {
                 Attendance.Status = EnumList.AttendanceStatus.Waiting;
+
+
+
                 var context = new MyDbContext();
+
+                TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(c => c.Date.Date == Attendance.Date.Date
+                   //&& c.Status == EnumList
+                   );
+                if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+
                 if (context.Users.SingleOrDefault(e => e.Id == Attendance.EmployeeId) == null) throw new Exception();
          
                     context.Entry(Attendance).State = EntityState.Modified;
