@@ -39,11 +39,12 @@ namespace Repositories.Impl
 
         public List<EmployeeResponse> GetAll()
         {
-            var listEmployee= EmployeeDAO.GetAllEmployeeInCompany();
+            var listEmployee = EmployeeDAO.GetAllEmployeeInCompany();
             var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeResponse, Employee>().ReverseMap());
             var mapper = new Mapper(config);
-            List<EmployeeResponse> listEmpMapper=mapper.Map<List<Employee>,List<EmployeeResponse>>(listEmployee);
-            listEmpMapper.ForEach(e => {
+            List<EmployeeResponse> listEmpMapper = mapper.Map<List<Employee>, List<EmployeeResponse>>(listEmployee);
+            listEmpMapper.ForEach(e =>
+            {
                 var check = ContractDAO.CheckEmployeeHaveAnyContract(e.Id);
                 if (check)
                 {
@@ -52,8 +53,8 @@ namespace Repositories.Impl
                 else
                 {
                     e.CanDelete = true;
-                }    
-                                  });
+                }
+            });
             return listEmpMapper;
         }
 
@@ -62,10 +63,10 @@ namespace Repositories.Impl
             return EmployeeDAO.FindEmployeeById(id);
         }
 
-        public bool updateUser(int id,EmployeeUpdateDTO employee)
+        public bool updateUser(int id, EmployeeUpdateDTO employee)
         {
             var employeeReal = EmployeeDAO.FindEmployeeById(id);
-            if(employeeReal == null)
+            if (employeeReal == null)
             {
                 return false;
             }
@@ -74,6 +75,6 @@ namespace Repositories.Impl
             mapper.Map(employee, employeeReal);
             EmployeeDAO.UpdateEmployee(employeeReal);
             return true;
-        }   
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace BusinessObject
 
         public string? Reason { get; set; }
         [Required]
-        public int LeaveDays { get;set; }
+        public int LeaveDays { get; set; }
         [Required]
         public int EmployeeId { get; set; }
         [ForeignKey("EmployeeId")]

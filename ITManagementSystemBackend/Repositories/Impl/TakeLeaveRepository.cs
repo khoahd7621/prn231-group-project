@@ -1,12 +1,5 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static BusinessObject.Enum.EnumList;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Impl
 {
@@ -74,6 +67,6 @@ namespace Repositories.Impl
 
         public void UpdateTakeLeave(TakeLeave takeLeave) => Update(takeLeave);
 
-        public int CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(int employeeId, int year) => GetAll(filter: tl => (tl.StartDate.Year.Equals(year)) && tl.EmployeeId == employeeId && tl.Type.Equals(TakeLeaveType.ANNUAL_LEAVE)&&tl.Status.Equals(TakeLeaveStatus.APPROVED)).Sum(tl => tl.LeaveDays);
+        public int CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(int employeeId, int year) => GetAll(filter: tl => (tl.StartDate.Year.Equals(year)) && tl.EmployeeId == employeeId && tl.Type.Equals(TakeLeaveType.ANNUAL_LEAVE) && tl.Status.Equals(TakeLeaveStatus.APPROVED)).Sum(tl => tl.LeaveDays);
     }
 }

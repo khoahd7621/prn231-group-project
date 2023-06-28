@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using BusinessObject.Enum;
 namespace DataTransfer.Request
 {
     public class AttendanceReq
@@ -11,7 +9,7 @@ namespace DataTransfer.Request
         [Range(0, 8)]
         public double Hour { get; set; }
         [Required]
-        [Range(1,8)]
+        [Range(1, 8)]
         public double OTHour { get; set; }
         [Required]
         public int Type { get; set; }

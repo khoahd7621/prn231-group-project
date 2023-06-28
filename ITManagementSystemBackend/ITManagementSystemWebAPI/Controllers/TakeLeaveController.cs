@@ -1,12 +1,10 @@
-﻿using BusinessObject;
+﻿using AutoMapper;
+using BusinessObject;
 using DataTransfer.Request;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Repositories.Impl;
 using Repositories;
-using AutoMapper;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
@@ -37,7 +35,7 @@ namespace ITManagementSystemWebAPI.Controllers
         public ActionResult Post([FromBody] TakeLeaveReq postTakeLeave)
         {
             var tempContract = takeLeaveRepository.GetActiveContractByEmployeeIdEqual(postTakeLeave.EmployeeId);
-            if (tempContract==null)
+            if (tempContract == null)
             {
                 return BadRequest("Employee require at least 1 active contract to create leave!");
             }
@@ -86,7 +84,7 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            if(postTakeLeave.Status.Equals(TakeLeaveStatus.APPROVED)) 
+            if (postTakeLeave.Status.Equals(TakeLeaveStatus.APPROVED))
             {
                 var tempTakeLeave = takeLeaveRepository.GetTakeLeaveByDateBetweenAndEmployeeIdEqual(postTakeLeave.StartDate, postTakeLeave.EndDate, postTakeLeave.EmployeeId);
                 if (tempTakeLeave != null)

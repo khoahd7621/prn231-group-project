@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230627164213_DHung-UpdateDB-TakeLeave")]
-    partial class DHungUpdateDBTakeLeave
+    [Migration("20230628140204_InitialDB")]
+    partial class InitialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,8 +75,14 @@ namespace BusinessObject.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("EmployeeType")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<double>("InsuranceRate")
+                        .HasColumnType("float");
 
                     b.Property<int>("LevelId")
                         .HasColumnType("int");
@@ -84,11 +90,17 @@ namespace BusinessObject.Migrations
                     b.Property<int>("PositionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SalaryType")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<double>("TaxRate")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -135,9 +147,6 @@ namespace BusinessObject.Migrations
                     b.Property<string>("EmployeeName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeType")
-                        .HasColumnType("int");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");

@@ -1,7 +1,6 @@
 ﻿
 using BusinessObject.Enum;
 using DataTransfer.Request;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -20,10 +19,10 @@ namespace ITManagementSystemWebAPI.Controllers
             var check = _contractRepository.createContract(req);
             return check.Equals("ok") ? Ok() : BadRequest(check);
         }
-        public IActionResult Patch(int key,EnumList.ContractStatus status)
+        public IActionResult Patch(int key, EnumList.ContractStatus status)
         {
             var check = _contractRepository.updateStatusContract(key, (int)status);
-            return check==1 ? Ok() : BadRequest(check);
+            return check == 1 ? Ok() : BadRequest(check);
         }
     }
 }

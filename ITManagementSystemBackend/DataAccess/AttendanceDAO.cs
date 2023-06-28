@@ -1,12 +1,6 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DataAccess
 {
@@ -107,7 +101,8 @@ namespace DataAccess
 
                 using (var context = new MyDbContext())
                 {
-                    TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(c => c.Date.Date == Attendance.Date.Date 
+                    TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(
+                    // c => c.Date.Date == Attendance.Date.Date 
                     //&& c.Status == EnumList
                     );
                     if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
@@ -127,19 +122,18 @@ namespace DataAccess
             {
                 Attendance.Status = EnumList.AttendanceStatus.Waiting;
 
-
-
                 var context = new MyDbContext();
 
-                TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(c => c.Date.Date == Attendance.Date.Date
+                TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(
+                   // c => c.Date.Date == Attendance.Date.Date
                    //&& c.Status == EnumList
                    );
                 if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
 
                 if (context.Users.SingleOrDefault(e => e.Id == Attendance.EmployeeId) == null) throw new Exception();
-         
-                    context.Entry(Attendance).State = EntityState.Modified;
-                    context.SaveChanges();
+
+                context.Entry(Attendance).State = EntityState.Modified;
+                context.SaveChanges();
             }
             catch (Exception ex)
             {

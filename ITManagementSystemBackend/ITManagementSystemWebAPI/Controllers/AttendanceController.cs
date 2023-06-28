@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObject;
+using BusinessObject.Enum;
+using DataTransfer.Request;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Repositories.Impl;
 using Repositories;
-using BusinessObject;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using DataTransfer.Request;
-using BusinessObject.Enum;
+using Repositories.Impl;
 using System.Globalization;
-using static BusinessObject.Enum.EnumList;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
