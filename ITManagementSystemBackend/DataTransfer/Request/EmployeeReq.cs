@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObject.DTO
 {
-    public class EmployeeDTO
+    public class EmployeeReq
     {
         [Required]
         public string FirstName { get; set; }

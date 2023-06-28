@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button, Form, Input, Modal } from "antd";
 import LevelApis from "../apis/LevelApis";
@@ -57,7 +57,7 @@ export const CreateModal = ({ successCallback }: Props) => {
         type="primary"
         onClick={showModal}
       >
-        Create new position
+        Create new level
       </Button>
       <Modal
         title="Create new level"
