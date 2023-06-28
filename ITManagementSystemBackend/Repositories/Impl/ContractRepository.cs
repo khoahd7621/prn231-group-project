@@ -58,6 +58,11 @@ namespace Repositories.Impl
             return "ok";
         }
 
+        public List<Contract> GetContracts()
+        {
+            return ContractDAO.GetAll();
+        }
+
         public int updateStatusContract(int contractId, int status)
         {
             var contract = ContractDAO.FindContractById(contractId);

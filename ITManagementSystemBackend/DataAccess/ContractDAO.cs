@@ -25,5 +25,16 @@ namespace DataAccess
             var context = new MyDbContext();
             return context.Contracts.SingleOrDefault(x => x.Id == id);
         }
+        public static bool CheckEmployeeHaveAnyContract(int empId)
+        {
+            var context = new MyDbContext();
+            var check = context.Contracts.Where(x => x.EmployeeId == empId).FirstOrDefault();
+            return check != null;
+        }
+        public static List<Contract> GetAll()
+        {
+            var context = new MyDbContext();
+            return context.Contracts.ToList();
+        }
     }
 }

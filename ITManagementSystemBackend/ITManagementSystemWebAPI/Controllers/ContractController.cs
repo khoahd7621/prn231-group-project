@@ -14,7 +14,7 @@ namespace ITManagementSystemWebAPI.Controllers
     {
         private IContractRepository _contractRepository = new ContractRepository();
         [EnableQuery]
-        public IActionResult Get() => Ok();
+        public IActionResult Get() => Ok(_contractRepository.GetContracts());
         public IActionResult Post([FromBody] ContractReq req)
         {
             var check = _contractRepository.createContract(req);

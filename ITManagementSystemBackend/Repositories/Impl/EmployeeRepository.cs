@@ -4,6 +4,7 @@ using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataAccess;
 using DataTransfer.Request;
+using DataTransfer.Response;
 
 namespace Repositories.Impl
 {
@@ -32,13 +33,28 @@ namespace Repositories.Impl
         public void deleteUser(int id)
         {
             var employee = EmployeeDAO.FindEmployeeById(id);
-            employee.Status = EnumList.EmployeeStatus.Deleted;
+            //employee.Status = EnumList.EmployeeStatus.Deleted;
             EmployeeDAO.UpdateEmployee(employee);
         }
 
-        public List<Employee> GetAll()
+        public List<EmployeeResponse> GetAll()
         {
-            return EmployeeDAO.GetAllEmployeeInCompany();
+            var listEmployee= EmployeeDAO.GetAllEmployeeInCompany();
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeResponse, Employee>().ReverseMap());
+            var mapper = new Mapper(config);
+            List<EmployeeResponse> listEmpMapper=mapper.Map<List<Employee>,List<EmployeeResponse>>(listEmployee);
+            listEmpMapper.ForEach(e => {
+                var check = ContractDAO.CheckEmployeeHaveAnyContract(e.Id);
+                if (check)
+                {
+                    e.CanDelete = false;
+                }
+                else
+                {
+                    e.CanDelete = true;
+                }    
+                                  });
+            return listEmpMapper;
         }
 
         public Employee GetEmployeeById(int id)

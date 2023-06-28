@@ -9,9 +9,8 @@
         }
         public enum EmployeeStatus
         {
-            Deleted,
             Active,
-            Passive
+            Deactive
         }
         public enum EmployeeType
         {
