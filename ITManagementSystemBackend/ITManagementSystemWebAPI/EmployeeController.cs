@@ -40,8 +40,38 @@ namespace ITManagementSystemWebAPI
         [HttpDelete("odata/Employee/{id}")]
         public IActionResult Delete(int id)
         {
-            employeeRepository.deleteUser(id);
-            return Ok();
+           var checkEmp = employeeRepository.GetEmployeeById(id);
+            if (checkEmp == null)
+            {
+                return NotFound("Employee Not Found !!!");
+            }
+            var check = employeeRepository.deleteUser(id);
+
+            return check ? Ok() : BadRequest("This employee has any contract just deactive");
+        }
+         [HttpPatch("odata/Employee/Deactive/{id}")]
+        public IActionResult Deactive(int id)
+        {
+            var checkEmp = employeeRepository.GetEmployeeById(id);
+            if (checkEmp == null)
+            {
+                return NotFound("Employee Not Found !!!");
+            }
+            var check = employeeRepository.DeactiveEmployee(id);
+
+            return check.Equals("1") ? Ok() : BadRequest(check);
+        }
+        [HttpPatch("odata/Employee/Active/{id}")]
+        public IActionResult Active(int id)
+        {
+            var checkEmp = employeeRepository.GetEmployeeById(id);
+            if (checkEmp == null)
+            {
+                return NotFound("Employee Not Found !!!");
+            }
+            employeeRepository.ActiveEmployee(id);
+
+            return Ok() ;
         }
         //[HttpPost("odata/Employee/Login")]
         //public IActionResult Login([FromBody] Login loginForm)
