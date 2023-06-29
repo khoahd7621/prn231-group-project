@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using BusinessObject.Enum;
 
 namespace DataAccess
 {
@@ -25,6 +26,12 @@ namespace DataAccess
             var context = new MyDbContext();
             var check = context.Contracts.Where(x => x.EmployeeId == empId).FirstOrDefault();
             return check != null;
+        }
+        public static Contract checkEmployeeHasAnyActiveContract(int empId)
+        {
+            var context = new MyDbContext();
+            var check = context.Contracts.Where(x => x.EmployeeId == empId && x.Status == EnumList.ContractStatus.Active).FirstOrDefault();
+            return check;
         }
         public static List<Contract> GetAll()
         {

@@ -61,5 +61,11 @@ namespace DataAccess
             var employee = context.Users.SingleOrDefault(x => x.Id == id);
             return employee;
         }
+        public static void DeleteEmployee(Employee employee)
+        {
+            var context = new MyDbContext();
+            context.Users.Remove(employee);
+            context.SaveChanges();
+        }
     }
 }
