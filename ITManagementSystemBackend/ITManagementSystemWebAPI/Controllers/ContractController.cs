@@ -22,7 +22,7 @@ namespace ITManagementSystemWebAPI.Controllers
         public IActionResult Patch(int key, EnumList.ContractStatus status)
         {
             var check = _contractRepository.updateStatusContract(key, (int)status);
-            return check == 1 ? Ok() : BadRequest(check);
+            return check == 1 ? Ok() : BadRequest();
         }
     }
 }

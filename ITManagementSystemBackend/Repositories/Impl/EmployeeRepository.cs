@@ -10,6 +10,13 @@ namespace Repositories.Impl
 {
     public class EmployeeRepository : IEmployeeRepository
     {
+        public void ActiveEmployee(int id)
+        {
+            var employee = EmployeeDAO.FindEmployeeById(id);
+            employee.Status = EnumList.EmployeeStatus.Active; EmployeeDAO.UpdateEmployee(employee);
+            
+        }
+
         public string createUser(EmployeeReq employee)
         {
             var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeReq, Employee>().ReverseMap());
@@ -30,11 +37,36 @@ namespace Repositories.Impl
             return "success";
         }
 
-        public void deleteUser(int id)
+        public string DeactiveEmployee(int id)
+        {
+            var checkHasCurrentContract = ContractDAO.checkEmployeeHasAnyActiveContract(id);
+            if (checkHasCurrentContract != null)
+            {
+                return "Should end contract first, then can deactive this user";
+            }
+            var employee = EmployeeDAO.FindEmployeeById(id);
+            employee.IsFirstLogin = true;
+            employee.Password = Helper.UserHelper.GeneratedEmployeePassword(employee.EmployeeName.ToLower(), employee.Dob);
+            employee.Status = EnumList.EmployeeStatus.Deactive;
+            EmployeeDAO.UpdateEmployee(employee);
+            return "1";
+        }
+
+        public bool deleteUser(int id)
         {
             var employee = EmployeeDAO.FindEmployeeById(id);
+            if(employee == null)
+            {
+                return false;
+            }
+            var checkHasAnyContract = ContractDAO.CheckEmployeeHaveAnyContract(id);
+            if(checkHasAnyContract)
+            {
+                return false;
+            }
             //employee.Status = EnumList.EmployeeStatus.Deleted;
-            EmployeeDAO.UpdateEmployee(employee);
+            EmployeeDAO.DeleteEmployee(employee);
+            return true;
         }
 
         public List<EmployeeResponse> GetAll()

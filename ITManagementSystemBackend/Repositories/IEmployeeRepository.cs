@@ -11,7 +11,9 @@ namespace Repositories
         public List<EmployeeResponse> GetAll();
         public bool updateUser(int id, EmployeeUpdateDTO employee);
 
-        public void deleteUser(int id);
+        public bool deleteUser(int id);
         public Employee GetEmployeeById(int id);
+        public string DeactiveEmployee(int id);
+        public void ActiveEmployee(int id);
     }
 }
