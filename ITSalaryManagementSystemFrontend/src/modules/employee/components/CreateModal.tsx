@@ -116,7 +116,6 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="Date of birth"
             name="dob"
-            initialValue={Gender.Male}
             rules={[{ required: true, message: "Please input date of birth!" }]}
           >
             <DatePicker

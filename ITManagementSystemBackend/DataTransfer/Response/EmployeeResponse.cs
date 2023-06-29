@@ -1,10 +1,5 @@
-﻿using BusinessObject.Enum;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObject;
+using BusinessObject.Enum;
 
 namespace DataTransfer.Response
 {
@@ -28,8 +23,9 @@ namespace DataTransfer.Response
 
         public string Address { get; set; }
 
-        public bool CanDelete { get; set; }
+        public bool HasAnyContract { get; set; }
 
         public EnumList.EmployeeType TypeEmployee { get; set; }
+        public Contract Currentcontract { get; set; }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using BusinessObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BusinessObject.Enum;
 
 namespace DataAccess
 {
@@ -35,6 +31,12 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             return context.Contracts.ToList();
+        }
+        public static Contract checkEmployeeHasAnyActiveContract(int empId)
+        {
+            var context = new MyDbContext();
+            var check = context.Contracts.Where(x=> x.EmployeeId == empId && x.Status == EnumList.ContractStatus.Active).FirstOrDefault();
+            return check;
         }
     }
 }

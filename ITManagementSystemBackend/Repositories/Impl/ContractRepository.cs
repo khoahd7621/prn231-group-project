@@ -3,11 +3,6 @@ using BusinessObject;
 using BusinessObject.Enum;
 using DataAccess;
 using DataTransfer.Request;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Impl
 {
@@ -15,38 +10,41 @@ namespace Repositories.Impl
     {
         public string createContract(ContractReq req)
         {
-            var checkEmployee= EmployeeDAO.FindEmployeeById(req.EmployeeId);
+            var checkEmployee = EmployeeDAO.FindEmployeeById(req.EmployeeId);
             var checkPosition = PositionDAO.FindPositionById(req.PositionId);
             var checkLeve = LevelDAO.FindLevelById(req.LevelId);
-            if(checkEmployee == null) {
+            if (checkEmployee == null)
+            {
                 return "User Not Found";
             }
-            if(checkPosition == null)
+            if (checkPosition == null)
             {
                 return "Position not found";
             }
-            if(checkLeve == null)
+            if (checkLeve == null)
             {
                 return "Level not found";
             }
-           if(req.StartDate.Date < DateTime.Now.Date) {
+            if (req.StartDate.Date < DateTime.Now.Date)
+            {
                 return "date time create can not less than today";
             }
-           if(req.EndDate.Date < DateTime.Now.Date)
+            if (req.EndDate.Date < DateTime.Now.Date)
             {
                 return "date time end can not less than createDate";
             }
-           if(req.BaseSalary <=0)
+            if (req.BaseSalary <= 0)
             {
                 return "base salary must larger than 0";
             }
-           if(req.DateOffPerYear <0)
+            if (req.DateOffPerYear < 0)
             {
                 return " day off per year can not less than 0";
             }
-           if(req.SalaryType == EnumList.SalaryType.Gross)
+            if (req.SalaryType == EnumList.SalaryType.Gross)
             {
-                if(req.TaxRate <=0 || req.InsuranceRate <=0) {
+                if (req.TaxRate <= 0 || req.InsuranceRate <= 0)
+                {
                     return "Gross & Insurance larger than 0";
                 }
             }
@@ -66,7 +64,7 @@ namespace Repositories.Impl
         public int updateStatusContract(int contractId, int status)
         {
             var contract = ContractDAO.FindContractById(contractId);
-            if(contract == null)
+            if (contract == null)
             {
                 return -1;
             }
