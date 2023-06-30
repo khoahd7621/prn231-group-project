@@ -14,6 +14,7 @@ namespace ITManagementSystemWebAPI
     public class EmployeeController : ODataController
     {
         private IEmployeeRepository employeeRepository = new EmployeeRepository();
+        private IAuthenticationRepository authenticationRepository = new AuthenticationRepository();
         [EnableQuery]
         public IActionResult Get()
         {
@@ -73,10 +74,10 @@ namespace ITManagementSystemWebAPI
 
             return Ok() ;
         }
-        //[HttpPost("odata/Employee/Login")]
-        //public IActionResult Login([FromBody] Login loginForm)
-        //{
-        //    return Ok(employeeRepository.Login(loginForm));
-        //}
+        [HttpPost("odata/Employee/Login")]
+        public IActionResult Login([FromBody] LoginDTO loginForm)
+        {
+            return Ok(authenticationRepository.Login(loginForm));
+        }
     }
 }
