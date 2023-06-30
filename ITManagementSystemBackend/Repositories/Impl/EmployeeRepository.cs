@@ -4,7 +4,6 @@ using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataAccess;
 using DataTransfer.Request;
-using DataTransfer.Response;
 
 namespace Repositories.Impl
 {
@@ -30,35 +29,22 @@ namespace Repositories.Impl
             return "success";
         }
 
-
-        public List<EmployeeResponse> GetAll()
+        public List<Employee> GetAll()
         {
-            var listEmployee = EmployeeDAO.GetAllEmployeeInCompany();
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeResponse, Employee>().ReverseMap());
-            var mapper = new Mapper(config);
-            List<EmployeeResponse> listEmpMapper = mapper.Map<List<Employee>, List<EmployeeResponse>>(listEmployee);
-            listEmpMapper.ForEach(e =>
-            {
-                var check = ContractDAO.CheckEmployeeHaveAnyContract(e.Id);
-                if (check)
-                    e.HasAnyContract = true;
-                else
-                    e.HasAnyContract = false;
-                e.CurrentContract = ContractDAO.checkEmployeeHasAnyActiveContract(e.Id);
-            });
-            return listEmpMapper;
+            return EmployeeDAO.GetAllEmployeeInCompany();
         }
 
         public Employee GetEmployeeById(int id)
         {
             return EmployeeDAO.FindEmployeeById(id);
         }
+
         public void ActiveEmployee(int id)
         {
             var employee = EmployeeDAO.FindEmployeeById(id);
             employee.Status = EnumList.EmployeeStatus.Active; EmployeeDAO.UpdateEmployee(employee);
-
         }
+
         public string DeactivateEmployee(int id)
         {
             var checkHasCurrentContract = ContractDAO.checkEmployeeHasAnyActiveContract(id);
@@ -74,6 +60,7 @@ namespace Repositories.Impl
             EmployeeDAO.UpdateEmployee(employee);
             return "1";
         }
+
         public bool UpdateUser(int id, EmployeeUpdateDTO employee)
         {
             var employeeReal = EmployeeDAO.FindEmployeeById(id);
@@ -87,6 +74,7 @@ namespace Repositories.Impl
             EmployeeDAO.UpdateEmployee(employeeReal);
             return true;
         }
+
         public bool DeleteUser(int id)
         {
             var employee = EmployeeDAO.FindEmployeeById(id);

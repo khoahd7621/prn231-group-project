@@ -1,11 +1,18 @@
 import React, { useEffect } from "react";
 
-import { Button, Image, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-import { EmployeeStatus, EmployeeType, Gender } from "../constants/enum";
+import { EmployeeStatus, EmployeeType } from "../constants/enum";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
-import { CreateModal, DeleteModal, DetailModal, EditModal, EmployeeStatusTag } from "../modules/employee/components";
+import {
+  CreateModal,
+  DeleteModal,
+  DetailModal,
+  EditModal,
+  EmployeeStatusTag,
+  RenderAvatar,
+} from "../modules/employee/components";
 import { EmployeeModel } from "../modules/employee/models";
 
 type DataType = {
@@ -18,31 +25,13 @@ export const Employee: React.FC = () => {
   const columns: ColumnsType<DataType> = [
     {
       width: "1rem",
-      render: (_, record: DataType) => {
-        switch (Gender[record.Gender.toString() as keyof typeof Gender]) {
-          case Gender.Male:
-            return (
-              <Image
-                width={30}
-                src="https://static.vecteezy.com/system/resources/thumbnails/004/511/281/small/default-avatar-photo-placeholder-profile-picture-vector.jpg"
-              />
-            );
-          case Gender.Female:
-            return (
-              <Image
-                width={30}
-                src="https://static.vecteezy.com/system/resources/previews/002/596/484/original/default-avatar-photo-placeholder-profile-image-female-vector.jpg"
-              />
-            );
-          default:
-            return (
-              <Image
-                width={30}
-                src="https://static.vecteezy.com/system/resources/previews/005/129/844/original/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
-              />
-            );
-        }
-      },
+      render: (_, record: DataType) => (
+        <RenderAvatar
+          gender={record.Gender}
+          width={30}
+          preview={false}
+        />
+      ),
     },
     {
       title: "Staff Code",
