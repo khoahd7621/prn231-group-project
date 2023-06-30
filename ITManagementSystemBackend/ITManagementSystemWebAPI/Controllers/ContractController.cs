@@ -22,6 +22,10 @@ namespace ITManagementSystemWebAPI.Controllers
         }
         public IActionResult Patch(int key, EnumList.ContractStatus status)
         {
+            if(status == EnumList.ContractStatus.Active)
+            {
+                return BadRequest("this api not use for active");
+            }
             var check = _contractRepository.updateStatusContract(key, (int)status);
             return check == 1 ? Ok() : BadRequest(check);
         }
