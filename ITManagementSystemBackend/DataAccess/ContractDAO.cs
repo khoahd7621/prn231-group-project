@@ -15,6 +15,7 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             context.Entry<Contract>(contract).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
         }
         public static Contract FindContractById(int id)
         {

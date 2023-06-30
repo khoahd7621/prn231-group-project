@@ -5,13 +5,12 @@ using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataAccess;
 using DataTransfer.Request;
-using DataTransfer.Response;
 
 namespace Repositories.Impl
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        public string createUser(EmployeeReq employee)
+        public string CreateUser(EmployeeReq employee)
         {
             var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeReq, Employee>().ReverseMap());
             var mapper = new Mapper(config);
@@ -32,55 +31,39 @@ namespace Repositories.Impl
             return "success";
         }
 
-
-        public List<EmployeeResponse> GetAll()
+        public List<Employee> GetAll()
         {
-            var listEmployee = EmployeeDAO.GetAllEmployeeInCompany();
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<EmployeeResponse, Employee>().ReverseMap());
-            var mapper = new Mapper(config);
-            List<EmployeeResponse> listEmpMapper = mapper.Map<List<Employee>, List<EmployeeResponse>>(listEmployee);
-            listEmpMapper.ForEach(e =>
-            {
-                var check = ContractDAO.CheckEmployeeHaveAnyContract(e.Id);
-                if (check)
-                {
-                   e.HasAnyContract = true;
-                }
-                else
-                {
-                     e.HasAnyContract = false;
-                }
-                 e.Currentcontract = ContractDAO.checkEmployeeHasAnyActiveContract(e.Id);
-            });
-            return listEmpMapper;
+            return EmployeeDAO.GetAllEmployeeInCompany();
         }
 
         public Employee GetEmployeeById(int id)
         {
             return EmployeeDAO.FindEmployeeById(id);
         }
- public void ActiveEmployee(int id)
+
+        public void ActiveEmployee(int id)
         {
             var employee = EmployeeDAO.FindEmployeeById(id);
             employee.Status = EnumList.EmployeeStatus.Active; EmployeeDAO.UpdateEmployee(employee);
-
         }
-public string DeactiveEmployee(int id)
+
+        public string DeactivateEmployee(int id)
         {
             var checkHasCurrentContract = ContractDAO.checkEmployeeHasAnyActiveContract(id);
             if (checkHasCurrentContract != null)
             {
-                return "Should end contract first, then can deactive this user";
+                return "Should end contract first, then can deactivate this user";
             }
             var employee = EmployeeDAO.FindEmployeeById(id);
-           
+
             employee.IsFirstLogin = true;
             employee.Password = Helper.UserHelper.GeneratedEmployeePassword(employee.EmployeeName.ToLower(), employee.Dob);
             employee.Status = EnumList.EmployeeStatus.Deactive;
             EmployeeDAO.UpdateEmployee(employee);
             return "1";
         }
-        public bool updateUser(int id, EmployeeUpdateDTO employee)
+
+        public bool UpdateUser(int id, EmployeeUpdateDTO employee)
         {
             var employeeReal = EmployeeDAO.FindEmployeeById(id);
             if (employeeReal == null)
@@ -93,19 +76,19 @@ public string DeactiveEmployee(int id)
             EmployeeDAO.UpdateEmployee(employeeReal);
             return true;
         }
-         public bool deleteUser(int id)
+
+        public bool DeleteUser(int id)
         {
             var employee = EmployeeDAO.FindEmployeeById(id);
-            if(employee == null)
+            if (employee == null)
             {
                 return false;
             }
             var checkHasAnyContract = ContractDAO.CheckEmployeeHaveAnyContract(id);
-            if(checkHasAnyContract)
+            if (checkHasAnyContract)
             {
                 return false;
             }
-            //employee.Status = EnumList.EmployeeStatus.Deleted;
             EmployeeDAO.DeleteEmployee(employee);
             return true;
         }

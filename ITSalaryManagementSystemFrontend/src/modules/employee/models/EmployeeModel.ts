@@ -15,4 +15,5 @@ export type EmployeeModel = {
   Phone: string;
   Status: EmployeeStatus;
   IsFirstLogin: true;
+  Contracts: [];
 };
