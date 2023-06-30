@@ -12,7 +12,8 @@ namespace Repositories.Impl
         {
             var contract = ContractDAO.FindContractById(contractId);
             var checkEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(contract.EmployeeId);
-            if(checkEmployee != null) {
+            if (checkEmployee != null)
+            {
                 return false;
             }
             contract.Status = EnumList.ContractStatus.Active;

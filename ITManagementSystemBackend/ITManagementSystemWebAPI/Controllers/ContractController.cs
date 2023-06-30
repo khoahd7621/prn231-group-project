@@ -22,7 +22,7 @@ namespace ITManagementSystemWebAPI.Controllers
         }
         public IActionResult Patch(int key, EnumList.ContractStatus status)
         {
-            if(status == EnumList.ContractStatus.Active)
+            if (status == EnumList.ContractStatus.Active)
             {
                 return BadRequest("this api not use for active");
             }
@@ -30,14 +30,15 @@ namespace ITManagementSystemWebAPI.Controllers
             return check == 1 ? Ok() : BadRequest(check);
         }
         [HttpPatch("odata/Contract/Active/{id}")]
-        public IActionResult Active(int id) {
+        public IActionResult Active(int id)
+        {
             var checkContract = _contractRepository.GetContract(id);
-            if(checkContract == null)
+            if (checkContract == null)
             {
                 return BadRequest("This contract not exist");
             }
             var checkEmployee = employeeRepository.GetEmployeeById(checkContract.EmployeeId);
-            if(checkEmployee.Status == EnumList.EmployeeStatus.Deactive)
+            if (checkEmployee.Status == EnumList.EmployeeStatus.Deactive)
             {
                 return BadRequest("This user is deactive, need to active this user first");
             }
