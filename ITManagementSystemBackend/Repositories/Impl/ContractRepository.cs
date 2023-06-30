@@ -8,6 +8,18 @@ namespace Repositories.Impl
 {
     public class ContractRepository : IContractRepository
     {
+        public bool ActiveContract(int contractId)
+        {
+            var contract = ContractDAO.FindContractById(contractId);
+            var checkEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(contract.EmployeeId);
+            if(checkEmployee != null) {
+                return false;
+            }
+            contract.Status = EnumList.ContractStatus.Active;
+            ContractDAO.UpdateContract(contract);
+            return true;
+        }
+
         public string createContract(ContractReq req)
         {
             var checkEmployee = EmployeeDAO.FindEmployeeById(req.EmployeeId);
@@ -54,6 +66,11 @@ namespace Repositories.Impl
             contract.Status = EnumList.ContractStatus.Waiting;
             ContractDAO.CreateContract(contract);
             return "ok";
+        }
+
+        public Contract GetContract(int contractId)
+        {
+            return ContractDAO.FindContractById(contractId);
         }
 
         public List<Contract> GetContracts()
