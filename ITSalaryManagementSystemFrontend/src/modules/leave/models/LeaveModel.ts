@@ -5,6 +5,7 @@ export type LeaveModel = {
     StartDate: string;
     EndDate: string;
     Type: LeaveType;
+    LeaveDays: number;
     Category: LeaveCategory
     Status: LeaveStatus;
     Reason: string;
@@ -12,5 +13,6 @@ export type LeaveModel = {
     User: {
         Id: number;
         EmployeeCode: string;
+        EmployeeName: string;
       };
   };

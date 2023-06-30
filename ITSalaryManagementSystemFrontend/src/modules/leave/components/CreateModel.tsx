@@ -1,10 +1,10 @@
+import { Button, DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Form, Input, Modal, Select, Space } from "antd";
+import { LeaveCategory, LeaveStatus, LeaveType } from "../../../constants/enum";
+import EmployeeApis from "../../employee/apis/EmployeeApis";
 import LeaveApis from "../apis/LeaveApis";
 import { LeaveForm } from "../models";
-import moment from "moment";
-import EmployeeApis from "../../employee/apis/EmployeeApis";
-import { LeaveCategory, LeaveStatus, LeaveType } from "../../../constants/enum";
 const { TextArea } = Input;
 
 type Props = {
@@ -23,15 +23,15 @@ export const CreateModal = ({ successCallback }: Props) => {
     const [sending, setSending] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [options, setOptions] = React.useState<OptionItem[]>([]);
+    const [selectedCategoryOption, setSelectedCategoryOption] = React.useState<boolean>(false);
 
     useEffect(() => {
         EmployeeApis.getAll()
             .then((res) => {
-                setOptions(res.value.map((item) => ({ value: item.Id, label: item.EmployeeCode })));
+                setOptions(res.value.map((item) => ({ value: item.Id, label: `${item.EmployeeCode} - ${item.EmployeeName}` })));
             })
             .catch((err) => console.log(err));
     }, []);
-
 
     useEffect(() => {
         form.validateFields({ validateOnly: true }).then(
@@ -42,7 +42,6 @@ export const CreateModal = ({ successCallback }: Props) => {
                 setSubmittable(false);
             }
         );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [values]);
 
     const showModal = () => {
@@ -61,10 +60,11 @@ export const CreateModal = ({ successCallback }: Props) => {
                 setIsModalOpen(false);
                 form.resetFields();
                 successCallback?.();
+                message.success("Leave created successfully");
             })
             .catch((error) => {
                 console.log(error);
-                alert("Create leave failed! Please refresh page and try again!");
+                message.error(`Error creating leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
             })
             .finally(() => setSending(false));
     };
@@ -72,6 +72,7 @@ export const CreateModal = ({ successCallback }: Props) => {
     const handleCancel = () => {
         if (sending) return;
         setIsModalOpen(false);
+        setSelectedCategoryOption(false);
         form.resetFields();
     };
 
@@ -107,6 +108,11 @@ export const CreateModal = ({ successCallback }: Props) => {
                         rules={[{ required: true }]}
                     >
                         <Select
+                            showSearch
+                            placeholder="Select a employee"
+                            filterOption={(input, option) =>
+                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
                             options={options.map((key) => {
                                 return {
                                     value: key.value,
@@ -116,10 +122,29 @@ export const CreateModal = ({ successCallback }: Props) => {
                         />
                     </Form.Item>
                     <Form.Item
+                        label="Category"
+                        name="category"
+                        initialValue={LeaveCategory.ONE_DAY_LEAVE}
+                        rules={[{ required: true }]}
+                    >
+                        <Select
+                            value={selectedCategoryOption}
+                            onChange={setSelectedCategoryOption}
+                            options={Object.keys(LeaveCategory)
+                                .filter((v) => isNaN(Number(v)))
+                                .map((key) => {
+                                    return {
+                                        value: LeaveCategory[key as keyof typeof LeaveCategory],
+                                        label: key.toUpperCase().split('_').join(' '),
+                                    };
+                                })}
+                        />
+                    </Form.Item>
+                    <Form.Item
                         label="Start Date"
                         name="startDate"
                         rules={[{ required: true, message: "Please input start date!" }]}
-                        initialValue={moment()}
+                        initialValue={dayjs()}
                     >
                         <DatePicker
                             placeholder="Select leave date"
@@ -132,8 +157,9 @@ export const CreateModal = ({ successCallback }: Props) => {
                     <Form.Item
                         label="End Date"
                         name="endDate"
+                        hidden={!selectedCategoryOption}
                         rules={[{ required: true, message: "Please input end date!" }]}
-                        initialValue={moment()}
+                        initialValue={dayjs()}
                     >
                         <DatePicker
                             placeholder="Select end date"
@@ -141,23 +167,6 @@ export const CreateModal = ({ successCallback }: Props) => {
                             style={{
                                 width: "100%",
                             }}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Category"
-                        name="category"
-                        initialValue={LeaveCategory.SERVERAL_DAYS_LEAVE}
-                        rules={[{ required: true }]}
-                    >
-                        <Select
-                            options={Object.keys(LeaveCategory)
-                                .filter((v) => isNaN(Number(v)))
-                                .map((key) => {
-                                    return {
-                                        value: LeaveCategory[key as keyof typeof LeaveCategory],
-                                        label: key,
-                                    };
-                                })}
                         />
                     </Form.Item>
                     <Form.Item
@@ -172,7 +181,7 @@ export const CreateModal = ({ successCallback }: Props) => {
                                 .map((key) => {
                                     return {
                                         value: LeaveType[key as keyof typeof LeaveType],
-                                        label: key,
+                                        label: key.toUpperCase().split('_').join(' '),
                                     };
                                 })}
                         />
@@ -198,7 +207,7 @@ export const CreateModal = ({ successCallback }: Props) => {
                             </Button>
                             <Button
                                 htmlType="button"
-                                onClick={() => form.resetFields()}
+                                onClick={() => { form.resetFields(), setSelectedCategoryOption(false) }}
                             >
                                 Reset
                             </Button>
