@@ -1,5 +1,6 @@
 import {
   AppstoreAddOutlined,
+  AuditOutlined,
   PieChartOutlined,
   PullRequestOutlined,
   UserOutlined,
@@ -18,6 +19,7 @@ export enum AppRouteEnum {
   ManagePosition = "ManagePosition",
   ManageLevel = "ManageLevel",
   ManageEmployee = "ManageEmployee",
+  ManageContract = "ManageContract",
   ManageAttendance = "ManageAttendance",
   ManageLeave = "ManageLeave",
 }
@@ -44,6 +46,11 @@ const AppRoute: {
     path: "/manage-employee",
     name: "Manage Employee",
     icon: <UsergroupAddOutlined />,
+  },
+  [AppRouteEnum.ManageContract]: {
+    path: "/manage-contract",
+    name: "Manage Contract",
+    icon: <AuditOutlined />,
   },
   [AppRouteEnum.ManageAttendance]: {
     path: "/manage-attendance",
