@@ -1,6 +1,7 @@
 ﻿using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
+using Repositories.Helper;
 using Repositories.Impl;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -31,14 +32,11 @@ namespace ITManagementSystemWebAPI.Controllers
                 return BadRequest("Invalid token");
             if (token.StartsWith("Bearer ")) 
                 token = token.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var claims = jwtToken.Claims;
-            var idEmployee = claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value;
-            var checkEmployeeIsFirstLogin = employeeRepository.GetEmployeeById(int.Parse(idEmployee)).IsFirstLogin;
+            var employeeid = UserHelper.GetEmployeeIdFromToken(token);
+            var checkEmployeeIsFirstLogin = employeeRepository.GetEmployeeById(employeeid).IsFirstLogin;
             if (checkEmployeeIsFirstLogin)
                 return BadRequest("This user not allow to use this api");
-            var check = authenticationRepository.ChangePassword(int.Parse(idEmployee), req);
+            var check = authenticationRepository.ChangePassword(employeeid, req);
             return check ? Ok() : BadRequest("Confirm password not match password");
         }
         [HttpPatch("FirstChangePassword")]
@@ -49,14 +47,11 @@ namespace ITManagementSystemWebAPI.Controllers
                 return BadRequest("Invalid token");
             if (token.StartsWith("Bearer "))
                 token = token.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var claims = jwtToken.Claims;
-            var idEmployee = claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value;
-            var checkEmployeeIsFirstLogin = employeeRepository.GetEmployeeById(int.Parse(idEmployee)).IsFirstLogin;
+            var employeeid = UserHelper.GetEmployeeIdFromToken(token);
+            var checkEmployeeIsFirstLogin = employeeRepository.GetEmployeeById(employeeid).IsFirstLogin;
             if (!checkEmployeeIsFirstLogin)
                 return BadRequest("This user not allow to use this api");
-            authenticationRepository.FirstChangePassword(int.Parse(idEmployee), req);
+            authenticationRepository.FirstChangePassword(employeeid, req);
             return Ok();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Repositories.Helper
 {
@@ -67,6 +68,14 @@ namespace Repositories.Helper
             }
 
             return email + count + "@projectx.com";
+        }
+        public static int GetEmployeeIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var claims = jwtToken.Claims;
+            var idEmployee = claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value;
+            return int.Parse(idEmployee);
         }
 
     }
