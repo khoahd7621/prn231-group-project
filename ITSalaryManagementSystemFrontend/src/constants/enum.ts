@@ -38,6 +38,10 @@ export enum AttendanceStatus {
   Approved,
   Rejected,
 }
+export enum AttendanceType {
+  Offline,
+  Online,
+}
 
 export enum PayrollStatus {
   Deleted,
