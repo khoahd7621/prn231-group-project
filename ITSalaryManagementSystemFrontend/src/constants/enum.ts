@@ -10,9 +10,8 @@ export enum Role {
 }
 
 export enum EmployeeStatus {
-  Deleted,
   Active,
-  Passive,
+  Deactive,
 }
 
 export enum EmployeeType {
@@ -26,6 +25,11 @@ export enum ContractStatus {
   Active,
   Expired,
   Canceled,
+}
+
+export enum SalaryType {
+  Net,
+  Gross,
 }
 
 export enum AttendanceStatus {
@@ -45,13 +49,14 @@ export enum LeaveStatus {
   DELETED = 0,
   WAITING = 1,
   APPROVED = 2,
-  REJECTED = 4
+  REJECTED = 4,
 }
 
 export enum LeaveCategory {
   ONE_DAY_LEAVE = 0,
-  SERVERAL_DAYS_LEAVE = 1
+  SERVERAL_DAYS_LEAVE = 1,
 }
+
 export enum LeaveType {
   ANNUAL_LEAVE = 0,
   SICK_LEAVE = 1,
@@ -59,5 +64,5 @@ export enum LeaveType {
   PATERNITY_LEAVE = 3,
   BEREAVEMENT_LEAVE = 4,
   PUBLIC_HOLIDAY = 5,
-  UNPAID_LEAVE
+  UNPAID_LEAVE,
 }
