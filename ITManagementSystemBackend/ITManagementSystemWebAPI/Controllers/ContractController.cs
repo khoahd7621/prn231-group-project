@@ -41,14 +41,17 @@ namespace ITManagementSystemWebAPI.Controllers
             var check = _contractRepository.UpdateContract(key, req);
             return check ? Ok() : BadRequest("Contract has status is active can't edit");
         }
-        public IActionResult Patch(int key, EnumList.ContractStatus status)
+
+        [HttpPatch("odata/Contract/Deactive/{id}")]
+        public IActionResult Deactive(int id)
         {
-            if (status == EnumList.ContractStatus.Active)
-                return BadRequest("this api not use for active");
-            var check = _contractRepository.UpdateStatusContract(key, (int)status);
-            if (check == 0)
-                return BadRequest("Active can't change status to waitting");
-            return check == 1 ? Ok() : BadRequest(check);
+            var checkContract = _contractRepository.GetContract(id);
+            if (checkContract == null)
+                return BadRequest("This contract not exist");
+            if(checkContract.Status != EnumList.ContractStatus.Active)
+                return BadRequest("Contract only has status Active can be Deactive");
+            _contractRepository.DeactiveContract(id);
+            return Ok();
         }
         [HttpPatch("odata/Contract/Active/{id}")]
         public IActionResult Active(int id)
