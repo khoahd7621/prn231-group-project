@@ -12,5 +12,6 @@ namespace Repositories
         public Contract GetContract(int contractId);
         public bool UpdateContract(int contractId,ContractReq req);
         public bool DeleteContract(Contract contract);
+        public bool DeactiveContract(int contractId);
     }
 }

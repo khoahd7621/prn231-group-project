@@ -54,7 +54,7 @@ namespace Repositories.Impl
             return "ok";
         }
 
-        public bool DeactiveContracr(int contractId)
+        public bool DeactiveContract(int contractId)
         {
             var contract = ContractDAO.FindContractById(contractId);
             contract.Status = EnumList.ContractStatus.Expired;
