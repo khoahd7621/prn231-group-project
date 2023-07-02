@@ -1,8 +1,8 @@
 import { Dayjs } from "dayjs";
 
-import { EmployeeType, Gender, Role } from "../../../constants/enum";
+import { Gender, Role } from "../../../constants/enum";
 
-export type EmployeeForm = {
+export type EmployeePostForm = {
   firstName: string;
   lastName: string;
   gender: Gender;
@@ -11,5 +11,4 @@ export type EmployeeForm = {
   cccd: string;
   phone: string;
   address: string;
-  typeEmployee: EmployeeType;
 };
