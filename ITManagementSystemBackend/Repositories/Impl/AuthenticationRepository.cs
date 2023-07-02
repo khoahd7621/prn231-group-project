@@ -51,13 +51,14 @@ namespace Repositories.Impl
         public string Login(LoginDTO login)
         {
             var employee = EmployeeDAO.Login(login.Email, login.Password);
-            if(employee == null)
+            if (employee == null)
                 return "false";
-            if(employee.Status != EnumList.EmployeeStatus.Active)
+            if (employee.Status != EnumList.EmployeeStatus.Active)
                 return "false";
             string token = CreateToken(employee);
             return token;
         }
+
         private string CreateToken(Employee employee)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()

@@ -11,7 +11,7 @@ namespace ITManagementSystemWebAPI.Controllers
     public class EmployeeController : ODataController
     {
         private readonly IEmployeeRepository employeeRepository = new EmployeeRepository();
-       
+
         [EnableQuery]
         public IActionResult Get()
         {
@@ -68,6 +68,6 @@ namespace ITManagementSystemWebAPI.Controllers
             employeeRepository.ActiveEmployee(key);
             return Ok();
         }
-       
+
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using Repositories.Helper;
 using Repositories.Impl;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
@@ -13,24 +12,28 @@ namespace ITManagementSystemWebAPI.Controllers
     {
         private IAuthenticationRepository authenticationRepository = new AuthenticationRepository();
         private IEmployeeRepository employeeRepository = new EmployeeRepository();
+
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginDTO loginDTO)
         {
             var check = authenticationRepository.Login(loginDTO);
             return check.Equals("false") ? BadRequest("Wrong email & password") : Ok(check);
         }
+
         [HttpGet("Profile")]
-        public IActionResult GetProfile( string token)
+        public IActionResult GetProfile(string token)
         {
-            var employeeLogged= authenticationRepository.GetProfile(token);
+            var employeeLogged = authenticationRepository.GetProfile(token);
             return Ok(employeeLogged);
         }
+
         [HttpPatch("ChangePassword")]
-        public IActionResult ChangePassword(ChangePasswordReq req) {
+        public IActionResult ChangePassword(ChangePasswordReq req)
+        {
             string token = HttpContext.Request.Headers["Authorization"];
             if (string.IsNullOrEmpty(token))
                 return BadRequest("Invalid token");
-            if (token.StartsWith("Bearer ")) 
+            if (token.StartsWith("Bearer "))
                 token = token.Substring("Bearer ".Length).Trim();
             var employeeid = UserHelper.GetEmployeeIdFromToken(token);
             var checkEmployeeIsFirstLogin = employeeRepository.GetEmployeeById(employeeid).IsFirstLogin;
@@ -39,6 +42,7 @@ namespace ITManagementSystemWebAPI.Controllers
             var check = authenticationRepository.ChangePassword(employeeid, req);
             return check ? Ok() : BadRequest("Confirm password not match password");
         }
+
         [HttpPatch("FirstChangePassword")]
         public IActionResult FirstChangePassword(FirstChangePasswordReq req)
         {

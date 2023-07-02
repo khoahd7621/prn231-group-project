@@ -1,13 +1,11 @@
 using BusinessObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using Repositories;
 using Repositories.Impl;
-using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
 // Config OData
@@ -34,12 +32,9 @@ builder.Services.AddCors(option =>
 });
 
 // Add services to the container.
-
-
 builder.Services.AddTransient<ITakeLeaveRepository, TakeLeaveRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -76,12 +71,13 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
         ValidateIssuer = false,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:Token").Value!))
     };
-
 });
+
 builder.Services.AddControllers().AddOData(
     options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
         "odata",
         modelBuilder.GetEdmModel()));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -90,8 +86,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseODataBatching();
-app.UseHttpsRedirection();
+
 app.UseRouting();
 
 app.UseCors();

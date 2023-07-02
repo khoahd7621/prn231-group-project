@@ -7,7 +7,7 @@ namespace Repositories
     {
         public string Login(LoginDTO login);
         public ProfileEmployeeResponse GetProfile(string token);
-        public bool ChangePassword(int empId,ChangePasswordReq req);
-        public bool FirstChangePassword(int empId,FirstChangePasswordReq req);
+        public bool ChangePassword(int empId, ChangePasswordReq req);
+        public bool FirstChangePassword(int empId, FirstChangePasswordReq req);
     }
 }

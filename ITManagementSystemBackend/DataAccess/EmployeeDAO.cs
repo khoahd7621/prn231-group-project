@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using BusinessObject;
+﻿using BusinessObject;
 using System.Text.RegularExpressions;
 
 namespace DataAccess
@@ -20,9 +19,10 @@ namespace DataAccess
         public static int CountEmployeeInCompany()
         {
             var context = new MyDbContext();
-            var countEmployee= context.Users.Count();
+            var countEmployee = context.Users.Count();
             string patternNumber = @"\d+";
-            if (countEmployee == 0) {
+            if (countEmployee == 0)
+            {
                 return countEmployee;
             }
             var codeOfemployee = context.Users.OrderBy(x => x.Id).Last().EmployeeCode;
@@ -58,11 +58,11 @@ namespace DataAccess
                     countEmail++;
                 }
             }
-            if(countEmail == 0 || countEmail ==1)
+            if (countEmail == 0 || countEmail == 1)
             {
                 return countEmail;
             }
-            var lastEmail = listCheckEmail.OrderBy(x=>x.Id).Last().Email;
+            var lastEmail = listCheckEmail.OrderBy(x => x.Id).Last().Email;
             Match match = Regex.Match(lastEmail, patternNumber);
             var numberOfThisEmail = int.Parse(match.Value);
             return ++numberOfThisEmail;
