@@ -1,11 +1,9 @@
-import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
-import { AttendanceStatus, AttendanceType } from "../constants/enum";
-import { AttendanceModel } from "../modules/attendance/models";
-
 import React, { useEffect } from "react";
+
 import { Button, Input, Space, Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+
 import {
   AttendanceStatusTag,
   CreateModal,
@@ -13,6 +11,9 @@ import {
   DetailModal,
   EditModal,
 } from "../modules/attendance/components";
+import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
+import { AttendanceStatus, AttendanceType } from "../constants/enum";
+import { AttendanceModel } from "../modules/attendance/models";
 
 type DataType = {
   key: number;
@@ -43,30 +44,28 @@ export const Attendance: React.FC = () => {
         const dateB = new Date(b.Date.toString());
         return dateA.getTime() - dateB.getTime();
       },
-      render: (value: string, record: DataType) => (
-        <div>{dayjs(value).format("YYYY-MM-DD ")}</div>
-      ),
+      render: (value: string) => <div>{dayjs(value).format("YYYY-MM-DD ")}</div>,
     },
     {
       title: "Hour",
       dataIndex: "Hour",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.Hour - b.Hour,
-      render: (value: string, record: DataType) => <div>{value}</div>,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: "OTHour",
       dataIndex: "OTHour",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.OTHour - b.OTHour,
-      render: (value: string, record: DataType) => <div>{value}</div>,
+      render: (value: string) => <div>{value}</div>,
     },
     {
       title: "Status",
       dataIndex: "Status",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.Status - b.Status,
-      render: (value: AttendanceStatus, record: DataType) => (
+      render: (value: AttendanceStatus) => (
         <div>
           <AttendanceStatusTag status={value} />
         </div>
@@ -77,7 +76,7 @@ export const Attendance: React.FC = () => {
       dataIndex: "Type",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.Type - b.Type,
-      render: (value: AttendanceType, record: DataType) => {
+      render: (value: AttendanceType) => {
         switch (value) {
           case AttendanceType.Online.valueOf():
             return (
@@ -107,14 +106,19 @@ export const Attendance: React.FC = () => {
                 >
                   Aprrove
                 </Button>
-                <Button danger onClick={() => handleReject(record.Id)}>
+                <Button
+                  danger
+                  onClick={() => handleReject(record.Id)}
+                >
                   Reject
                 </Button>
-                <EditModal data={record} successCallback={fetchAttendances} />
+                <EditModal
+                  data={record}
+                  successCallback={fetchAttendances}
+                />
                 <DeleteModal
                   data={record}
                   isDisable={false}
-                  // {record.Status.toString() != AttendanceStatus[0]}
                   successCallback={successCallback}
                 />
               </Space>
@@ -127,7 +131,6 @@ export const Attendance: React.FC = () => {
                 <DeleteModal
                   data={record}
                   isDisable={false}
-                  // {record.Status.toString() != AttendanceStatus[0]}
                   successCallback={successCallback}
                 />
               </Space>
@@ -164,22 +167,23 @@ export const Attendance: React.FC = () => {
     setPage(1);
     fetchAttendances();
   };
+
   const handleApprove = (id: number) => {
-    console.log(id);
     AttendanceApis.patch(id, AttendanceStatus.Approved.valueOf())
-      .then((res) => {
+      .then(() => {
         fetchAttendances();
       })
       .catch((err) => console.log(err));
   };
+
   const handleReject = (id: number) => {
-    console.log(id);
     AttendanceApis.patch(id, AttendanceStatus.Rejected.valueOf())
-      .then((res) => {
+      .then(() => {
         fetchAttendances();
       })
       .catch((err) => console.log(err));
   };
+
   return (
     <>
       <div
@@ -212,7 +216,10 @@ export const Attendance: React.FC = () => {
           },
         }}
       />
-      <DetailModal data={current} setData={setCurrent} />
+      <DetailModal
+        data={current}
+        setData={setCurrent}
+      />
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { Tag } from "antd";
 
 import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
 import { AttendanceStatus } from "../../../constants/enum";
 
 type Props = {
@@ -13,19 +14,28 @@ export function AttendanceStatusTag({ status }: Props) {
   switch (currentStatus) {
     case AttendanceStatus.Approved.valueOf():
       return (
-        <Tag icon={<CheckCircleOutlined />} color="success">
+        <Tag
+          icon={<CheckCircleOutlined />}
+          color="success"
+        >
           Approved
         </Tag>
       );
     case AttendanceStatus.Rejected.valueOf():
       return (
-        <Tag icon={<CloseCircleOutlined />} color="error">
+        <Tag
+          icon={<CloseCircleOutlined />}
+          color="error"
+        >
           Rejected
         </Tag>
       );
     case AttendanceStatus.Waiting.valueOf():
       return (
-        <Tag icon={<ClockCircleOutlined />} color="default">
+        <Tag
+          icon={<ClockCircleOutlined />}
+          color="default"
+        >
           Waiting
         </Tag>
       );

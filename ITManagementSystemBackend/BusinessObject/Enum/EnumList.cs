@@ -26,7 +26,7 @@
             Canceled
         }
         public enum AttendanceStatus
-        { 
+        {
             Waiting,
             Approved,
             Rejected

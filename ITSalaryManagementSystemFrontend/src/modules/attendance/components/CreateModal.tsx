@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
-
-import {
-  Button,
-  DatePicker,
-  Form,
-  InputNumber,
-  Modal,
-  Select,
-  Space,
-} from "antd";
-import { RangePickerProps } from "antd/es/date-picker";
 import dayjs from "dayjs";
+
+import { Button, DatePicker, Form, InputNumber, Modal, Select, Space } from "antd";
+import { RangePickerProps } from "antd/es/date-picker";
+
 import { AttendanceType } from "../../../constants/enum";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
 import AttendanceApis from "../apis/AttendanceApis";
@@ -20,12 +13,13 @@ type Props = {
   successCallback?: () => void;
 };
 
+type OptionItem = {
+  value: number;
+  label: string;
+};
+
 export const CreateModal = ({ successCallback }: Props) => {
-  type OptionItem = {
-    value: number;
-    label: string;
-  };
-  const toDay = dayjs(Date.now());
+  const TODAY = dayjs(Date.now());
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [widthModal, setWidthModal] = useState<number>(500);
@@ -37,6 +31,7 @@ export const CreateModal = ({ successCallback }: Props) => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current > dayjs().endOf("week") || current < dayjs().startOf("week");
   };
+
   useEffect(() => {
     form.validateFields([], { validateOnly: true }).then(
       () => {
@@ -96,7 +91,10 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button
+        type="primary"
+        onClick={showModal}
+      >
         Create new attendance
       </Button>
       <>
@@ -119,7 +117,7 @@ export const CreateModal = ({ successCallback }: Props) => {
             autoComplete="off"
             onFinish={handleSubmit}
             initialValues={{
-              date: dayjs(toDay),
+              date: dayjs(TODAY),
               hour: 8,
               otHour: 0,
               type: AttendanceType.Offline,
@@ -142,9 +140,7 @@ export const CreateModal = ({ successCallback }: Props) => {
             <Form.Item
               label="Date of work"
               name="date"
-              rules={[
-                { required: true, message: "Please input date of work!" },
-              ]}
+              rules={[{ required: true, message: "Please input date of work!" }]}
             >
               <DatePicker
                 disabledDate={disabledDate}
@@ -162,7 +158,10 @@ export const CreateModal = ({ successCallback }: Props) => {
                 },
               ]}
             >
-              <InputNumber min={1} max={8} />
+              <InputNumber
+                min={1}
+                max={8}
+              />
             </Form.Item>
             <Form.Item
               label="OT Hour"
@@ -174,9 +173,16 @@ export const CreateModal = ({ successCallback }: Props) => {
                 },
               ]}
             >
-              <InputNumber min={0} max={8} />
+              <InputNumber
+                min={0}
+                max={8}
+              />
             </Form.Item>
-            <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+            <Form.Item
+              label="Type"
+              name="type"
+              rules={[{ required: true }]}
+            >
               <Select
                 options={Object.keys(AttendanceType)
                   .filter((v) => isNaN(Number(v)))
@@ -199,7 +205,10 @@ export const CreateModal = ({ successCallback }: Props) => {
                 >
                   Submit
                 </Button>
-                <Button htmlType="button" onClick={() => form.resetFields()}>
+                <Button
+                  htmlType="button"
+                  onClick={() => form.resetFields()}
+                >
                   Reset
                 </Button>
               </Space>

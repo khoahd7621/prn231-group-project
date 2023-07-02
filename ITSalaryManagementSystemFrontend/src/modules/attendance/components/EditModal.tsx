@@ -1,20 +1,10 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  Space,
-} from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space } from "antd";
 
 import { RangePickerProps } from "antd/es/date-picker";
 import { AttendanceType } from "../../../constants/enum";
-import { EmployeeModel } from "../../employee/models";
 import AttendanceApis from "../apis/AttendanceApis";
 import { AttendanceModel, AttendancePutForm } from "../models";
 
@@ -22,9 +12,6 @@ type Props = {
   data: AttendanceModel;
   successCallback?: () => void;
 };
-type DataType = {
-  key: number;
-} & EmployeeModel;
 
 export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
@@ -33,7 +20,7 @@ export const EditModal = ({ data, successCallback }: Props) => {
   const [submittable, setSubmittable] = useState<boolean>(false);
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current > dayjs().endOf("week") || current < dayjs().startOf("week");
   };
@@ -76,13 +63,14 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button
+        type="primary"
+        onClick={showModal}
+      >
         Edit
       </Button>
       <Modal
-        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${
-          (data.User as any).EmployeeName
-        }`}
+        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${(data.User as any).EmployeeName}`}
         open={isModalOpen}
         footer={null}
         cancelButtonProps={{
@@ -111,7 +99,10 @@ export const EditModal = ({ data, successCallback }: Props) => {
             name="employeeId"
             rules={[{ required: true, message: "Please select employee!" }]}
           >
-            <Input value={(data.User as any).EmployeeName} disabled />
+            <Input
+              value={(data.User as any).EmployeeName}
+              disabled
+            />
           </Form.Item>
           <Form.Item
             label="Date of work"
@@ -136,7 +127,10 @@ export const EditModal = ({ data, successCallback }: Props) => {
               },
             ]}
           >
-            <InputNumber min={1} max={8} />
+            <InputNumber
+              min={1}
+              max={8}
+            />
           </Form.Item>
           <Form.Item
             label="OT Hour"
@@ -148,9 +142,16 @@ export const EditModal = ({ data, successCallback }: Props) => {
               },
             ]}
           >
-            <InputNumber min={0} max={8} />
+            <InputNumber
+              min={0}
+              max={8}
+            />
           </Form.Item>
-          <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+          <Form.Item
+            label="Type"
+            name="type"
+            rules={[{ required: true }]}
+          >
             <Select
               options={Object.keys(AttendanceType)
                 .filter((v) => isNaN(Number(v)))
@@ -173,7 +174,10 @@ export const EditModal = ({ data, successCallback }: Props) => {
               >
                 Submit
               </Button>
-              <Button htmlType="button" onClick={() => form.resetFields()}>
+              <Button
+                htmlType="button"
+                onClick={() => form.resetFields()}
+              >
                 Reset
               </Button>
             </Space>

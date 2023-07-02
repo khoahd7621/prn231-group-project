@@ -1,10 +1,10 @@
+import dayjs from "dayjs";
 import { useState } from "react";
 
 import { Button, Modal, Tag } from "antd";
 
 import AttendanceApis from "../apis/AttendanceApis";
 import { AttendanceModel } from "../models";
-import dayjs from "dayjs";
 
 type Props = {
   data: AttendanceModel;
@@ -15,6 +15,7 @@ type Props = {
 export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -40,7 +41,12 @@ export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
 
   return (
     <>
-      <Button type="primary" danger onClick={showModal} disabled={isDisable}>
+      <Button
+        type="primary"
+        danger
+        onClick={showModal}
+        disabled={isDisable}
+      >
         Delete
       </Button>
       <Modal
@@ -59,9 +65,7 @@ export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
         <p>
           Are you sure to delete:<p></p>
           <Tag color="orange">{(data.User as any).EmployeeName} </Tag>
-          <Tag color="orange">
-            {dayjs(data.Date).format("HH:mm | YYYY-MM-DD ")}
-          </Tag>
+          <Tag color="orange">{dayjs(data.Date).format("HH:mm | YYYY-MM-DD ")}</Tag>
         </p>
       </Modal>
     </>
