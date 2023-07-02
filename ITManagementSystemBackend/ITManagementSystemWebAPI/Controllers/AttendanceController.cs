@@ -66,8 +66,7 @@ namespace ITManagementSystemWebAPI.Controllers
             var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
             if (current != now) return Conflict("Date time create is out!");
 
-            if (attendance.Status != EnumList.AttendanceStatus.Deleted)
-            {
+          
                 attendance.Date = attendanceReq.Date;
                 attendance.Hour = attendanceReq.Hour;
                 attendance.OTHour = attendanceReq.OTHour;
@@ -75,11 +74,7 @@ namespace ITManagementSystemWebAPI.Controllers
                 attendance.EmployeeId = attendanceReq.EmployeeId;
                 //}
                 //else return BadRequest();
-            }
-            else
-            {
-                return BadRequest("Status it not delete");
-            }
+        
 
             attendanceRepository.UpdateAttendance(attendance);
 
@@ -92,7 +87,7 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            attendanceRepository.UpdateStatusAttendance(key, EnumList.AttendanceStatus.Deleted);
+            attendanceRepository.DeleteAttendance(attendance);
             return NoContent();
         }
 

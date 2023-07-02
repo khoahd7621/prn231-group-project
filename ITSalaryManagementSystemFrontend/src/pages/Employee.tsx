@@ -26,11 +26,7 @@ export const Employee: React.FC = () => {
     {
       width: "1rem",
       render: (_, record: DataType) => (
-        <RenderAvatar
-          gender={record.Gender}
-          width={30}
-          preview={false}
-        />
+        <RenderAvatar gender={record.Gender} width={30} preview={false} />
       ),
     },
     {
@@ -39,10 +35,7 @@ export const Employee: React.FC = () => {
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeCode.localeCompare(b.EmployeeCode),
       render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
+        <div style={{ cursor: "pointer" }} onClick={() => setCurrent(record)}>
           {value}
         </div>
       ),
@@ -53,10 +46,7 @@ export const Employee: React.FC = () => {
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeName.localeCompare(b.EmployeeName),
       render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
+        <div style={{ cursor: "pointer" }} onClick={() => setCurrent(record)}>
           {value}
         </div>
       ),
@@ -65,10 +55,7 @@ export const Employee: React.FC = () => {
       title: "Job Title",
       dataIndex: "JobTitle",
       render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
+        <div style={{ cursor: "pointer" }} onClick={() => setCurrent(record)}>
           {value || " Not Available"}
         </div>
       ),
@@ -81,15 +68,15 @@ export const Employee: React.FC = () => {
       title: "Employee Type",
       dataIndex: "EmployeeType",
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => a.EmployeeType.toString().localeCompare(b.EmployeeType.toString()),
+      sorter: (a, b) =>
+        a.EmployeeType.toString().localeCompare(b.EmployeeType.toString()),
       render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
-          {EmployeeType[value as keyof typeof EmployeeType] === EmployeeType.FullTime
+        <div style={{ cursor: "pointer" }} onClick={() => setCurrent(record)}>
+          {EmployeeType[value as keyof typeof EmployeeType] ===
+          EmployeeType.FullTime
             ? "Full-time"
-            : EmployeeType[value as keyof typeof EmployeeType] === EmployeeType.PartTime
+            : EmployeeType[value as keyof typeof EmployeeType] ===
+              EmployeeType.PartTime
             ? "Part-time"
             : "Not Available"}
         </div>
@@ -99,15 +86,13 @@ export const Employee: React.FC = () => {
       title: "Company Join Date",
       dataIndex: "CreatedDate",
       render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
+        <div style={{ cursor: "pointer" }} onClick={() => setCurrent(record)}>
           {new Date(value).toLocaleString()}
         </div>
       ),
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => new Date(a.CreatedDate).getTime() - new Date(b.CreatedDate).getTime(),
+      sorter: (a, b) =>
+        new Date(a.CreatedDate).getTime() - new Date(b.CreatedDate).getTime(),
     },
     {
       title: "Status",
@@ -118,10 +103,7 @@ export const Employee: React.FC = () => {
       width: "2rem",
       render: (_, record: DataType) => (
         <Space>
-          <EditModal
-            data={record}
-            successCallback={fetchLevels}
-          />
+          <EditModal data={record} successCallback={fetchLevels} />
           <Button
             type="primary"
             style={{
@@ -130,10 +112,7 @@ export const Employee: React.FC = () => {
           >
             Deactive
           </Button>
-          <DeleteModal
-            data={record}
-            successCallback={fetchLevels}
-          />
+          <DeleteModal data={record} successCallback={fetchLevels} />
         </Space>
       ),
     },
@@ -180,6 +159,7 @@ export const Employee: React.FC = () => {
           placeholder="Search by staff code, full name"
           style={{
             width: 400,
+            margin: "auto",
           }}
           allowClear
         />
@@ -200,10 +180,7 @@ export const Employee: React.FC = () => {
           },
         }}
       />
-      <DetailModal
-        data={current}
-        setData={setCurrent}
-      />
+      <DetailModal data={current} setData={setCurrent} />
     </>
   );
 };

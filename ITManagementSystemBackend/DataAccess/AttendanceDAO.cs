@@ -164,10 +164,7 @@ namespace DataAccess
             {
                 using (var context = new MyDbContext())
                 {
-                    var AttendanceToDelete = context
-                        .Attendances
-                        .SingleOrDefault(c => c.Id == Attendance.Id);
-                    context.Attendances.Remove(AttendanceToDelete);
+                    context.Attendances.Remove(Attendance);
                     context.SaveChanges();
                 }
             }

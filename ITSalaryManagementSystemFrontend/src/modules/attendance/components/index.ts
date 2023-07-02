@@ -3,4 +3,3 @@ export * from "./DeleteModal";
 export * from "./EditModal";
 export * from "./DetailModal";
 export * from "./AttendanceStatusTag";
-export * from "./ModifierStatusModal";
