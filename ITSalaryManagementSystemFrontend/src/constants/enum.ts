@@ -20,11 +20,9 @@ export enum EmployeeType {
 }
 
 export enum ContractStatus {
-  Deleted,
   Waiting,
   Active,
   Expired,
-  Canceled,
 }
 
 export enum SalaryType {

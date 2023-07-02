@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace DataAccess
@@ -11,11 +12,13 @@ namespace DataAccess
             context.Users.Add(employee);
             context.SaveChanges();
         }
+
         public static Employee FindEmployeeByEmail(string email)
         {
             var context = new MyDbContext();
             return context.Users.Where(c => c.Email.ToLower().Equals(email.ToLower())).FirstOrDefault();
         }
+
         public static int CountEmployeeInCompany()
         {
             var context = new MyDbContext();
@@ -30,12 +33,18 @@ namespace DataAccess
             var lastCodeOfemployee = int.Parse(match.Value);
             return lastCodeOfemployee;
         }
+
         public static List<Employee> GetAllEmployeeInCompany()
         {
             var context = new MyDbContext();
-            var list = context.Users.ToList();
-            return list;
+            return context.Users
+                .Include(u => u.Contracts)
+                .ThenInclude(c => c.Position)
+                .Include(u => u.Contracts)
+                .ThenInclude(c => c.Level)
+                .ToList();
         }
+
         public static int CountEmailSameName(string email)
         {
             var context = new MyDbContext();
@@ -68,25 +77,32 @@ namespace DataAccess
             return ++numberOfThisEmail;
 
         }
+
         public static void UpdateEmployee(Employee employee)
         {
             var context = new MyDbContext();
-            context.Entry<Employee>(employee).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.Entry(employee).State = EntityState.Modified;
             context.SaveChanges();
-
         }
+
         public static Employee FindEmployeeById(int id)
         {
             var context = new MyDbContext();
-            var employee = context.Users.SingleOrDefault(x => x.Id == id);
-            return employee;
+            return context.Users
+                .Include(u => u.Contracts)
+                .ThenInclude(c => c.Position)
+                .Include(u => u.Contracts)
+                .ThenInclude(c => c.Level)
+                .SingleOrDefault(x => x.Id == id);
         }
+
         public static void DeleteEmployee(Employee employee)
         {
             var context = new MyDbContext();
             context.Users.Remove(employee);
             context.SaveChanges();
         }
+
         public static Employee Login(string email, string password)
         {
             var context = new MyDbContext();
