@@ -27,6 +27,11 @@ export enum ContractStatus {
   Canceled,
 }
 
+export enum SalaryType {
+  Net,
+  Gross,
+}
+
 export enum AttendanceStatus {
   Deleted,
   Waiting,
@@ -51,6 +56,7 @@ export enum LeaveCategory {
   ONE_DAY_LEAVE = 0,
   SERVERAL_DAYS_LEAVE = 1,
 }
+
 export enum LeaveType {
   ANNUAL_LEAVE = 0,
   SICK_LEAVE = 1,
