@@ -29,7 +29,7 @@ export const CreateModal = ({ successCallback }: Props) => {
   const [employees, setEmployees] = useState<OptionItem[]>([]);
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return current > dayjs().endOf("week") || current < dayjs().startOf("week");
+    return  current < dayjs().startOf("week");
   };
 
   useEffect(() => {

@@ -22,8 +22,9 @@ export const EditModal = ({ data, successCallback }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return current > dayjs().endOf("week") || current < dayjs().startOf("week");
+    return current < dayjs().startOf("week");
   };
+
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
       () => {
