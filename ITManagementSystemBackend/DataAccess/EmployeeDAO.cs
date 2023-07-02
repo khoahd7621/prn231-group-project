@@ -19,7 +19,16 @@ namespace DataAccess
         public static int CountEmployeeInCompany()
         {
             var context = new MyDbContext();
-            return context.Users.Count();
+            var countEmployee = context.Users.Count();
+            string patternNumber = @"\d+";
+            if (countEmployee == 0)
+            {
+                return countEmployee;
+            }
+            var codeOfemployee = context.Users.OrderBy(x => x.Id).Last().EmployeeCode;
+            Match match = Regex.Match(codeOfemployee, patternNumber);
+            var lastCodeOfemployee = int.Parse(match.Value);
+            return lastCodeOfemployee;
         }
         public static List<Employee> GetAllEmployeeInCompany()
         {
@@ -32,10 +41,12 @@ namespace DataAccess
             var context = new MyDbContext();
             var count = context.Users.Where(x => x.Email.Contains(email)).ToList();
             string pattern = @"[A-Za-z]";
+            string patternNumber = @"\d+";
             if (count.Count == 0)
             {
                 return 0;
             }
+            List<Employee> listCheckEmail = new List<Employee>();
             var countEmail = 0;
             foreach (var item in count)
             {
@@ -43,10 +54,19 @@ namespace DataAccess
                 var emailWithoutNumber = string.Concat(Regex.Matches(emailcheck, pattern));
                 if (email.Equals(emailWithoutNumber))
                 {
+                    listCheckEmail.Add(item);
                     countEmail++;
                 }
             }
-            return countEmail;
+            if (countEmail == 0 || countEmail == 1)
+            {
+                return countEmail;
+            }
+            var lastEmail = listCheckEmail.OrderBy(x => x.Id).Last().Email;
+            Match match = Regex.Match(lastEmail, patternNumber);
+            var numberOfThisEmail = int.Parse(match.Value);
+            return ++numberOfThisEmail;
+
         }
         public static void UpdateEmployee(Employee employee)
         {
@@ -66,6 +86,15 @@ namespace DataAccess
             var context = new MyDbContext();
             context.Users.Remove(employee);
             context.SaveChanges();
+        }
+        public static Employee Login(string email, string password)
+        {
+            var context = new MyDbContext();
+            var employee = context.Users.Where(c => c.Email.ToLower().Equals(email.ToLower())).FirstOrDefault();
+            if (employee == null) return null;
+            if (!BCrypt.Net.BCrypt.Verify(password, employee.Password)) return null;
+
+            return employee;
         }
     }
 }
