@@ -33,10 +33,13 @@ export enum SalaryType {
 }
 
 export enum AttendanceStatus {
-  Deleted,
-  Waiting,
-  Approved,
-  Rejected,
+  Waiting = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+export enum AttendanceType {
+  Offline,
+  Online,
 }
 
 export enum PayrollStatus {

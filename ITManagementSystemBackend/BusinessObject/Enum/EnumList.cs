@@ -25,7 +25,6 @@
         }
         public enum AttendanceStatus
         {
-            Deleted,
             Waiting,
             Approved,
             Rejected
