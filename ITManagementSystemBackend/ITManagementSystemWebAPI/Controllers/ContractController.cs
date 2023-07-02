@@ -14,6 +14,22 @@ namespace ITManagementSystemWebAPI.Controllers
         private IEmployeeRepository employeeRepository = new EmployeeRepository();
         [EnableQuery]
         public IActionResult Get() => Ok(_contractRepository.GetContracts());
+        [EnableQuery]
+        public IActionResult Get([FromRoute] int key)
+        {
+            var check = _contractRepository.GetContract(key);
+            return check == null ? NotFound() : Ok(check);
+        }
+        public IActionResult Delete([FromRoute] int key)
+        {
+            var checkContract = _contractRepository.GetContract(key);
+            if(checkContract == null)
+            {
+                return BadRequest("Not Found");
+            }
+            var check = _contractRepository.DeleteContract(checkContract);
+            return check ? Ok() : BadRequest("Contract with different status watting cannot be deleted");
+        }
         public IActionResult Post([FromBody] ContractReq req)
         {
             var check = _contractRepository.CreateContract(req);

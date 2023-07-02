@@ -39,5 +39,11 @@ namespace DataAccess
             var context = new MyDbContext();
             return context.Contracts.ToList();
         }
+        public static void DeleteContract(Contract contract)
+        {
+            var context = new MyDbContext();
+            context.Contracts.Remove(contract);
+            context.SaveChanges();
+        }
     }
 }

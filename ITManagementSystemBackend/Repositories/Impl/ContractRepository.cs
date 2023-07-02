@@ -54,6 +54,16 @@ namespace Repositories.Impl
             return "ok";
         }
 
+        public bool DeleteContract(Contract contract)
+        {
+            if(contract.Status != EnumList.ContractStatus.Waiting)
+            {
+                return false;
+            }
+            ContractDAO.DeleteContract(contract);
+            return true;
+        }
+
         public Contract GetContract(int contractId)
         {
             return ContractDAO.FindContractById(contractId);

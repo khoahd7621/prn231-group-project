@@ -19,11 +19,9 @@
         }
         public enum ContractStatus
         {
-            Deleted,
             Waiting,
             Active,
-            Expired,
-            Canceled
+            Expired
         }
         public enum AttendanceStatus
         {
