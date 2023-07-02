@@ -62,10 +62,9 @@ export enum LeaveCategory {
 
 export enum LeaveType {
   ANNUAL_LEAVE = 0,
-  SICK_LEAVE = 1,
   MATERNITY_LEAVE = 2,
   PATERNITY_LEAVE = 3,
   BEREAVEMENT_LEAVE = 4,
   PUBLIC_HOLIDAY = 5,
-  UNPAID_LEAVE,
+  UNPAID_LEAVE = 9,
 }

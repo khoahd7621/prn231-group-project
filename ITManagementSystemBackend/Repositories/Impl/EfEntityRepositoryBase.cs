@@ -75,11 +75,13 @@ namespace Repositories.Impl
 
         public void Update(TEntity entity)
         {
+            _context.ChangeTracker.Clear();
             _context.Entry<TEntity>(entity).State = EntityState.Modified;
             _context.SaveChanges();
         }
         public async Task UpdateAsync(TEntity entity)
         {
+            _context.ChangeTracker.Clear();
             _context.Entry<TEntity>(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
