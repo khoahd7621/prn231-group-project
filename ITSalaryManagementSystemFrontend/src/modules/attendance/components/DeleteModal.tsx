@@ -60,7 +60,7 @@ export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
           Are you sure to delete:<p></p>
           <Tag color="orange">{(data.User as any).EmployeeName} </Tag>
           <Tag color="orange">
-            {dayjs(data.Date).format("HH:mm | YYYY-MM-DD ")}{" "}
+            {dayjs(data.Date).format("HH:mm | YYYY-MM-DD ")}
           </Tag>
         </p>
       </Modal>

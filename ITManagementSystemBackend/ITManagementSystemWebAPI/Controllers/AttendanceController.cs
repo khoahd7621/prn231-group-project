@@ -66,15 +66,15 @@ namespace ITManagementSystemWebAPI.Controllers
             var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
             if (current != now) return Conflict("Date time create is out!");
 
-          
-                attendance.Date = attendanceReq.Date;
-                attendance.Hour = attendanceReq.Hour;
-                attendance.OTHour = attendanceReq.OTHour;
-                attendance.Type = attendanceReq.Type;
-                attendance.EmployeeId = attendanceReq.EmployeeId;
-                //}
-                //else return BadRequest();
-        
+
+            attendance.Date = attendanceReq.Date;
+            attendance.Hour = attendanceReq.Hour;
+            attendance.OTHour = attendanceReq.OTHour;
+            attendance.Type = attendanceReq.Type;
+            attendance.EmployeeId = attendanceReq.EmployeeId;
+            //}
+            //else return BadRequest();
+
 
             attendanceRepository.UpdateAttendance(attendance);
 
@@ -95,9 +95,9 @@ namespace ITManagementSystemWebAPI.Controllers
         {
             var attendance = attendanceRepository.FindAttendanceById(key);
 
-            var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendance.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            if (current != now) return Conflict("Date time create is out!");
+            //var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendance.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+            //var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+            //if (current != now) return Conflict("Date time create is out!");
 
             if (attendance == null)
             {

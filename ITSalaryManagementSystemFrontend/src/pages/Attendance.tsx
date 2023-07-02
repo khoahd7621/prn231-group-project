@@ -1,11 +1,11 @@
-import { Button, Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import React, { useEffect } from "react";
-
-//import { CreateModal, DeleteModal, EditModal } from "../modules/attendance/components";
 import dayjs from "dayjs";
-import { AttendanceStatus, AttendanceType } from "../constants/enum";
 import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
+import { AttendanceStatus, AttendanceType } from "../constants/enum";
+import { AttendanceModel } from "../modules/attendance/models";
+
+import React, { useEffect } from "react";
+import { Button, Input, Space, Table, Tag } from "antd";
 import {
   AttendanceStatusTag,
   CreateModal,
@@ -13,7 +13,6 @@ import {
   DetailModal,
   EditModal,
 } from "../modules/attendance/components";
-import { AttendanceModel } from "../modules/attendance/models";
 
 type DataType = {
   key: number;
@@ -97,21 +96,44 @@ export const Attendance: React.FC = () => {
     },
     {
       width: "20px",
-      render: (_, record) => (
-        <Space>
-          <Button style={{ backgroundColor: "#00cc00", color: "white" }}>
-            Aprrove
-          </Button>
-          <Button danger>Reject</Button>
-          <EditModal data={record} successCallback={fetchAttendances} />
-          <DeleteModal
-            data={record}
-            isDisable={false}
-            // {record.Status.toString() != AttendanceStatus[0]}
-            successCallback={successCallback}
-          />
-        </Space>
-      ),
+      render: (_, record) => {
+        switch (record.Status.valueOf()) {
+          case (AttendanceStatus[0] as any).valueOf():
+            return (
+              <Space>
+                <Button
+                  style={{ backgroundColor: "#00cc00", color: "white" }}
+                  onClick={() => handleApprove(record.Id)}
+                >
+                  Aprrove
+                </Button>
+                <Button danger onClick={() => handleReject(record.Id)}>
+                  Reject
+                </Button>
+                <EditModal data={record} successCallback={fetchAttendances} />
+                <DeleteModal
+                  data={record}
+                  isDisable={false}
+                  // {record.Status.toString() != AttendanceStatus[0]}
+                  successCallback={successCallback}
+                />
+              </Space>
+            );
+          case (AttendanceStatus[1] as any).valueOf():
+            return <Space></Space>;
+          case (AttendanceStatus[2] as any).valueOf():
+            return (
+              <Space>
+                <DeleteModal
+                  data={record}
+                  isDisable={false}
+                  // {record.Status.toString() != AttendanceStatus[0]}
+                  successCallback={successCallback}
+                />
+              </Space>
+            );
+        }
+      },
     },
   ];
 
@@ -142,7 +164,22 @@ export const Attendance: React.FC = () => {
     setPage(1);
     fetchAttendances();
   };
-
+  const handleApprove = (id: number) => {
+    console.log(id);
+    AttendanceApis.patch(id, AttendanceStatus.Approved.valueOf())
+      .then((res) => {
+        fetchAttendances();
+      })
+      .catch((err) => console.log(err));
+  };
+  const handleReject = (id: number) => {
+    console.log(id);
+    AttendanceApis.patch(id, AttendanceStatus.Rejected.valueOf())
+      .then((res) => {
+        fetchAttendances();
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <>
       <div

@@ -7,13 +7,12 @@ import {
   InputNumber,
   Modal,
   Select,
-  Space
+  Space,
 } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 import dayjs from "dayjs";
 import { AttendanceType } from "../../../constants/enum";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
-import { EmployeeModel } from "../../employee/models";
 import AttendanceApis from "../apis/AttendanceApis";
 import { AttendanceForm } from "../models";
 
@@ -22,9 +21,6 @@ type Props = {
 };
 
 export const CreateModal = ({ successCallback }: Props) => {
-  type DataType = {
-    key: number;
-  } & EmployeeModel;
   type OptionItem = {
     value: number;
     label: string;
