@@ -1,4 +1,4 @@
-import { EmployeeType, Gender, Role } from "../../../constants/enum";
+import { Gender, Role } from "../../../constants/enum";
 
 export type EmployeePut = {
   employeeName: string;
@@ -7,6 +7,5 @@ export type EmployeePut = {
   dob: string;
   cccd: string;
   address: string;
-  employeeType: EmployeeType;
   phone: string;
 };

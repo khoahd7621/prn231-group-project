@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Button, DatePicker, Form, Input, Modal, Select, Space } from "antd";
-import { EmployeeType, Gender, Role } from "../../../constants/enum";
+import { Gender, Role } from "../../../constants/enum";
 import EmployeeApis from "../apis/EmployeeApis";
-import { EmployeeForm } from "../models";
+import { EmployeePostForm } from "../models";
 
 type Props = {
   successCallback?: () => void;
@@ -32,7 +32,7 @@ export const CreateModal = ({ successCallback }: Props) => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (value: EmployeeForm) => {
+  const handleSubmit = (value: EmployeePostForm) => {
     setSending(true);
     EmployeeApis.post({
       ...value,
@@ -171,23 +171,6 @@ export const CreateModal = ({ successCallback }: Props) => {
                 .map((key) => {
                   return {
                     value: Role[key as keyof typeof Role],
-                    label: key,
-                  };
-                })}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Employee Type"
-            name="typeEmployee"
-            initialValue={EmployeeType.FullTime}
-            rules={[{ required: true }]}
-          >
-            <Select
-              options={Object.keys(EmployeeType)
-                .filter((v) => isNaN(Number(v)))
-                .map((key) => {
-                  return {
-                    value: EmployeeType[key as keyof typeof EmployeeType],
                     label: key,
                   };
                 })}

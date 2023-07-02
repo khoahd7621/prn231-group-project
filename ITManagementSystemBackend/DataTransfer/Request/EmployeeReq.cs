@@ -21,8 +21,6 @@ namespace BusinessObject.DTO
         public string Phone { get; set; }
         [Required]
         public string Address { get; set; }
-        [Required]
-        public Enum.EnumList.EmployeeType TypeEmployee { get; set; }
 
 
     }

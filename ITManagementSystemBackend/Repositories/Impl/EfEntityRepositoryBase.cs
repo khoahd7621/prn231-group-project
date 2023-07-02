@@ -9,9 +9,11 @@ namespace Repositories.Impl
           where TContext : DbContext
     {
         protected readonly DbContext _context = new MyDbContext();
+
         public EfEntityRepositoryBase()
         {
         }
+
         public TEntity Add(TEntity entity)
         {
             _context.Set<TEntity>().Add(entity);
@@ -184,6 +186,7 @@ namespace Repositories.Impl
 
             return query.AsNoTracking().FirstOrDefault();
         }
+
         public Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, string includeProperties = null)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();

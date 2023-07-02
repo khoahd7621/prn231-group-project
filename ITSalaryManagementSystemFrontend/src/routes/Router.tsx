@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { DefaultLayout } from "../layouts";
 import { Attendance, DashBoard, Employee, Leave, Level, Position } from "../pages";
+import { Contract } from "../pages/Contract";
 import AppRoute, { AppRouteEnum } from "./AppRoute";
 
 const Router = createBrowserRouter([
@@ -13,6 +14,7 @@ const Router = createBrowserRouter([
       { path: AppRoute[AppRouteEnum.ManagePosition].path, index: true, element: <Position /> },
       { path: AppRoute[AppRouteEnum.ManageLevel].path, index: true, element: <Level /> },
       { path: AppRoute[AppRouteEnum.ManageEmployee].path, index: true, element: <Employee /> },
+      { path: AppRoute[AppRouteEnum.ManageContract].path, index: true, element: <Contract /> },
       { path: AppRoute[AppRouteEnum.ManageAttendance].path, index: true, element: <Attendance /> },
       { path: AppRoute[AppRouteEnum.ManageLeave].path, index: true, element: <Leave /> },
     ],

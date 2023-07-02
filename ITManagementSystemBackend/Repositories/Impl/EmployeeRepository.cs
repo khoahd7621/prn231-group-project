@@ -22,8 +22,9 @@ namespace Repositories.Impl
             employeeReal.EmployeeName = employee.LastName + " " + employee.FirstName;
             var password = Helper.UserHelper.GeneratedEmployeePassword(employeeReal.EmployeeName.ToLower(), employee.Dob);
             var employeeEmail = Helper.UserHelper.GeneratedEmployeeEmail(employeeReal.EmployeeName.ToLower());
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
             employeeReal.Email = employeeEmail;
-            employeeReal.Password = password;
+            employeeReal.Password = passwordHash;
             employeeReal.Status = EnumList.EmployeeStatus.Active;
             EmployeeDAO.CreateEmployee(employeeReal);
             return "success";
