@@ -57,9 +57,7 @@ namespace Repositories.Impl
         public bool DeleteContract(Contract contract)
         {
             if(contract.Status != EnumList.ContractStatus.Waiting)
-            {
                 return false;
-            }
             ContractDAO.DeleteContract(contract);
             return true;
         }

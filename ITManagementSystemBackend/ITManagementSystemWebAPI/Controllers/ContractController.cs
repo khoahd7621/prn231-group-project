@@ -24,9 +24,7 @@ namespace ITManagementSystemWebAPI.Controllers
         {
             var checkContract = _contractRepository.GetContract(key);
             if(checkContract == null)
-            {
                 return BadRequest("Not Found");
-            }
             var check = _contractRepository.DeleteContract(checkContract);
             return check ? Ok() : BadRequest("Contract with different status watting cannot be deleted");
         }
