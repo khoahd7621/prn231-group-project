@@ -1,5 +1,6 @@
 ﻿using BusinessObject.DTO;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -11,7 +12,7 @@ namespace ITManagementSystemWebAPI.Controllers
     public class EmployeeController : ODataController
     {
         private readonly IEmployeeRepository employeeRepository = new EmployeeRepository();
-
+       
         [EnableQuery]
         public IActionResult Get()
         {
@@ -28,7 +29,7 @@ namespace ITManagementSystemWebAPI.Controllers
         public IActionResult Post([FromBody] EmployeeReq employee)
         {
             var check = employeeRepository.CreateUser(employee);
-            return check == "success" ? Ok() : BadRequest("Email already exist");
+            return check == "Success" ? Ok() : BadRequest("Email already exist");
         }
 
         public IActionResult Put([FromRoute] int key, [FromBody] EmployeeUpdateDTO employee)
@@ -68,5 +69,6 @@ namespace ITManagementSystemWebAPI.Controllers
             employeeRepository.ActiveEmployee(key);
             return Ok();
         }
+       
     }
 }
