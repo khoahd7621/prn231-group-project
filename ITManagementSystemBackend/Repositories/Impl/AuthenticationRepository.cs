@@ -18,16 +18,19 @@ namespace Repositories.Impl
         {
             var checkUser = EmployeeDAO.FindEmployeeById(empId);
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
-            if (checkUser.IsFirstLogin == true)
-            {
-                checkUser.Password = passwordHash;
-                checkUser.IsFirstLogin = false;
-                EmployeeDAO.UpdateEmployee(checkUser);
-                return true;
-            }
-            if (string.IsNullOrEmpty(req.ConfirmPassword) || !req.Password.Equals(req.ConfirmPassword))
+            if (!req.Password.Equals(req.ConfirmPassword))
                 return false;
             checkUser.Password = passwordHash;
+            EmployeeDAO.UpdateEmployee(checkUser);
+            return true;
+        }
+
+        public bool FirstChangePassword(int empId, FirstChangePasswordReq req)
+        {
+            var checkUser = EmployeeDAO.FindEmployeeById(empId);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
+            checkUser.Password = passwordHash;
+            checkUser.IsFirstLogin = false;
             EmployeeDAO.UpdateEmployee(checkUser);
             return true;
         }
