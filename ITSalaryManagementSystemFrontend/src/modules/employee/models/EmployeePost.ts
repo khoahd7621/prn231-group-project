@@ -1,6 +1,6 @@
-import { EmployeeType, Gender, Role } from "../../../constants/enum";
+import { Gender, Role } from "../../../constants/enum";
 
-export type EmployeeReq = {
+export type EmployeePost = {
   firstName: string;
   lastName: string;
   gender: Gender;
@@ -9,5 +9,4 @@ export type EmployeeReq = {
   cccd: string;
   phone: string;
   address: string;
-  typeEmployee: EmployeeType;
 };

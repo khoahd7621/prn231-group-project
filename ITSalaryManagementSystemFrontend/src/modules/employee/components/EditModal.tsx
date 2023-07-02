@@ -176,22 +176,6 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 })}
             />
           </Form.Item>
-          <Form.Item
-            label="Employee Type"
-            name="employeeType"
-            rules={[{ required: true }]}
-          >
-            <Select
-              options={Object.keys(EmployeeType)
-                .filter((v) => isNaN(Number(v)))
-                .map((key) => {
-                  return {
-                    value: EmployeeType[key as keyof typeof EmployeeType],
-                    label: key,
-                  };
-                })}
-            />
-          </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
             <Space>
               <Button
