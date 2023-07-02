@@ -97,7 +97,7 @@ export const CreateModal = ({ successCallback }: Props) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Create new employee
+        Create new attendance
       </Button>
       <>
         <Modal
