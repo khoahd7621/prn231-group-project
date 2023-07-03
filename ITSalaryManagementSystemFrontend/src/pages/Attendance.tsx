@@ -4,15 +4,14 @@ import React, { useEffect } from "react";
 import { Button, Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
+import { AttendanceStatus, AttendanceType } from "../constants/enum";
+import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
 import {
   AttendanceStatusTag,
   CreateModal,
   DeleteModal,
-  DetailModal,
   EditModal,
 } from "../modules/attendance/components";
-import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
-import { AttendanceStatus, AttendanceType } from "../constants/enum";
 import { AttendanceModel } from "../modules/attendance/models";
 
 type DataType = {
@@ -102,25 +101,14 @@ export const Attendance: React.FC = () => {
               <Space>
                 <Button
                   style={{ backgroundColor: "#00cc00", color: "white" }}
-                  onClick={() => handleApprove(record.Id)}
-                >
+                  onClick={() => handleApprove(record.Id)}>
                   Aprrove
                 </Button>
-                <Button
-                  danger
-                  onClick={() => handleReject(record.Id)}
-                >
+                <Button danger onClick={() => handleReject(record.Id)}>
                   Reject
                 </Button>
-                <EditModal
-                  data={record}
-                  successCallback={fetchAttendances}
-                />
-                <DeleteModal
-                  data={record}
-                  isDisable={false}
-                  successCallback={successCallback}
-                />
+                <EditModal data={record} successCallback={fetchAttendances} />
+                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
               </Space>
             );
           case (AttendanceStatus[1] as any).valueOf():
@@ -128,11 +116,7 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[2] as any).valueOf():
             return (
               <Space>
-                <DeleteModal
-                  data={record}
-                  isDisable={false}
-                  successCallback={successCallback}
-                />
+                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
               </Space>
             );
         }
@@ -191,8 +175,7 @@ export const Attendance: React.FC = () => {
           display: "flex",
           justifyContent: "space-between",
           marginBottom: 16,
-        }}
-      >
+        }}>
         <Search
           placeholder="Search level"
           style={{
@@ -200,7 +183,7 @@ export const Attendance: React.FC = () => {
           }}
           allowClear
         />
-        <CreateModal successCallback={successCallback} />
+        <CreateModal isEmp={false} successCallback={successCallback} />
       </div>
       <Table
         columns={columns}
@@ -215,10 +198,6 @@ export const Attendance: React.FC = () => {
             setLimit(pageSize || 5);
           },
         }}
-      />
-      <DetailModal
-        data={current}
-        setData={setCurrent}
       />
     </>
   );

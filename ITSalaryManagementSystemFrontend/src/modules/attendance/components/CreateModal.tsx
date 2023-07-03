@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 import { Button, DatePicker, Form, InputNumber, Modal, Select, Space } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
@@ -10,6 +10,7 @@ import AttendanceApis from "../apis/AttendanceApis";
 import { AttendanceForm } from "../models";
 
 type Props = {
+  isEmp: boolean;
   successCallback?: () => void;
 };
 
@@ -18,7 +19,7 @@ type OptionItem = {
   label: string;
 };
 
-export const CreateModal = ({ successCallback }: Props) => {
+export const CreateModal = ({ isEmp, successCallback }: Props) => {
   const TODAY = dayjs(Date.now());
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -29,7 +30,7 @@ export const CreateModal = ({ successCallback }: Props) => {
   const [employees, setEmployees] = useState<OptionItem[]>([]);
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return  current < dayjs().startOf("week");
+    return current < dayjs().startOf("week");
   };
 
   useEffect(() => {
@@ -124,6 +125,7 @@ export const CreateModal = ({ successCallback }: Props) => {
             }}
           >
             <Form.Item
+              hidden={isEmp}
               label="Employee"
               name="employeeId"
               rules={[{ required: true, message: "Please select employee!" }]}

@@ -64,21 +64,19 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={showModal}
-      >
+      <Button type="primary" onClick={showModal}>
         Edit
       </Button>
       <Modal
-        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${(data.User as any).EmployeeName}`}
+        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${
+          (data.User as any).EmployeeName
+        }`}
         open={isModalOpen}
         footer={null}
         cancelButtonProps={{
           disabled: sending,
         }}
-        onCancel={handleCancel}
-      >
+        onCancel={handleCancel}>
         <Form
           disabled={sending}
           form={form}
@@ -93,23 +91,18 @@ export const EditModal = ({ data, successCallback }: Props) => {
             hour: data.Hour,
             otHour: data.OTHour,
             type: data.Type,
-          }}
-        >
+          }}>
           <Form.Item
             label="Employee"
             name="employeeId"
-            rules={[{ required: true, message: "Please select employee!" }]}
-          >
-            <Input
-              value={(data.User as any).EmployeeName}
-              disabled
-            />
+            rules={[{ required: true, message: "Please select employee!" }]}>
+            <Input type="hidden" readOnly />
+            <Input value={(data.User as any).EmployeeCode} readOnly />
           </Form.Item>
           <Form.Item
             label="Date of work"
             name="date"
-            rules={[{ required: true, message: "Please input date of work!" }]}
-          >
+            rules={[{ required: true, message: "Please input date of work!" }]}>
             <DatePicker
               disabledDate={disabledDate}
               placeholder="Select date of work"
@@ -126,12 +119,8 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 required: true,
                 message: "Please input number of work hour!",
               },
-            ]}
-          >
-            <InputNumber
-              min={1}
-              max={8}
-            />
+            ]}>
+            <InputNumber min={1} max={8} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
             label="OT Hour"
@@ -141,18 +130,10 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 required: true,
                 message: "Please input number of OT hour!",
               },
-            ]}
-          >
-            <InputNumber
-              min={0}
-              max={8}
-            />
+            ]}>
+            <InputNumber min={0} max={8} style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item
-            label="Type"
-            name="type"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Type" name="type" rules={[{ required: true }]}>
             <Select
               options={Object.keys(AttendanceType)
                 .filter((v) => isNaN(Number(v)))
@@ -171,14 +152,10 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 type="primary"
                 htmlType="submit"
                 disabled={!submittable || form.isFieldsTouched() === false}
-                loading={sending}
-              >
+                loading={sending}>
                 Submit
               </Button>
-              <Button
-                htmlType="button"
-                onClick={() => form.resetFields()}
-              >
+              <Button htmlType="button" onClick={() => form.resetFields()}>
                 Reset
               </Button>
             </Space>
