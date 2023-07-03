@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
-import { Button, Input, Space, Table, Tag } from "antd";
+import { Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { AttendanceStatus, AttendanceType } from "../constants/enum";
@@ -20,20 +20,8 @@ type DataType = {
 
 const { Search } = Input;
 
-export const Attendance: React.FC = () => {
+export const EmpAttendance: React.FC = () => {
   const columns: ColumnsType<DataType> = [
-    {
-      title: "Employee Name",
-      key: "dob",
-      dataIndex: ["User", "EmployeeName"],
-      sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => a.EmployeeId - b.EmployeeId,
-      render: (value: string, record: DataType) => (
-        <div>
-          {(record.User as any).EmployeeCode} - {value}
-        </div>
-      ),
-    },
     {
       title: "Date",
       dataIndex: "Date",
@@ -99,20 +87,10 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[0] as any).valueOf():
             return (
               <Space>
-                <Button
-                  style={{ backgroundColor: "#00cc00", color: "white" }}
-                  onClick={() => handleApprove(record.Id)}>
-                  Aprrove
-                </Button>
-                <Button danger onClick={() => handleReject(record.Id)}>
-                  Reject
-                </Button>
                 <EditModal data={record} successCallback={fetchAttendances} />
                 <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
               </Space>
             );
-          case (AttendanceStatus[1] as any).valueOf():
-            return <Space></Space>;
           case (AttendanceStatus[2] as any).valueOf():
             return (
               <Space>
@@ -151,23 +129,6 @@ export const Attendance: React.FC = () => {
     setPage(1);
     fetchAttendances();
   };
-
-  const handleApprove = (id: number) => {
-    AttendanceApis.patch(id, AttendanceStatus.Approved.valueOf())
-      .then(() => {
-        fetchAttendances();
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const handleReject = (id: number) => {
-    AttendanceApis.patch(id, AttendanceStatus.Rejected.valueOf())
-      .then(() => {
-        fetchAttendances();
-      })
-      .catch((err) => console.log(err));
-  };
-
   return (
     <>
       <div
@@ -183,7 +144,7 @@ export const Attendance: React.FC = () => {
           }}
           allowClear
         />
-        <CreateModal isEmp={false} successCallback={successCallback} />
+        <CreateModal isEmp={true} successCallback={successCallback} />
       </div>
       <Table
         columns={columns}
