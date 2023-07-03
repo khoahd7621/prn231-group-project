@@ -29,41 +29,43 @@ namespace ITManagementSystemWebAPI.Controllers
 
         public ActionResult Post([FromBody] AttendanceReq attendanceRq)
         {
-            var tempAttendace = attendanceRepository.FindAttendanceByUserAndDay(attendanceRq.EmployeeId, attendanceRq.Date.Date);
-
-            if (tempAttendace != null)
-                return BadRequest("Attendance already exists.");
-
-            var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendanceRq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            if (current != now) 
-                return Conflict("Date time create is out!");
-
-            Attendance newAttendance = new Attendance
+            try
             {
-                Date = attendanceRq.Date,
-                Hour = attendanceRq.Hour,
-                OTHour = attendanceRq.OTHour,
-                Type = attendanceRq.Type,
-                EmployeeId = attendanceRq.EmployeeId
-            };
-            attendanceRepository.SaveAttendance(newAttendance);
 
-            return Created(newAttendance);
+                var tempAttendace = attendanceRepository.FindAttendanceByUserAndDay(attendanceRq.EmployeeId, attendanceRq.Date.Date);
+
+                if (tempAttendace != null)
+                    return BadRequest("Attendance already exists.");
+
+                var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendanceRq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+                var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+                if (current < now) return Conflict("Date time create is out!");
+
+                Attendance newAttendance = new Attendance
+                {
+                    Date = attendanceRq.Date,
+                    Hour = attendanceRq.Hour,
+                    OTHour = attendanceRq.OTHour,
+                    Type = attendanceRq.Type,
+                    EmployeeId = attendanceRq.EmployeeId
+                };
+                attendanceRepository.SaveAttendance(newAttendance);
+                return Created(newAttendance);
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         public IActionResult Put(int key, [FromBody] AttendanceReq attendanceReq)
         {
             var attendance = attendanceRepository.FindAttendanceById(key);
 
-            if (attendance == null)
-                return NotFound();
+            if (attendance == null) return NotFound();
 
             var current = CultureInfo.CurrentCulture.Calendar
                 .GetWeekOfYear(attendanceReq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
             var now = CultureInfo.CurrentCulture.Calendar
                 .GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            if (current != now) return Conflict("Date time create is out!");
+            if (current < now) return Conflict("Date time create is out!");
 
             attendance.Date = attendanceReq.Date;
             attendance.Hour = attendanceReq.Hour;
@@ -91,9 +93,6 @@ namespace ITManagementSystemWebAPI.Controllers
 
             if (attendance == null)
                 return NotFound();
-
-            if (attendance.Status == attendanceStatus)
-                return BadRequest("Change it status");
 
             attendanceRepository.UpdateStatusAttendance(key, attendanceStatus);
             return Ok();
