@@ -5,37 +5,27 @@ import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined } from "@
 import { AttendanceStatus } from "../../../constants/enum";
 
 type Props = {
-  status: AttendanceStatus;
+  status: any;
 };
 
 export function AttendanceStatusTag({ status }: Props) {
   const currentStatus = +AttendanceStatus[status];
-
   switch (currentStatus) {
-    case AttendanceStatus.Approved.valueOf():
+    case AttendanceStatus.Approved.valueOf() || 1:
       return (
-        <Tag
-          icon={<CheckCircleOutlined />}
-          color="success"
-        >
+        <Tag icon={<CheckCircleOutlined />} color="success">
           Approved
         </Tag>
       );
-    case AttendanceStatus.Rejected.valueOf():
+    case AttendanceStatus.Rejected.valueOf() || 2:
       return (
-        <Tag
-          icon={<CloseCircleOutlined />}
-          color="error"
-        >
+        <Tag icon={<CloseCircleOutlined />} color="error">
           Rejected
         </Tag>
       );
-    case AttendanceStatus.Waiting.valueOf():
+    case AttendanceStatus.Waiting.valueOf() || 0:
       return (
-        <Tag
-          icon={<ClockCircleOutlined />}
-          color="default"
-        >
+        <Tag icon={<ClockCircleOutlined />} color="default">
           Waiting
         </Tag>
       );

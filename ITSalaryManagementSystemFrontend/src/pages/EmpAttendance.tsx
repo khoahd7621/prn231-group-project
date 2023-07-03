@@ -54,7 +54,7 @@ export const EmpAttendance: React.FC = () => {
       sorter: (a, b) => a.Status - b.Status,
       render: (value: AttendanceStatus) => (
         <div>
-          <AttendanceStatusTag status={value} />
+          <AttendanceStatusTag status={AttendanceStatus[value]} />
         </div>
       ),
     },
@@ -83,15 +83,15 @@ export const EmpAttendance: React.FC = () => {
     {
       width: "20px",
       render: (_, record) => {
-        switch (record.Status.valueOf()) {
-          case (AttendanceStatus[0] as any).valueOf():
+        switch (record.Status) {
+          case 0:
             return (
               <Space>
                 <EditModal data={record} successCallback={fetchAttendances} />
                 <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
               </Space>
             );
-          case (AttendanceStatus[2] as any).valueOf():
+          case 2:
             return (
               <Space>
                 <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
@@ -105,8 +105,6 @@ export const EmpAttendance: React.FC = () => {
   const [limit, setLimit] = React.useState<number>(5);
   const [page, setPage] = React.useState<number>(1);
   const [total, setTotal] = React.useState<number>(0);
-
-  const [current, setCurrent] = React.useState<DataType | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [attendances, setAttendances] = React.useState<DataType[]>([]);
 
@@ -116,10 +114,11 @@ export const EmpAttendance: React.FC = () => {
 
   const fetchAttendances = () => {
     setLoading(true);
-    AttendanceApis.getAll()
+    AttendanceApis.getByEmployee()
       .then((res) => {
-        setAttendances(res.value.map((item) => ({ ...item, key: item.Id })));
-        setTotal(res.value.length);
+       
+        setAttendances(res.map((item: { Id: any }) => ({ ...item, key: item.Id })));
+        setTotal(res.length);
       })
       .catch((err) => console.log(err));
     setLoading(false);

@@ -7,7 +7,7 @@ import { RangePickerProps } from "antd/es/date-picker";
 import { AttendanceType } from "../../../constants/enum";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
 import AttendanceApis from "../apis/AttendanceApis";
-import { AttendanceForm } from "../models";
+import { AttendanceEmployeeForm, AttendanceForm } from "../models";
 
 type Props = {
   isEmp: boolean;
@@ -48,7 +48,6 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
   const fetchEmployee = () => {
     EmployeeApis.getAll()
       .then((res) => {
-        console.log(res.value);
         setEmployees(
           res.value.map((item) => ({
             value: item.Id,
@@ -83,6 +82,24 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
       })
       .finally(() => setSending(false));
   };
+  const handleEmplSubmit = (value: AttendanceEmployeeForm) => {
+    console.log("Employee Create\n" + value);
+    setSending(true);
+    AttendanceApis.postByEmployee({
+      ...value,
+      date: value.date.toISOString(),
+    })
+      .then(() => {
+        setIsModalOpen(false);
+        form.resetFields();
+        successCallback?.();
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Create employee failed! Please refresh page and try again!");
+      })
+      .finally(() => setSending(false));
+  };
 
   const handleCancel = () => {
     if (sending) return;
@@ -92,10 +109,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={showModal}
-      >
+      <Button type="primary" onClick={showModal}>
         Create new attendance
       </Button>
       <>
@@ -107,8 +121,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
             disabled: sending,
           }}
           onCancel={handleCancel}
-          width={widthModal}
-        >
+          width={widthModal}>
           <Form
             disabled={sending}
             form={form}
@@ -116,34 +129,35 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
             wrapperCol={{ span: 18 }}
             style={{ maxWidth: 600, margin: "2rem 0" }}
             autoComplete="off"
-            onFinish={handleSubmit}
+            onFinish={isEmp == false ? handleSubmit : handleEmplSubmit}
             initialValues={{
               date: dayjs(TODAY),
               hour: 8,
               otHour: 0,
               type: AttendanceType.Offline,
-            }}
-          >
-            <Form.Item
-              hidden={isEmp}
-              label="Employee"
-              name="employeeId"
-              rules={[{ required: true, message: "Please select employee!" }]}
-            >
-              <Select
-                options={employees.map((key) => {
-                  return {
-                    value: key.value,
-                    label: key.label,
-                  };
-                })}
-              />
-            </Form.Item>
+            }}>
+            {isEmp == false ? (
+              <Form.Item
+                hidden={isEmp}
+                label="Employee"
+                name="employeeId"
+                rules={[{ required: true, message: "Please select employee!" }]}>
+                <Select
+                  options={employees.map((key) => {
+                    return {
+                      value: key.value,
+                      label: key.label,
+                    };
+                  })}
+                />
+              </Form.Item>
+            ) : (
+              <></>
+            )}
             <Form.Item
               label="Date of work"
               name="date"
-              rules={[{ required: true, message: "Please input date of work!" }]}
-            >
+              rules={[{ required: true, message: "Please input date of work!" }]}>
               <DatePicker
                 disabledDate={disabledDate}
                 placeholder="Select date of work"
@@ -158,12 +172,8 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                   required: true,
                   message: "Please input number of work hour!",
                 },
-              ]}
-            >
-              <InputNumber
-                min={1}
-                max={8}
-              />
+              ]}>
+              <InputNumber min={1} max={8} />
             </Form.Item>
             <Form.Item
               label="OT Hour"
@@ -173,18 +183,10 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                   required: true,
                   message: "Please input number of OT hour!",
                 },
-              ]}
-            >
-              <InputNumber
-                min={0}
-                max={8}
-              />
+              ]}>
+              <InputNumber min={0} max={8} />
             </Form.Item>
-            <Form.Item
-              label="Type"
-              name="type"
-              rules={[{ required: true }]}
-            >
+            <Form.Item label="Type" name="type" rules={[{ required: true }]}>
               <Select
                 options={Object.keys(AttendanceType)
                   .filter((v) => isNaN(Number(v)))
@@ -203,14 +205,10 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                   type="primary"
                   htmlType="submit"
                   disabled={!submittable || form.isFieldsTouched() === false}
-                  loading={sending}
-                >
+                  loading={sending}>
                   Submit
                 </Button>
-                <Button
-                  htmlType="button"
-                  onClick={() => form.resetFields()}
-                >
+                <Button htmlType="button" onClick={() => form.resetFields()}>
                   Reset
                 </Button>
               </Space>
@@ -219,8 +217,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
           <Form
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}
-            style={{ maxWidth: 600, margin: "2rem 0" }}
-          ></Form>
+            style={{ maxWidth: 600, margin: "2rem 0" }}></Form>
         </Modal>
       </>
     </>

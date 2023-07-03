@@ -79,14 +79,14 @@ namespace DataAccess
             }
         }
 
-        public static Attendance FindAttendanceByUser(int userId)
+        public static List<Attendance> FindAttendanceByUser(int userId)
         {
             try
             {
                 using (var context = new MyDbContext())
                 {
-                    return context.Attendances.Include(s => s.User)
-                        .SingleOrDefault(c => c.EmployeeId == userId);
+                    return context.Attendances.Include(s => s.User).ToList()
+                        .Where(c => c.EmployeeId == userId).ToList();
                 }
             }
             catch (Exception ex)
