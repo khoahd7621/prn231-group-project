@@ -69,17 +69,33 @@ namespace Repositories.Impl
         public void UpdateTakeLeave(TakeLeave takeLeave) => Update(takeLeave);
 
         public int CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(int employeeId, int year) => GetAll(filter: tl => (tl.StartDate.Year.Equals(year)) && tl.EmployeeId == employeeId && tl.Type.Equals(TakeLeaveType.ANNUAL_LEAVE) && tl.Status.Equals(TakeLeaveStatus.APPROVED)).Sum(tl => tl.LeaveDays);
+        //public int CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(int employeeId, DateTime startDate, DateTime endDate)
+        //{
+        //    return GetAll(filter: tl => tl.StartDate.Date <= endDate.Date && startDate.Date <= tl.EndDate.Date && tl.EmployeeId == employeeId && !tl.Type.Equals(TakeLeaveType.UNPAID_LEAVE) && tl.Status.Equals(TakeLeaveStatus.APPROVED))
+        //            .Select(tl =>
+        //            {
+        //                tl.StartDate = tl.StartDate.Date > startDate.Date ? tl.StartDate : startDate;
+        //                tl.EndDate = tl.EndDate.Date < endDate.Date ? tl.EndDate : endDate;
+        //                tl.LeaveDays = CalculateLeaveDays(tl.StartDate, tl.EndDate);
+        //                return tl;
+        //            })
+        //            .Sum(tl => tl.LeaveDays);
+        //}
         public int CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(int employeeId, DateTime startDate, DateTime endDate)
         {
             return GetAll(filter: tl => tl.StartDate.Date <= endDate.Date && startDate.Date <= tl.EndDate.Date && tl.EmployeeId == employeeId && !tl.Type.Equals(TakeLeaveType.UNPAID_LEAVE) && tl.Status.Equals(TakeLeaveStatus.APPROVED))
-                    .Select(tl =>
-                    {
-                        tl.StartDate = tl.StartDate.Date > startDate.Date ? tl.StartDate : startDate;
-                        tl.EndDate = tl.EndDate.Date < endDate.Date ? tl.EndDate : endDate;
-                        tl.LeaveDays = CalculateLeaveDays(tl.StartDate, tl.EndDate);
-                        return tl;
-                    })
-                    .Sum(tl => tl.LeaveDays);
+                .Select(tl =>
+                {
+                    // Adjust start and end dates based on contract dates
+                    DateTime adjustedStartDate = tl.StartDate.Date > startDate.Date ? tl.StartDate : startDate;
+                    DateTime adjustedEndDate = tl.EndDate.Date < endDate.Date ? tl.EndDate : endDate;
+
+                    // Calculate leave days based on adjusted dates
+                    int leaveDays = CalculateLeaveDays(adjustedStartDate, adjustedEndDate);
+
+                    return leaveDays;
+                })
+                .Sum();
         }
     }
 }
