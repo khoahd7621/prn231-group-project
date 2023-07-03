@@ -2,6 +2,8 @@
 using BusinessObject;
 using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Deltas;
+using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
@@ -37,7 +39,11 @@ namespace ITManagementSystemWebAPI.Controllers
             var tempContract = takeLeaveRepository.GetActiveContractByEmployeeIdEqual(postTakeLeave.EmployeeId);
             if (tempContract == null)
             {
-                return BadRequest("Employee require at least 1 active contract to create leave!");
+                return BadRequest("Require at least 1 active contract to create leave!");
+            }
+            if (postTakeLeave.Category.Equals(TakeLeaveCategory.ONE_DAY_LEAVE))
+            {
+                postTakeLeave.EndDate = postTakeLeave.StartDate;
             }
             if (!postTakeLeave.StartDate.Year.Equals(postTakeLeave.EndDate.Year))
             {
@@ -52,9 +58,13 @@ namespace ITManagementSystemWebAPI.Controllers
             var tempTakeLeave = takeLeaveRepository.GetTakeLeaveByDateBetweenAndEmployeeIdEqual(postTakeLeave.StartDate, postTakeLeave.EndDate, postTakeLeave.EmployeeId);
             if (tempTakeLeave != null)
             {
-                return BadRequest("Leave already exists!");
+                return BadRequest("Another Leave request has already been approved for the same time period!");
             }
             int leaveDays = takeLeaveRepository.CalculateLeaveDays(postTakeLeave.StartDate, postTakeLeave.EndDate);
+            if (leaveDays <= 0)
+            {
+                return BadRequest("Leave request cannot be created as there are no leave days!");
+            }
             if (postTakeLeave.Type.Equals(TakeLeaveType.ANNUAL_LEAVE))
             {
                 int leaveBalance = tempContract.DateOffPerYear - takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(postTakeLeave.EmployeeId, postTakeLeave.StartDate.Year);
@@ -76,7 +86,7 @@ namespace ITManagementSystemWebAPI.Controllers
             var tempContract = takeLeaveRepository.GetActiveContractByEmployeeIdEqual(postTakeLeave.EmployeeId);
             if (tempContract == null)
             {
-                return BadRequest("Employee require at least 1 active contract to edit leave!");
+                return BadRequest("Require at least 1 active contract to edit leave!");
             }
             var takeLeave = takeLeaveRepository.GetTakeLeaveById(key);
 
@@ -84,6 +94,7 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
+            int leaveDays = takeLeaveRepository.CalculateLeaveDays(postTakeLeave.StartDate, postTakeLeave.EndDate);
             if (postTakeLeave.Status.Equals(TakeLeaveStatus.APPROVED))
             {
                 var tempTakeLeave = takeLeaveRepository.GetTakeLeaveByDateBetweenAndEmployeeIdEqual(postTakeLeave.StartDate, postTakeLeave.EndDate, postTakeLeave.EmployeeId);
@@ -91,15 +102,15 @@ namespace ITManagementSystemWebAPI.Controllers
                 {
                     return BadRequest("Another Leave request has already been approved for the same time period!");
                 }
-            }
-            int leaveDays = takeLeaveRepository.CalculateLeaveDays(postTakeLeave.StartDate, postTakeLeave.EndDate);
-            if (postTakeLeave.Type.Equals(TakeLeaveType.ANNUAL_LEAVE))
-            {
-                int leaveBalance = tempContract.DateOffPerYear - takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(postTakeLeave.EmployeeId, postTakeLeave.StartDate.Year);
-                if (leaveBalance < leaveDays)
+                if (postTakeLeave.Type.Equals(TakeLeaveType.ANNUAL_LEAVE))
                 {
-                    return BadRequest($"Don't have enough ANNUAL LEAVE to create Leave!(need: {leaveDays}, available: {leaveBalance})");
+                    int leaveBalance = tempContract.DateOffPerYear - takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(postTakeLeave.EmployeeId, postTakeLeave.StartDate.Year);
+                    if (leaveBalance < leaveDays)
+                    {
+                        return BadRequest($"Don't have enough ANNUAL LEAVE to edit Leave!(need: {leaveDays}, available: {leaveBalance})");
+                    }
                 }
+
             }
             var _mappedTakeLeave = _mapper.Map<TakeLeave>(postTakeLeave);
             _mappedTakeLeave.Id = key;
@@ -118,5 +129,45 @@ namespace ITManagementSystemWebAPI.Controllers
             takeLeaveRepository.DeleteTakeLeave(takeLeave);
             return NoContent();
         }
+
+        public IActionResult Patch([FromRoute] int key, [FromBody] Delta<TakeLeave> delta)
+        {
+            var takeLeave = takeLeaveRepository.GetTakeLeaveById(key);
+            if (takeLeave == null)
+            {
+                return NotFound();
+            }
+            delta.Patch(takeLeave);
+            var tempContract = takeLeaveRepository.GetActiveContractByEmployeeIdEqual(takeLeave.EmployeeId);
+            if (tempContract == null)
+            {
+                return BadRequest("Require at least 1 active contract to edit leave!");
+            }
+            if(delta.TryGetPropertyValue("StartDate", out var _startDate) || delta.TryGetPropertyValue("EndDate", out var _endDate))
+            {
+                int leaveDays = takeLeaveRepository.CalculateLeaveDays(takeLeave.StartDate, takeLeave.EndDate);
+                takeLeave.LeaveDays = leaveDays;
+            }
+            if (takeLeave.Status.Equals(TakeLeaveStatus.APPROVED))
+            {
+                var tempTakeLeave = takeLeaveRepository.GetTakeLeaveByDateBetweenAndEmployeeIdEqual(takeLeave.StartDate, takeLeave.EndDate, takeLeave.EmployeeId);
+                if (tempTakeLeave != null)
+                {
+                    return BadRequest("Another Leave request has already been approved for the same time period!");
+                }
+                if (takeLeave.Type.Equals(TakeLeaveType.ANNUAL_LEAVE))
+                {
+                    int leaveBalance = tempContract.DateOffPerYear - takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(takeLeave.EmployeeId, takeLeave.StartDate.Year);
+                    if (leaveBalance < takeLeave.LeaveDays)
+                    {
+                        return BadRequest($"Don't have enough ANNUAL LEAVE to edit Leave!(need: {takeLeave.LeaveDays}, available: {leaveBalance})");
+                    }
+                }
+
+            }
+            takeLeaveRepository.UpdateTakeLeave(takeLeave);
+            return Ok(takeLeave);
+        }
+
     }
 }

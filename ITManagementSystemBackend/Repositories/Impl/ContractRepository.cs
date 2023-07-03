@@ -8,45 +8,42 @@ namespace Repositories.Impl
 {
     public class ContractRepository : IContractRepository
     {
-        public string createContract(ContractReq req)
+        public bool ActiveContract(int contractId)
+        {
+            var contract = ContractDAO.FindContractById(contractId);
+            var checkEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(contract.EmployeeId);
+            if (checkEmployee != null)
+            {
+                return false;
+            }
+            contract.Status = EnumList.ContractStatus.Active;
+            ContractDAO.UpdateContract(contract);
+            return true;
+        }
+
+        public string CreateContract(ContractReq req)
         {
             var checkEmployee = EmployeeDAO.FindEmployeeById(req.EmployeeId);
             var checkPosition = PositionDAO.FindPositionById(req.PositionId);
             var checkLeve = LevelDAO.FindLevelById(req.LevelId);
             if (checkEmployee == null)
-            {
                 return "User Not Found";
-            }
             if (checkPosition == null)
-            {
                 return "Position not found";
-            }
             if (checkLeve == null)
-            {
                 return "Level not found";
-            }
             if (req.StartDate.Date < DateTime.Now.Date)
-            {
                 return "date time create can not less than today";
-            }
             if (req.EndDate.Date < DateTime.Now.Date)
-            {
                 return "date time end can not less than createDate";
-            }
             if (req.BaseSalary <= 0)
-            {
                 return "base salary must larger than 0";
-            }
             if (req.DateOffPerYear < 0)
-            {
-                return " day off per year can not less than 0";
-            }
+                return "day off per year can not less than 0";
             if (req.SalaryType == EnumList.SalaryType.Gross)
             {
                 if (req.TaxRate <= 0 || req.InsuranceRate <= 0)
-                {
-                    return "Gross & Insurance larger than 0";
-                }
+                    return "gross & insurance larger than 0";
             }
             var config = new MapperConfiguration(cfg => cfg.CreateMap<ContractReq, Contract>().ReverseMap());
             var mapper = new Mapper(config);
@@ -56,21 +53,42 @@ namespace Repositories.Impl
             return "ok";
         }
 
+        public bool DeactivateContract(int contractId)
+        {
+            var contract = ContractDAO.FindContractById(contractId);
+            contract.Status = EnumList.ContractStatus.Expired;
+            ContractDAO.UpdateContract(contract);
+            return true;
+        }
+
+        public bool DeleteContract(Contract contract)
+        {
+            if (contract.Status != EnumList.ContractStatus.Waiting)
+                return false;
+            ContractDAO.DeleteContract(contract);
+            return true;
+        }
+
+        public Contract GetContract(int contractId)
+        {
+            return ContractDAO.FindContractById(contractId);
+        }
+
         public List<Contract> GetContracts()
         {
             return ContractDAO.GetAll();
         }
 
-        public int updateStatusContract(int contractId, int status)
+        public bool UpdateContract(int contractId, ContractReq req)
         {
             var contract = ContractDAO.FindContractById(contractId);
-            if (contract == null)
-            {
-                return -1;
-            }
-            contract.Status = (EnumList.ContractStatus)status;
+            if (contract.Status != EnumList.ContractStatus.Waiting)
+                return false;
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<ContractReq, Contract>().ReverseMap());
+            var mapper = new Mapper(config);
+            mapper.Map(req, contract);
             ContractDAO.UpdateContract(contract);
-            return 1;
+            return true;
         }
     }
 }

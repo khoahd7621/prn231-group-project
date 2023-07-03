@@ -1,4 +1,5 @@
-import { EmployeeStatus, EmployeeType, Gender, Role } from "../../../constants/enum";
+import { EmployeeStatus, Gender, Role } from "../../../constants/enum";
+import { ContractModel } from "../../contract/models";
 
 export type EmployeeModel = {
   Id: number;
@@ -10,9 +11,9 @@ export type EmployeeModel = {
   CCCD: string;
   Address: string;
   CreatedDate: string;
-  EmployeeType: EmployeeType;
   Email: string;
   Phone: string;
   Status: EmployeeStatus;
   IsFirstLogin: true;
+  Contracts: ContractModel[];
 };

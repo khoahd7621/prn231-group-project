@@ -9,9 +9,11 @@ namespace Repositories.Impl
           where TContext : DbContext
     {
         protected readonly DbContext _context = new MyDbContext();
+
         public EfEntityRepositoryBase()
         {
         }
+
         public TEntity Add(TEntity entity)
         {
             _context.Set<TEntity>().Add(entity);
@@ -73,13 +75,14 @@ namespace Repositories.Impl
 
         public void Update(TEntity entity)
         {
+            _context.ChangeTracker.Clear();
             _context.Entry<TEntity>(entity).State = EntityState.Modified;
             _context.SaveChanges();
         }
         public async Task UpdateAsync(TEntity entity)
         {
+            _context.ChangeTracker.Clear();
             _context.Entry<TEntity>(entity).State = EntityState.Modified;
-            //_context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -183,6 +186,7 @@ namespace Repositories.Impl
 
             return query.AsNoTracking().FirstOrDefault();
         }
+
         public Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, string includeProperties = null)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();

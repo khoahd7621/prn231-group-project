@@ -1,5 +1,6 @@
 import {
   AppstoreAddOutlined,
+  AuditOutlined,
   PieChartOutlined,
   PullRequestOutlined,
   UserOutlined,
@@ -13,48 +14,84 @@ type AppRouteType = {
   icon: React.ReactNode;
 };
 
-export enum AppRouteEnum {
+export enum AdminRouteEnum {
   DashBoard = "DashBoard",
   ManagePosition = "ManagePosition",
   ManageLevel = "ManageLevel",
   ManageEmployee = "ManageEmployee",
+  ManageContract = "ManageContract",
   ManageAttendance = "ManageAttendance",
   ManageLeave = "ManageLeave",
 }
 
-const AppRoute: {
-  [key in AppRouteEnum]: AppRouteType;
+export const AdminRoute: {
+  [key in AdminRouteEnum]: AppRouteType;
 } = {
-  [AppRouteEnum.DashBoard]: {
-    path: "/",
+  [AdminRouteEnum.DashBoard]: {
+    path: "",
     name: "Dashboard",
     icon: <PieChartOutlined />,
   },
-  [AppRouteEnum.ManagePosition]: {
-    path: "/manage-position",
+  [AdminRouteEnum.ManagePosition]: {
+    path: "manage-position",
     name: "Manage Position",
     icon: <AppstoreAddOutlined />,
   },
-  [AppRouteEnum.ManageLevel]: {
-    path: "/manage-level",
+  [AdminRouteEnum.ManageLevel]: {
+    path: "manage-level",
     name: "Manage Level",
     icon: <PullRequestOutlined />,
   },
-  [AppRouteEnum.ManageEmployee]: {
-    path: "/manage-employee",
+  [AdminRouteEnum.ManageEmployee]: {
+    path: "manage-employee",
     name: "Manage Employee",
     icon: <UsergroupAddOutlined />,
   },
-  [AppRouteEnum.ManageAttendance]: {
-    path: "/manage-attendance",
+  [AdminRouteEnum.ManageContract]: {
+    path: "manage-contract",
+    name: "Manage Contract",
+    icon: <AuditOutlined />,
+  },
+  [AdminRouteEnum.ManageAttendance]: {
+    path: "manage-attendance",
     name: "Manage Attendance",
     icon: <UserOutlined />,
   },
-  [AppRouteEnum.ManageLeave]: {
-    path: "/manage-leave",
+  [AdminRouteEnum.ManageLeave]: {
+    path: "manage-leave",
     name: "Manage Leave",
     icon: <UserOutlined />,
   },
 };
 
-export default AppRoute;
+export enum EmployeeRouteEnum {
+  DashBoard = "DashBoard",
+  ManageContract = "ManageContract",
+  ManageAttendance = "ManageAttendance",
+  ManageLeave = "ManageLeave",
+}
+
+export const EmployeeRoute: {
+  [key in EmployeeRouteEnum]: AppRouteType;
+} = {
+  [EmployeeRouteEnum.DashBoard]: {
+    path: "",
+    name: "Dashboard",
+    icon: <PieChartOutlined />,
+  },
+  [EmployeeRouteEnum.ManageContract]: {
+    path: "manage-contract",
+    name: "Manage Contract",
+    icon: <AuditOutlined />,
+  },
+  [EmployeeRouteEnum.ManageAttendance]: {
+    path: "manage-attendance",
+    name: "Manage Attendance",
+    icon: <UserOutlined />,
+  },
+  [EmployeeRouteEnum.ManageLeave]: {
+    path: "manage-leave",
+    name: "Manage Leave",
+    icon: <UserOutlined />,
+  },
+};
