@@ -8,17 +8,16 @@ using Repositories;
 using Repositories.Impl;
 using System.Globalization;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace ITManagementSystemWebAPI.Controllers
 {
     public class AttendanceController : ODataController
     {
         private readonly IAttendanceRepository attendanceRepository = new AttendaceReposiory();
-        private readonly IEmployeeRepository employeeRepository = new EmployeeRepository();
 
         [EnableQuery]
         public IActionResult Get() => Ok(attendanceRepository.GetAttendences());
+
+        [EnableQuery]
         public ActionResult<Attendance> Get(int key)
         {
             var item = attendanceRepository.FindAttendanceById(key);
@@ -33,12 +32,12 @@ namespace ITManagementSystemWebAPI.Controllers
             var tempAttendace = attendanceRepository.FindAttendanceByUserAndDay(attendanceRq.EmployeeId, attendanceRq.Date.Date);
 
             if (tempAttendace != null)
-            {
-                return BadRequest("Attendace already exists.");
-            }
+                return BadRequest("Attendance already exists.");
+
             var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendanceRq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
             var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            if (current != now) return Conflict("Date time create is out!");
+            if (current != now) 
+                return Conflict("Date time create is out!");
 
             Attendance newAttendance = new Attendance
             {
@@ -58,41 +57,31 @@ namespace ITManagementSystemWebAPI.Controllers
             var attendance = attendanceRepository.FindAttendanceById(key);
 
             if (attendance == null)
-            {
                 return NotFound();
-            }
 
-            var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendanceReq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+            var current = CultureInfo.CurrentCulture.Calendar
+                .GetWeekOfYear(attendanceReq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+            var now = CultureInfo.CurrentCulture.Calendar
+                .GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
             if (current != now) return Conflict("Date time create is out!");
 
-            if (attendance.Status != EnumList.AttendanceStatus.Deleted)
-            {
-                attendance.Date = attendanceReq.Date;
-                attendance.Hour = attendanceReq.Hour;
-                attendance.OTHour = attendanceReq.OTHour;
-                attendance.Type = attendanceReq.Type;
-                attendance.EmployeeId = attendanceReq.EmployeeId;
-                //}
-                //else return BadRequest();
-            }
-            else
-            {
-                return BadRequest("Status it not delete");
-            }
+            attendance.Date = attendanceReq.Date;
+            attendance.Hour = attendanceReq.Hour;
+            attendance.OTHour = attendanceReq.OTHour;
+            attendance.Type = attendanceReq.Type;
+            attendance.EmployeeId = attendanceReq.EmployeeId;
 
             attendanceRepository.UpdateAttendance(attendance);
 
             return Updated(attendance);
         }
+
         public IActionResult Delete(int key)
         {
             var attendance = attendanceRepository.FindAttendanceById(key);
             if (attendance == null)
-            {
                 return NotFound();
-            }
-            attendanceRepository.UpdateStatusAttendance(key, EnumList.AttendanceStatus.Deleted);
+            attendanceRepository.DeleteAttendance(attendance);
             return NoContent();
         }
 
@@ -100,19 +89,11 @@ namespace ITManagementSystemWebAPI.Controllers
         {
             var attendance = attendanceRepository.FindAttendanceById(key);
 
-            var current = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(attendance.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            var now = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            if (current != now) return Conflict("Date time create is out!");
-
             if (attendance == null)
-            {
                 return NotFound();
-            }
 
             if (attendance.Status == attendanceStatus)
-            {
-                return BadRequest("Change it staus");
-            }
+                return BadRequest("Change it status");
 
             attendanceRepository.UpdateStatusAttendance(key, attendanceStatus);
             return Ok();

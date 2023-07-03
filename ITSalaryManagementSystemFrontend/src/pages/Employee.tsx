@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-import { EmployeeStatus, EmployeeType } from "../constants/enum";
+import { ContractStatus, EmployeeStatus } from "../constants/enum";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 import {
   CreateModal,
@@ -11,6 +11,7 @@ import {
   DetailModal,
   EditModal,
   EmployeeStatusTag,
+  EmployeeTypeTag,
   RenderAvatar,
 } from "../modules/employee/components";
 import { EmployeeModel } from "../modules/employee/models";
@@ -28,8 +29,7 @@ export const Employee: React.FC = () => {
       render: (_, record: DataType) => (
         <RenderAvatar
           gender={record.Gender}
-          width={30}
-          preview={false}
+          size={40}
         />
       ),
     },
@@ -63,37 +63,48 @@ export const Employee: React.FC = () => {
     },
     {
       title: "Job Title",
-      dataIndex: "JobTitle",
-      render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
-          {value || " Not Available"}
-        </div>
-      ),
-      sortDirections: ["descend", "ascend"],
-      sorter: {
-        compare: () => 0,
+      render: (_, record: DataType) => {
+        const activeContract = record.Contracts.find((item) => +ContractStatus[item.Status] === ContractStatus.Active);
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => setCurrent(record)}
+          >
+            {activeContract ? (
+              <Tag color="#108ee9">
+                {activeContract.Level.LevelName} {activeContract.Position.PositionName}
+              </Tag>
+            ) : (
+              <Tag color="#2D4356">Not Available</Tag>
+            )}
+          </div>
+        );
       },
     },
     {
       title: "Employee Type",
-      dataIndex: "EmployeeType",
-      sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => a.EmployeeType.toString().localeCompare(b.EmployeeType.toString()),
-      render: (value: string, record: DataType) => (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setCurrent(record)}
-        >
-          {EmployeeType[value as keyof typeof EmployeeType] === EmployeeType.FullTime
-            ? "Full-time"
-            : EmployeeType[value as keyof typeof EmployeeType] === EmployeeType.PartTime
-            ? "Part-time"
-            : "Not Available"}
-        </div>
-      ),
+      render: (_: string, record: DataType) => {
+        const activeContract = record.Contracts.find((item) => +ContractStatus[item.Status] === ContractStatus.Active);
+        if (activeContract) {
+          return (
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => setCurrent(record)}
+            >
+              <EmployeeTypeTag type={activeContract.EmployeeType} />
+            </div>
+          );
+        } else {
+          return (
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => setCurrent(record)}
+            >
+              <Tag color="#2D4356">Not Available</Tag>
+            </div>
+          );
+        }
+      },
     },
     {
       title: "Company Join Date",

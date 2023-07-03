@@ -1,4 +1,7 @@
 import { ContractStatus, EmployeeType, SalaryType } from "../../../constants/enum";
+import { EmployeeModel } from "../../employee/models";
+import { LevelModel } from "../../level/models";
+import { PositionModel } from "../../position/models";
 
 export type ContractModel = {
   Id: number;
@@ -14,4 +17,7 @@ export type ContractModel = {
   SalaryType: SalaryType;
   PositionId: number;
   Status: ContractStatus;
+  User: EmployeeModel;
+  Level: LevelModel;
+  Position: PositionModel;
 };

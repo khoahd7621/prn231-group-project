@@ -11,7 +11,7 @@ namespace BusinessObject
         [Required]
         public int EmployeeId { get; set; }
         [Required]
-        public Enum.EnumList.EmployeeType EmployeeType { get; set; }
+        public EnumList.EmployeeType EmployeeType { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
@@ -31,7 +31,7 @@ namespace BusinessObject
         [Required]
         public int PositionId { get; set; }
         [Required]
-        public Enum.EnumList.ContractStatus Status { get; set; }
+        public EnumList.ContractStatus Status { get; set; }
 
         public virtual Employee User { get; set; }
         public virtual Level Level { get; set; }

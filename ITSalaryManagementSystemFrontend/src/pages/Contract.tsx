@@ -1,13 +1,21 @@
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
-import { Button, Input, Space, Table } from "antd";
+import { Input, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-import { EmployeeType } from "../constants/enum";
+import { ContractStatus, EmployeeType } from "../constants/enum";
 import ContractApis from "../modules/contract/apis/ContractApis";
-import { CreateModal } from "../modules/contract/components";
+import {
+  ActivateModal,
+  ContractStatusTag,
+  CreateModal,
+  DeactivateModal,
+  DeleteModal,
+} from "../modules/contract/components";
 import { ContractModel } from "../modules/contract/models";
+import { EmployeeTypeTag } from "../modules/employee/components";
+import { EmployeeModel } from "../modules/employee/models";
 
 type DataType = {
   key: number;
@@ -18,7 +26,9 @@ const { Search } = Input;
 export const Contract: React.FC = () => {
   const columns: ColumnsType<DataType> = [
     {
-      title: "Staff Code",
+      title: "Employee",
+      dataIndex: "User",
+      render: (value: EmployeeModel) => `${value.EmployeeCode} - ${value.EmployeeName}`,
     },
     {
       title: "Start Date",
@@ -39,46 +49,35 @@ export const Contract: React.FC = () => {
       dataIndex: "EmployeeType",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeType.toString().localeCompare(b.EmployeeType.toString()),
-      render: (value: string) => {
-        switch (EmployeeType[value as keyof typeof EmployeeType]) {
-          case EmployeeType.FullTime:
-            return "Full-time";
-          case EmployeeType.PartTime:
-            return "Part-time";
-          default:
-            return "Not Available";
-        }
-      },
+      render: (value: EmployeeType) => <EmployeeTypeTag type={value} />,
     },
     {
       title: "Status",
       dataIndex: "Status",
+      render: (value: ContractStatus) => <ContractStatusTag status={value} />,
     },
     {
       width: "2rem",
-      render: () => (
+      render: (_, record: DataType) => (
         <Space>
-          <Button type="primary">Edit</Button>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "#52c41a",
-            }}
-          >
-            Activate
-          </Button>
-          <Button
-            type="primary"
-            danger
-          >
-            Deactivate
-          </Button>
-          <Button
-            type="primary"
-            danger
-          >
-            Delete
-          </Button>
+          {+ContractStatus[record.Status] === ContractStatus.Waiting && (
+            <>
+              <ActivateModal
+                data={record}
+                successCallback={successCallback}
+              />
+              <DeleteModal
+                data={record}
+                successCallback={fetchContracts}
+              />
+            </>
+          )}
+          {+ContractStatus[record.Status] === ContractStatus.Active && (
+            <DeactivateModal
+              data={record}
+              successCallback={successCallback}
+            />
+          )}
         </Space>
       ),
     },

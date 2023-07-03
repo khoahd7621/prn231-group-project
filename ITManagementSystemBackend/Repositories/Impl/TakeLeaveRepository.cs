@@ -53,15 +53,15 @@ namespace Repositories.Impl
 
         public Contract GetActiveContractByEmployeeIdEqual(int employeeId) => _contractRepository.GetFirstOrDefault(filter: c => c.EmployeeId == employeeId && c.Status.Equals(EnumList.ContractStatus.Active));
 
-        public IEnumerable<TakeLeave> GetAllTakeLeavesByDateBetween(DateTime startDate, DateTime endDate) => (IEnumerable<TakeLeave>)GetAll(filter: tl => (tl.StartDate <= endDate && startDate <= tl.EndDate));
-        public IEnumerable<TakeLeave> GetAllTakeLeavesByEmployeeIdEqual(int id) => (IEnumerable<TakeLeave>)GetAll(filter: tl => tl.EmployeeId == id && !tl.Status.Equals(TakeLeaveStatus.DELETED));
+        public IEnumerable<TakeLeave> GetAllTakeLeavesByDateBetween(DateTime startDate, DateTime endDate) => (IEnumerable<TakeLeave>)GetAll(filter: tl => (tl.StartDate.Date <= endDate.Date && startDate.Date <= tl.EndDate.Date), options: tl => tl.OrderByDescending(o => o.Id).ToList());
+        public IEnumerable<TakeLeave> GetAllTakeLeavesByEmployeeIdEqual(int id) => (IEnumerable<TakeLeave>)GetAll(filter: tl => tl.EmployeeId == id && !tl.Status.Equals(TakeLeaveStatus.DELETED), options: tl=> tl.OrderByDescending(o=>o.Id).ToList());
 
-        public TakeLeave GetTakeLeaveByDateBetweenAndEmployeeIdEqual(DateTime startDate, DateTime endDate, int employeeId) => GetFirstOrDefault(filter: tl => (tl.StartDate <= endDate && startDate <= tl.EndDate) && tl.EmployeeId == employeeId && (tl.Status.Equals(TakeLeaveStatus.APPROVED)), includeProperties: "User");
+        public TakeLeave GetTakeLeaveByDateBetweenAndEmployeeIdEqual(DateTime startDate, DateTime endDate, int employeeId) => GetFirstOrDefault(filter: tl => (tl.StartDate.Date <= endDate.Date && startDate.Date <= tl.EndDate.Date) && tl.EmployeeId == employeeId && (tl.Status.Equals(TakeLeaveStatus.APPROVED)), includeProperties: "User");
 
         public TakeLeave GetTakeLeaveById(int id) => GetFirstOrDefault(filter: tl => tl.Id == id, includeProperties: "User");
 
 
-        public IEnumerable<TakeLeave> GetTakeLeaves() => (IEnumerable<TakeLeave>)GetAll(includeProperties: "User");
+        public IEnumerable<TakeLeave> GetTakeLeaves() => (IEnumerable<TakeLeave>)GetAll(includeProperties: "User", options: tl => tl.OrderByDescending(o => o.Id).ToList());
 
         public void SaveTakeLeave(TakeLeave takeLeave) => Add(takeLeave);
 
