@@ -60,5 +60,14 @@ namespace DataAccess
             context.Contracts.Remove(contract);
             context.SaveChanges();
         }
+        public static List<Contract> CheckEmployeeHasAnyContractOfThisMonth(int empId,DateTime dateTime)
+        {
+            var context = new MyDbContext();
+            return context.Contracts.Where(x => x.EmployeeId == empId
+                                            && ((dateTime.Date.Month == x.StartDate.Date.Month && dateTime.Date.Year == x.StartDate.Date.Year)
+                                            ||(dateTime.Date.Month == x.EndDate.Date.Month && dateTime.Date.Year == x.EndDate.Date.Year))
+                                            && x.Status != EnumList.ContractStatus.Waiting)
+                                            .ToList();
+        }
     }
 }

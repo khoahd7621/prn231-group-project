@@ -101,11 +101,11 @@ namespace DataAccess
 
                 using (var context = new MyDbContext())
                 {
-                    TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(
-                    // c => c.Date.Date == Attendance.Date.Date 
+                    //TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(
+                    // c => c.Date.Date == Attendance.Date.Date
                     //&& c.Status == EnumList
-                    );
-                    if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+                    //);
+                    //if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
                     context.Attendances.Add(Attendance);
                     context.SaveChanges();
                 }
@@ -172,6 +172,11 @@ namespace DataAccess
             {
                 throw new Exception(ex.Message);
             }
+        }
+        public static List<Attendance> GetAllAttendancesByEmployeeIdInMonth(int employeeId,DateTime date)
+        {
+            var context = new MyDbContext();
+            return context.Attendances.Where(x=> x.EmployeeId==employeeId && (x.Date.Month==date.Month && x.Date.Year==date.Date.Year) && x.Status==EnumList.AttendanceStatus.Approved).ToList();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
+using System;
 
 namespace Repositories.Impl
 {
@@ -24,7 +25,7 @@ namespace Repositories.Impl
             int leaveDays = 0;
             DateTime currentDate = startDate;
 
-            while (currentDate <= endDate)
+            while (currentDate.Date <= endDate.Date)
             {
                 if (currentDate.DayOfWeek != DayOfWeek.Saturday &&
                     currentDate.DayOfWeek != DayOfWeek.Sunday &&
@@ -68,5 +69,17 @@ namespace Repositories.Impl
         public void UpdateTakeLeave(TakeLeave takeLeave) => Update(takeLeave);
 
         public int CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(int employeeId, int year) => GetAll(filter: tl => (tl.StartDate.Year.Equals(year)) && tl.EmployeeId == employeeId && tl.Type.Equals(TakeLeaveType.ANNUAL_LEAVE) && tl.Status.Equals(TakeLeaveStatus.APPROVED)).Sum(tl => tl.LeaveDays);
+        public int CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(int employeeId, DateTime startDate, DateTime endDate)
+        {
+            return GetAll(filter: tl => tl.StartDate.Date <= endDate.Date && startDate.Date <= tl.EndDate.Date && tl.EmployeeId == employeeId && !tl.Type.Equals(TakeLeaveType.UNPAID_LEAVE) && tl.Status.Equals(TakeLeaveStatus.APPROVED))
+                    .Select(tl =>
+                    {
+                        tl.StartDate = tl.StartDate.Date > startDate.Date ? tl.StartDate : startDate;
+                        tl.EndDate = tl.EndDate.Date < endDate.Date ? tl.EndDate : endDate;
+                        tl.LeaveDays = CalculateLeaveDays(tl.StartDate, tl.EndDate);
+                        return tl;
+                    })
+                    .Sum(tl => tl.LeaveDays);
+        }
     }
 }

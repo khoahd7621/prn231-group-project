@@ -57,6 +57,7 @@ namespace Repositories.Impl
         {
             var contract = ContractDAO.FindContractById(contractId);
             contract.Status = EnumList.ContractStatus.Expired;
+            contract.EndDate = DateTime.Now;
             ContractDAO.UpdateContract(contract);
             return true;
         }
