@@ -71,7 +71,9 @@ export const EditModal = ({ data, successCallback }: Props) => {
         Edit
       </Button>
       <Modal
-        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${(data.User as any).EmployeeName}`}
+        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${
+          (data.User as any).EmployeeName
+        }`}
         open={isModalOpen}
         footer={null}
         cancelButtonProps={{
@@ -100,10 +102,8 @@ export const EditModal = ({ data, successCallback }: Props) => {
             name="employeeId"
             rules={[{ required: true, message: "Please select employee!" }]}
           >
-            <Input
-              value={(data.User as any).EmployeeName}
-              disabled
-            />
+            <Input type="hidden" readOnly/>
+            <Input value={(data.User as any).EmployeeCode} readOnly/>
           </Form.Item>
           <Form.Item
             label="Date of work"
@@ -131,6 +131,7 @@ export const EditModal = ({ data, successCallback }: Props) => {
             <InputNumber
               min={1}
               max={8}
+              style={{ width: "100%" }}
             />
           </Form.Item>
           <Form.Item
@@ -146,6 +147,7 @@ export const EditModal = ({ data, successCallback }: Props) => {
             <InputNumber
               min={0}
               max={8}
+              style={{ width: "100%" }}
             />
           </Form.Item>
           <Form.Item
