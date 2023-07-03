@@ -1,4 +1,5 @@
 ﻿using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using Repositories.Helper;
@@ -6,7 +7,7 @@ using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("odata/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -20,9 +21,15 @@ namespace ITManagementSystemWebAPI.Controllers
             return check.Equals("false") ? BadRequest("Wrong email & password") : Ok(check);
         }
 
+        [Authorize]
         [HttpGet("Profile")]
-        public IActionResult GetProfile(string token)
+        public IActionResult GetProfile()
         {
+            string token = HttpContext.Request.Headers["Authorization"];
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Invalid token");
+            if (token.StartsWith("Bearer "))
+                token = token.Substring("Bearer ".Length).Trim();
             var employeeLogged = authenticationRepository.GetProfile(token);
             return Ok(employeeLogged);
         }
