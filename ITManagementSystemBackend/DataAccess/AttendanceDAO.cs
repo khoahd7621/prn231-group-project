@@ -1,6 +1,8 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using static BusinessObject.Enum.EnumList;
 
 namespace DataAccess
 {
@@ -93,20 +95,30 @@ namespace DataAccess
             }
         }
 
-        public static void SaveAttendance(Attendance Attendance)
+        public static void SaveAttendance(Attendance attendance)
         {
             try
             {
-                Attendance.Status = EnumList.AttendanceStatus.Waiting;
+                attendance.Status = EnumList.AttendanceStatus.Waiting;
 
                 using (var context = new MyDbContext())
                 {
-                    TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(
-                    // c => c.Date.Date == Attendance.Date.Date 
-                    //&& c.Status == EnumList
-                    );
-                    if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
-                    context.Attendances.Add(Attendance);
+                    List<TakeLeave> takeLeave = context.TakeLeaves
+                        .Where(c => c.EmployeeId == attendance.EmployeeId
+                        && c.Status.Equals(TakeLeaveStatus.APPROVED)
+                        && c.StartDate >= attendance.Date
+                        && c.EndDate <= attendance.Date
+                        ).ToList();
+                    if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+
+                    var contact = context.Contracts
+                        .Where(c => c.EmployeeId == attendance.EmployeeId
+                        && c.Status.Equals(ContractStatus.Active)
+                        //&& c.StartDate >= attendance.Date
+                        && c.EndDate.Date >= attendance.Date.Date
+                        ).ToList();
+                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee's contact is not exist");
+                    context.Attendances.Add(attendance);
                     context.SaveChanges();
                 }
             }
@@ -116,23 +128,33 @@ namespace DataAccess
             }
         }
 
-        public static void UpdateAttendance(Attendance Attendance)
+        public static void UpdateAttendance(Attendance attendance)
         {
             try
             {
-                Attendance.Status = EnumList.AttendanceStatus.Waiting;
+                attendance.Status = EnumList.AttendanceStatus.Waiting;
 
                 var context = new MyDbContext();
 
-                TakeLeave takeLeave = context.TakeLeaves.SingleOrDefault(
-                   // c => c.Date.Date == Attendance.Date.Date
-                   //&& c.Status == EnumList
-                   );
-                if (takeLeave != null) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+                List<TakeLeave> takeLeave = context.TakeLeaves
+                       .Where(c => c.EmployeeId == attendance.EmployeeId
+                       && c.Status.Equals(TakeLeaveStatus.APPROVED)
+                       && c.StartDate >= attendance.Date
+                       && c.EndDate <= attendance.Date
+                       ).ToList();
+                if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
 
-                if (context.Users.SingleOrDefault(e => e.Id == Attendance.EmployeeId) == null) throw new Exception();
+                var contact = context.Contracts
+                    .Where(c => c.EmployeeId == attendance.EmployeeId
+                    && c.Status.Equals(ContractStatus.Active)
+                    //&& c.StartDate >= attendance.Date
+                    && c.EndDate.Date >= attendance.Date.Date
+                    ).ToList();
+                if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee's contact is not exist");
 
-                context.Entry(Attendance).State = EntityState.Modified;
+                if (context.Users.SingleOrDefault(e => e.Id == attendance.EmployeeId) == null) throw new Exception("Employee is not exxist");
+
+                context.Entry(attendance).State = EntityState.Modified;
                 context.SaveChanges();
             }
             catch (Exception ex)
@@ -148,6 +170,21 @@ namespace DataAccess
                 {
                     var attendance = context.Attendances.SingleOrDefault(c => c.Id == id);
                     attendance.Status = attendanceStatus;
+                    List<TakeLeave> takeLeave = context.TakeLeaves
+                       .Where(c => c.EmployeeId == attendance.EmployeeId
+                       && c.Status.Equals(TakeLeaveStatus.APPROVED)
+                       && c.StartDate >= attendance.Date
+                       && c.EndDate <= attendance.Date
+                       ).ToList();
+                    if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+
+                    var contact = context.Contracts
+                        .Where(c => c.EmployeeId == attendance.EmployeeId
+                        && c.Status.Equals(ContractStatus.Active)
+                        //&& c.StartDate >= attendance.Date
+                        && c.EndDate.Date >= attendance.Date.Date
+                        ).ToList();
+                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee's contact is not exist");
                     context.Entry(attendance).State = EntityState.Modified;
                     context.SaveChanges();
                 }
