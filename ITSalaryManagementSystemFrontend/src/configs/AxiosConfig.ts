@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { store } from "../reduxs/store";
+
 const AxiosClient = axios.create({
   baseURL: "http://localhost:5265/odata/",
   headers: {
@@ -11,6 +13,11 @@ const AxiosClient = axios.create({
 AxiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+    const accessToken = store.getState().auth.accessToken;
+    if (accessToken !== "") {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     return config;
   },
   function (error) {

@@ -3,7 +3,9 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { Layout, Menu, theme } from "antd";
 
-import AppRoute, { AppRouteEnum } from "../routes/AppRoute";
+import { Role } from "../constants/enum";
+import { useAppSelector } from "../reduxs/hooks";
+import { AdminRoute, AdminRouteEnum, EmployeeRoute, EmployeeRouteEnum } from "../routes/AppRoute";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -12,8 +14,10 @@ export const DefaultLayout: React.FC = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const location = useLocation();
+  const profileState = useAppSelector((state) => state.profile);
 
-  const rootPath = `/${location.pathname.split("/")[1]}`;
+  const rootPath = `${location.pathname.split("/")[2] || ""}`;
+
   return (
     <Layout>
       <Sider
@@ -38,11 +42,25 @@ export const DefaultLayout: React.FC = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={[rootPath]}
-          items={Object.keys(AppRoute).map((key) => ({
-            key: AppRoute[key as AppRouteEnum].path,
-            icon: AppRoute[key as AppRouteEnum].icon,
-            label: <Link to={AppRoute[key as AppRouteEnum].path}>{AppRoute[key as AppRouteEnum].name}</Link>,
-          }))}
+          items={
+            Role.Admin === profileState.user.role
+              ? Object.keys(AdminRoute).map((key) => ({
+                  key: AdminRoute[key as AdminRouteEnum].path,
+                  icon: AdminRoute[key as AdminRouteEnum].icon,
+                  label: (
+                    <Link to={AdminRoute[key as AdminRouteEnum].path}>{AdminRoute[key as AdminRouteEnum].name}</Link>
+                  ),
+                }))
+              : Object.keys(EmployeeRoute).map((key) => ({
+                  key: EmployeeRoute[key as EmployeeRouteEnum].path,
+                  icon: EmployeeRoute[key as EmployeeRouteEnum].icon,
+                  label: (
+                    <Link to={EmployeeRoute[key as EmployeeRouteEnum].path}>
+                      {EmployeeRoute[key as EmployeeRouteEnum].name}
+                    </Link>
+                  ),
+                }))
+          }
         />
       </Sider>
       <Layout
