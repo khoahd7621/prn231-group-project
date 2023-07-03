@@ -16,5 +16,8 @@ namespace Repositories.Impl
         public void SaveAttendance(Attendance Attendance) => AttendanceDAO.SaveAttendance(Attendance);
         public void UpdateStatusAttendance(int id, EnumList.AttendanceStatus attendanceStatus) => AttendanceDAO.UpdateStatusAttendance(id, attendanceStatus);
         public void UpdateAttendance(Attendance Attendance) => AttendanceDAO.UpdateAttendance(Attendance);
+        public double getHour(int userId, DateTime timeBegin, DateTime timeEnd) => AttendanceDAO.getHour(userId, timeBegin, timeEnd);
+        public double getOtHour(int userId, DateTime timeBegin, DateTime timeEnd) => AttendanceDAO.getOtHour(userId, timeBegin, timeEnd);
+
     }
 }
