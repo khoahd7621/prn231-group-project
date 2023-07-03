@@ -93,6 +93,7 @@ app.UseRouting();
 
 app.UseCors();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

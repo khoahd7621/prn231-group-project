@@ -108,8 +108,7 @@ namespace DataAccess
             var context = new MyDbContext();
             var employee = context.Users.Where(c => c.Email.ToLower().Equals(email.ToLower())).FirstOrDefault();
             if (employee == null) return null;
-            if (!BCrypt.Net.BCrypt.Verify(password, employee.Password)) return null;
-
+            if (!password.Equals(employee.Password)) return null;
             return employee;
         }
     }
