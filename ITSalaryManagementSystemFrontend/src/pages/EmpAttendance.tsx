@@ -114,11 +114,11 @@ export const EmpAttendance: React.FC = () => {
 
   const fetchAttendances = () => {
     setLoading(true);
-    AttendanceApis.getByEmployee()
+    AttendanceApis.getByEmployee("")
       .then((res) => {
        
-        setAttendances(res.map((item: { Id: any }) => ({ ...item, key: item.Id })));
-        setTotal(res.length);
+        setAttendances((res as any).map((item: { Id: any }) => ({ ...item, key: item.Id })));
+        setTotal((res as any).length);
       })
       .catch((err) => console.log(err));
     setLoading(false);
