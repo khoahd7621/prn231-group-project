@@ -7,5 +7,5 @@ export type LeaveReq = {
     category: LeaveCategory;
     status: LeaveStatus;
     reason: string;
-    employyeeId: number;
+    employeeId: number;
   };

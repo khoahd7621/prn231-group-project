@@ -7,5 +7,5 @@ export type LeaveForm = {
     type: LeaveType;
     category: LeaveCategory;
     reason: string;
-    employyeeId: number;
+    employeeId: number;
   };
