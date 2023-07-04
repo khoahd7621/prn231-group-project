@@ -12,6 +12,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Employee>("Employee");
+modelBuilder.EntitySet<Employee>("SpecificEmployee");
 modelBuilder.EntitySet<Position>("Position");
 modelBuilder.EntitySet<Level>("Level");
 modelBuilder.EntitySet<Contract>("Contract");

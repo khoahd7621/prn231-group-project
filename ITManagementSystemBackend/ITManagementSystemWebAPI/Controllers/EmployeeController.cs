@@ -22,14 +22,9 @@ namespace ITManagementSystemWebAPI.Controllers
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
-            string token = HttpContext.Request.Headers["Authorization"];
-            if (string.IsNullOrEmpty(token))
-                return BadRequest("Invalid token");
-            if (token.StartsWith("Bearer "))
-                token = token.Substring("Bearer ".Length).Trim();
-            var employeeid = UserHelper.GetEmployeeIdFromToken(token);
 
-            var check = employeeRepository.GetEmployeeById(employeeid);
+
+            var check = employeeRepository.GetEmployeeById(key);
             return check == null ? NotFound() : Ok(check);
         }
 

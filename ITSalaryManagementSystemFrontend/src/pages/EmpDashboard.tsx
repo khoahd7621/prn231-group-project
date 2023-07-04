@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { AttendanceStatus, AttendanceType } from "../constants/enum";
+import { AttendanceStatus, AttendanceType, ContractStatus } from "../constants/enum";
 import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
 import { AttendanceStatusTag, DeleteModal, EditModal } from "../modules/attendance/components";
 import { AttendanceModel } from "../modules/attendance/models";
@@ -226,6 +226,7 @@ export const EmpDashBoard: React.FC = () => {
         </div>
         <div style={{ borderLeft: "1px solid", margin: "10px" }}></div>
         <div style={{ width: "60%", height: "60%%" }}>
+          <>User Contract</>
           <Row gutter={24}>
             {contracts.map((item) => (
               <Col span={12}>
@@ -236,14 +237,18 @@ export const EmpDashBoard: React.FC = () => {
                     "~" +
                     dayjs(item.EndDate).format("DD-MM-YYYY")
                   }
-                  bordered={true}
+                  // bordered={true}
                   onClick={() => ShowDetailContract(item)}
                   style={{ cursor: "pointer" }}>
-                  {item.EmployeeType}
+                  <Tag>{item.EmployeeType}</Tag>
                   <p></p>
-                  {item.SalaryType}
+                  <Tag> {item.SalaryType}</Tag>
                   <p></p>
-                  {item.Status}
+                  {item.Status.toString() == ContractStatus[1].toString() ? (
+                    <Tag color="success">{item.Status}</Tag>
+                  ) : (
+                    <Tag color="error">{item.Status}</Tag>
+                  )}
                 </Card>
               </Col>
             ))}
@@ -260,8 +265,13 @@ export const EmpDashBoard: React.FC = () => {
           <Descriptions.Item label="Employee Type">
             {contractSelect?.EmployeeType}
           </Descriptions.Item>
-          <Descriptions.Item label="Start Date">{contractSelect?.StartDate}</Descriptions.Item>
-          <Descriptions.Item label="End Date">{contractSelect?.EndDate}</Descriptions.Item>
+          <Descriptions.Item label="Start Date">
+            {dayjs(contractSelect?.StartDate).format("DD-MM-YYYY")}
+          </Descriptions.Item>
+          <Descriptions.Item label="End Date">
+            {" "}
+            {dayjs(contractSelect?.EndDate).format("DD-MM-YYYY")}
+          </Descriptions.Item>
           <Descriptions.Item label="Base Salary">{contractSelect?.BaseSalary}$</Descriptions.Item>
           <Descriptions.Item label="Date Off Per Year">
             {contractSelect?.DateOffPerYear}
