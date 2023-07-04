@@ -83,21 +83,13 @@ export const EmpAttendance: React.FC = () => {
     {
       width: "20px",
       render: (_, record) => {
-        switch (record.Status) {
-          case 0:
-            return (
-              <Space>
-                <EditModal data={record} successCallback={fetchAttendances} />
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
-              </Space>
-            );
-          case 2:
-            return (
-              <Space>
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
-              </Space>
-            );
-        }
+        if (record.Status != (AttendanceStatus[1] as any).valueOf())
+          return (
+            <Space>
+              <EditModal data={record} successCallback={fetchAttendances} />
+              <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+            </Space>
+          );
       },
     },
   ];
@@ -114,7 +106,7 @@ export const EmpAttendance: React.FC = () => {
 
   const fetchAttendances = () => {
     setLoading(true);
-    AttendanceApis.getEmployee("?$expand=Attendances") //&$orderby=status
+    AttendanceApis.getEmployee("?$expand=Attendances($expand=User)")
       .then((res) => {
         setAttendances(
           (res as any).Attendances.map((item: { Id: any }) => ({ ...item, key: item.Id }))
