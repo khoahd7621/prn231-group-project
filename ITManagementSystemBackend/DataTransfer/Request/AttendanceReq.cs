@@ -15,7 +15,8 @@ namespace DataTransfer.Request
         public int Type { get; set; }
         [Required]
         public int EmployeeId { get; set; }
-    }public class AttendanceEmployeeReq
+    }
+    public class AttendanceEmployeeReq
     {
         [Required]
         public DateTime Date { get; set; }

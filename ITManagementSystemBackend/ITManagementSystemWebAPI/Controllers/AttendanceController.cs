@@ -16,7 +16,7 @@ namespace ITManagementSystemWebAPI.Controllers
         private readonly IAttendanceRepository attendanceRepository = new AttendaceReposiory();
 
         [EnableQuery]
-        public IActionResult Get() => Ok(attendanceRepository.GetAttendences());
+        public IActionResult Get() => Ok(attendanceRepository.GetAttendances());
 
         [EnableQuery]
         [HttpGet("odata/AttendanceEmployee")]
