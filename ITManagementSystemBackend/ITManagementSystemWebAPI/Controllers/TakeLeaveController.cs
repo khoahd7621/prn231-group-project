@@ -3,7 +3,6 @@ using BusinessObject;
 using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Deltas;
-using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
@@ -143,7 +142,7 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return BadRequest("Require at least 1 active contract to edit leave!");
             }
-            if(delta.TryGetPropertyValue("StartDate", out var _startDate) || delta.TryGetPropertyValue("EndDate", out var _endDate))
+            if (delta.TryGetPropertyValue("StartDate", out var _startDate) || delta.TryGetPropertyValue("EndDate", out var _endDate))
             {
                 int leaveDays = takeLeaveRepository.CalculateLeaveDays(takeLeave.StartDate, takeLeave.EndDate);
                 takeLeave.LeaveDays = leaveDays;

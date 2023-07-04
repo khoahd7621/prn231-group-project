@@ -4,6 +4,7 @@ using BusinessObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230704024250_Add master data")]
+    partial class Addmasterdata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +86,6 @@ namespace BusinessObject.Migrations
 
                     b.Property<int>("LevelId")
                         .HasColumnType("int");
-
-                    b.Property<double>("OTSalaryRate")
-                        .HasColumnType("float");
 
                     b.Property<int>("PositionId")
                         .HasColumnType("int");
@@ -258,9 +258,6 @@ namespace BusinessObject.Migrations
 
                     b.Property<decimal>("Bonus")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("DayOfHasSalary")
-                        .HasColumnType("int");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
