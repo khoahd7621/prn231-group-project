@@ -1,2 +1,2 @@
-export * from "./CreateModel";
+export * from "./CreateModal";
 export * from "./LeaveStatusTag";
