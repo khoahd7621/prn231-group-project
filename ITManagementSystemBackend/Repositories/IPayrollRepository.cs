@@ -1,4 +1,5 @@
 ﻿using DataTransfer.Request;
+using DataTransfer.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Repositories
 {
     public interface IPayrollRepository
     {
-        public bool CreatePayroll(PayrollReq payroll);
+        public List<ContractAndPayrollResponse> CreatePayroll(PayrollReq payroll);
+        public bool CheckEmployeeAlreadyHasPayroll(DateTime date, int empId);
     }
 }

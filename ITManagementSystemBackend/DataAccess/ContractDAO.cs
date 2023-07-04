@@ -40,7 +40,7 @@ namespace DataAccess
         public static Contract checkEmployeeHasAnyActiveContract(int empId)
         {
             var context = new MyDbContext();
-            var check = context.Contracts.Where(x => x.EmployeeId == empId && x.Status == EnumList.ContractStatus.Active).FirstOrDefault();
+            var check = context.Contracts.Where(x => x.EmployeeId == empId && x.Status == EnumList.ContractStatus.Active).Include(x => x.User).FirstOrDefault();
             return check;
         }
 

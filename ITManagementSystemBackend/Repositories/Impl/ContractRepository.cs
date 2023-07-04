@@ -45,6 +45,17 @@ namespace Repositories.Impl
                 if (req.TaxRate <= 0 || req.InsuranceRate <= 0)
                     return "gross & insurance larger than 0";
             }
+            if(req.EmployeeType == EnumList.EmployeeType.PartTime)
+            {
+                req.OTSalaryRate = 1;
+            }
+            else
+            {
+                if(req.OTSalaryRate <=0 || req.OTSalaryRate > 100)
+                {
+                    return "OT rate of fulltime must grather than 0";
+                }
+            }
             var config = new MapperConfiguration(cfg => cfg.CreateMap<ContractReq, Contract>().ReverseMap());
             var mapper = new Mapper(config);
             Contract contract = mapper.Map<Contract>(req);

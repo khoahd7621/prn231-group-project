@@ -210,10 +210,58 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
-        public static List<Attendance> GetAllAttendancesByEmployeeIdInMonth(int employeeId,DateTime date)
+        public static List<Attendance> GetAllAttendancesByEmployeeIdInMonth(int employeeId, DateTime date)
         {
             var context = new MyDbContext();
-            return context.Attendances.Where(x=> x.EmployeeId==employeeId && (x.Date.Month==date.Month && x.Date.Year==date.Date.Year) && x.Status==EnumList.AttendanceStatus.Approved).ToList();
+            return context.Attendances.Where(x => x.EmployeeId == employeeId && (x.Date.Month == date.Month && x.Date.Year == date.Date.Year) && x.Status == EnumList.AttendanceStatus.Approved).ToList();
+        }
+        public static double getHour(int userId, DateTime timeBegin, DateTime timeEnd)
+        {
+            try
+            {
+                double hour = 0;
+                List<Attendance> list = null;
+                using (var context = new MyDbContext())
+                {
+                    list = context.Attendances
+                       .Include(s => s.User)
+                       .Where(c => c.EmployeeId == userId
+                               & c.Date >= timeBegin
+                               & c.Date <= timeEnd
+                               & c.Status == AttendanceStatus.Approved
+                               ).ToList();
+                }
+                hour = list.Sum(c => c.Hour);
+                return hour;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public static double getOtHour(int userId, DateTime timeBegin, DateTime timeEnd)
+        {
+            try
+            {
+                double hour = 0;
+                List<Attendance> list = null;
+                using (var context = new MyDbContext())
+                {
+                    list = context.Attendances
+                       .Include(s => s.User)
+                       .Where(c => c.EmployeeId == userId
+                               & c.Date >= timeBegin
+                               & c.Date <= timeEnd
+                               & c.Status == AttendanceStatus.Approved
+                               ).ToList();
+                }
+                hour = list.Sum(c => c.OTHour);
+                return hour;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

@@ -22,6 +22,8 @@ namespace BusinessObject
         public int DateOffPerYear { get; set; }
         [Required]
         public int LevelId { get; set; }
+        [Required]
+        public double OTSalaryRate { get; set; }
 
         public double InsuranceRate { get; set; }
 
