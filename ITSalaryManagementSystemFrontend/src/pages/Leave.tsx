@@ -291,7 +291,9 @@ export const Leave: React.FC = () => {
     EmployeeApis.getAll()
       .then((res) => {
         setOptions(
-          res.value.map((item) => ({
+          res.value
+          .filter((v) => +Role[v.Role] === Role.Employee)
+          .map((item) => ({
             value: item.Id,
             label: `${item.EmployeeCode} - ${item.EmployeeName}`,
           }))
