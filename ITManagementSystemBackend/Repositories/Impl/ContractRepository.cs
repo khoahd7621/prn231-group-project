@@ -10,12 +10,17 @@ namespace Repositories.Impl
     {
         public bool ActiveContract(int contractId)
         {
+            var check = false;
             var contract = ContractDAO.FindContractById(contractId);
             var checkEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(contract.EmployeeId);
             if (checkEmployee != null)
-            {
                 return false;
+            var listContractOfThisEmp= ContractDAO.GetContractsByEmpId(contract.EmployeeId);
+            foreach(var cont in listContractOfThisEmp)
+            {
+                if(cont.EndDate.Date == contract.StartDate.Date) check = true;
             }
+            if(check) contract.StartDate = contract.StartDate.AddDays(1);
             contract.Status = EnumList.ContractStatus.Active;
             ContractDAO.UpdateContract(contract);
             return true;

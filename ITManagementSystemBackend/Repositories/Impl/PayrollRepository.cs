@@ -179,5 +179,20 @@ namespace Repositories.Impl
             }
             return listContractAndPayrollReturn;
         }
+
+        public List<PayRoll> GetAllPayrolls()
+        {
+            return PayrollDAO.GetAll();
+        }
+
+        public List<PayRoll> GetListPayrollByEmpId(int empId)
+        {
+            return PayrollDAO.GetPayRollByEmployeeId(empId);
+        }
+
+        public PayRoll GetPayRollById(int id)
+        {
+            return PayrollDAO.FindPayrollById(id);
+        }
     }
 }

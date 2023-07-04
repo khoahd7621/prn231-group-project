@@ -1,5 +1,6 @@
 ﻿using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
 
@@ -12,7 +13,17 @@ namespace ITManagementSystemWebAPI.Controllers
         {
             _payrollRepository = payrollRepository;
         }
-
+        [EnableQuery]
+        public IActionResult Get()
+        {
+            return Ok(_payrollRepository.GetAllPayrolls());
+        }
+        [EnableQuery]
+        public IActionResult Get([FromRoute] int key)
+        {
+            var check = _payrollRepository.GetPayRollById(key);
+            return check == null ? NotFound() : Ok(check);
+        }
         public IActionResult Post([FromBody] PayrollReq payrollReq)
         {
             var checkEmployeeHasAnyPayrollOfThisMonth = _payrollRepository.CheckEmployeeAlreadyHasPayroll(payrollReq.dateTime, payrollReq.EmployeeId);
@@ -20,5 +31,6 @@ namespace ITManagementSystemWebAPI.Controllers
             var check = _payrollRepository.CreatePayroll(payrollReq);
             return check != null ? Ok(check) : BadRequest("This User don't has any contract in this month");
         }
+        
     }
 }

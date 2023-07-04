@@ -11,14 +11,22 @@ namespace DataAccess
             payroll.StartDate = DateTime.Now.Date;
             context.Payrolls.Add(payroll);
             context.SaveChanges();
-            var createdPayroll = context.Payrolls.Find(payroll.Id);
-
-            return createdPayroll;
+            return context.Payrolls.Find(payroll.Id);
         }
         public static List<PayRoll> GetPayRollByEmployeeId(int EmployeeId)
         {
             var context = new MyDbContext();
-            return context.Payrolls.Where(x => x.EmployeeId == EmployeeId).ToList();
+            return context.Payrolls.Where(x => x.EmployeeId == EmployeeId).OrderBy(x => x.Id).ToList();
+        }
+        public static List<PayRoll> GetAll()
+        {
+            var context = new MyDbContext();
+            return context.Payrolls.ToList();
+        }
+        public static PayRoll FindPayrollById(int Id)
+        {
+            var context = new MyDbContext();
+            return context.Payrolls.FirstOrDefault(x => x.Id == Id);
         }
 
     }

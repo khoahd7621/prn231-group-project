@@ -1,4 +1,5 @@
-﻿using DataTransfer.Request;
+﻿using BusinessObject;
+using DataTransfer.Request;
 using DataTransfer.Response;
 
 namespace Repositories
@@ -7,5 +8,8 @@ namespace Repositories
     {
         public List<ContractAndPayrollResponse> CreatePayroll(PayrollReq payroll);
         public bool CheckEmployeeAlreadyHasPayroll(DateTime date, int empId);
+        public List<PayRoll> GetAllPayrolls();
+        public List<PayRoll> GetListPayrollByEmpId(int empId);
+        public PayRoll GetPayRollById(int id);
     }
 }
