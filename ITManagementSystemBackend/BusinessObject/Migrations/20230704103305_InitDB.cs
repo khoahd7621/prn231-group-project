@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace BusinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDB : Migration
+    public partial class InitDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -98,6 +101,7 @@ namespace BusinessObject.Migrations
                     BaseSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DateOffPerYear = table.Column<int>(type: "int", nullable: false),
                     LevelId = table.Column<int>(type: "int", nullable: false),
+                    OTSalaryRate = table.Column<double>(type: "float", nullable: false),
                     InsuranceRate = table.Column<double>(type: "float", nullable: false),
                     TaxRate = table.Column<double>(type: "float", nullable: false),
                     SalaryType = table.Column<int>(type: "int", nullable: false),
@@ -142,6 +146,7 @@ namespace BusinessObject.Migrations
                     BaseWorkingHours = table.Column<double>(type: "float", nullable: false),
                     RealWorkingHours = table.Column<double>(type: "float", nullable: false),
                     OTWorkingHours = table.Column<double>(type: "float", nullable: false),
+                    DayOfHasSalary = table.Column<int>(type: "int", nullable: false),
                     Bonus = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
@@ -182,6 +187,35 @@ namespace BusinessObject.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Levels",
+                columns: new[] { "Id", "LevelName" },
+                values: new object[,]
+                {
+                    { 1, "Intern" },
+                    { 2, "Fresher" },
+                    { 3, "Junior" },
+                    { 4, "Senior" },
+                    { 5, "Specialized" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Positions",
+                columns: new[] { "Id", "PositionName" },
+                values: new object[,]
+                {
+                    { 1, "Software Engineering" },
+                    { 2, "Business Analysis" },
+                    { 3, "Automation Tester" },
+                    { 4, "Project Manager" },
+                    { 5, "Solution Architecture" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Address", "CCCD", "CreatedDate", "Dob", "Email", "EmployeeCode", "EmployeeName", "Gender", "IsFirstLogin", "Password", "Phone", "Role", "Status" },
+                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 4, 17, 33, 5, 295, DateTimeKind.Local).AddTicks(6610), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$sF.UDJBspGl6.8QScbf5N.9BxF503N7FxLI8Hku5KnWzuwCvBu8Zi", "0792123456", 0, 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_EmployeeId",

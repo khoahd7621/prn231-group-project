@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230628140204_InitialDB")]
-    partial class InitialDB
+    [Migration("20230704103305_InitDB")]
+    partial class InitDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,6 +86,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<int>("LevelId")
                         .HasColumnType("int");
+
+                    b.Property<double>("OTSalaryRate")
+                        .HasColumnType("float");
 
                     b.Property<int>("PositionId")
                         .HasColumnType("int");
@@ -177,6 +180,25 @@ namespace BusinessObject.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "HCM",
+                            CCCD = "1234567890",
+                            CreatedDate = new DateTime(2023, 7, 4, 17, 33, 5, 295, DateTimeKind.Local).AddTicks(6610),
+                            Dob = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@projectx.com",
+                            EmployeeCode = "SD0001",
+                            EmployeeName = "Admin",
+                            Gender = 0,
+                            IsFirstLogin = true,
+                            Password = "$2a$11$sF.UDJBspGl6.8QScbf5N.9BxF503N7FxLI8Hku5KnWzuwCvBu8Zi",
+                            Phone = "0792123456",
+                            Role = 0,
+                            Status = 0
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Level", b =>
@@ -194,6 +216,33 @@ namespace BusinessObject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Levels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            LevelName = "Intern"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            LevelName = "Fresher"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            LevelName = "Junior"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            LevelName = "Senior"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            LevelName = "Specialized"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.PayRoll", b =>
@@ -212,6 +261,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<decimal>("Bonus")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DayOfHasSalary")
+                        .HasColumnType("int");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -262,6 +314,33 @@ namespace BusinessObject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Positions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PositionName = "Software Engineering"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PositionName = "Business Analysis"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PositionName = "Automation Tester"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            PositionName = "Project Manager"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            PositionName = "Solution Architecture"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.TakeLeave", b =>
