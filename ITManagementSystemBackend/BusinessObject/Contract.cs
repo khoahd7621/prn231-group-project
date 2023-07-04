@@ -24,9 +24,9 @@ namespace BusinessObject
         public int LevelId { get; set; }
         [Required]
         public double OTSalaryRate { get; set; }
-
+        [Required]
         public double InsuranceRate { get; set; }
-
+        [Required]
         public double TaxRate { get; set; }
         [Required]
         public EnumList.SalaryType SalaryType { get; set; }
