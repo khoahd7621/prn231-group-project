@@ -28,6 +28,14 @@ namespace DataAccess
                 .Include(s => s.Level)
                 .Include(s => s.Position)
                 .SingleOrDefault(x => x.Id == id);
+        } public static List<Contract> FindContractByEmplId(int emplId)
+        {
+            var context = new MyDbContext();
+            return context.Contracts
+                .Include(s => s.User)
+                .Include(s => s.Level)
+                .Include(s => s.Position)
+                .Where(x => x.EmployeeId == emplId).ToList();
         }
 
         public static bool CheckEmployeeHaveAnyContract(int empId)

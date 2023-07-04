@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
+using Repositories.Helper;
 using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
@@ -21,7 +22,14 @@ namespace ITManagementSystemWebAPI.Controllers
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
-            var check = employeeRepository.GetEmployeeById(key);
+            string token = HttpContext.Request.Headers["Authorization"];
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Invalid token");
+            if (token.StartsWith("Bearer "))
+                token = token.Substring("Bearer ".Length).Trim();
+            var employeeid = UserHelper.GetEmployeeIdFromToken(token);
+
+            var check = employeeRepository.GetEmployeeById(employeeid);
             return check == null ? NotFound() : Ok(check);
         }
 
