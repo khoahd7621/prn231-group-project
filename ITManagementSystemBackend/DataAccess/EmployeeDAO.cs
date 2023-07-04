@@ -93,6 +93,7 @@ namespace DataAccess
                 .ThenInclude(c => c.Position)
                 .Include(u => u.Contracts)
                 .ThenInclude(c => c.Level)
+                .Include(u=>u.Attendances)
                 .SingleOrDefault(x => x.Id == id);
         }
 
