@@ -10,12 +10,17 @@ namespace Repositories.Impl
     {
         public bool ActiveContract(int contractId)
         {
+            var check = false;
             var contract = ContractDAO.FindContractById(contractId);
             var checkEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(contract.EmployeeId);
             if (checkEmployee != null)
-            {
                 return false;
+            var listContractOfThisEmp= ContractDAO.GetContractsByEmpId(contract.EmployeeId);
+            foreach(var cont in listContractOfThisEmp)
+            {
+                if(cont.EndDate.Date == contract.StartDate.Date) check = true;
             }
+            if(check) contract.StartDate = contract.StartDate.AddDays(1);
             contract.Status = EnumList.ContractStatus.Active;
             ContractDAO.UpdateContract(contract);
             return true;
@@ -45,6 +50,17 @@ namespace Repositories.Impl
                 if (req.TaxRate <= 0 || req.InsuranceRate <= 0)
                     return "gross & insurance larger than 0";
             }
+            if(req.EmployeeType == EnumList.EmployeeType.PartTime)
+            {
+                req.OTSalaryRate = 1;
+            }
+            else
+            {
+                if(req.OTSalaryRate <=0 || req.OTSalaryRate > 100)
+                {
+                    return "OT rate of fulltime must grather than 0";
+                }
+            }
             var config = new MapperConfiguration(cfg => cfg.CreateMap<ContractReq, Contract>().ReverseMap());
             var mapper = new Mapper(config);
             Contract contract = mapper.Map<Contract>(req);
@@ -57,6 +73,7 @@ namespace Repositories.Impl
         {
             var contract = ContractDAO.FindContractById(contractId);
             contract.Status = EnumList.ContractStatus.Expired;
+            contract.EndDate = DateTime.Now;
             ContractDAO.UpdateContract(contract);
             return true;
         }

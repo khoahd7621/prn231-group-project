@@ -33,7 +33,8 @@
         {
             Deleted,
             Approved,
-            Rejected
+            Rejected,
+            Waiting
         }
         public enum Gender
         {

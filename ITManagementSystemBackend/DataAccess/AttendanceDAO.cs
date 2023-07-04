@@ -8,7 +8,7 @@ namespace DataAccess
 {
     public class AttendanceDAO
     {
-        public static List<Attendance> GetAttendences()
+        public static List<Attendance> GetAttendances()
         {
             try
             {
@@ -38,6 +38,7 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
+
         public static List<Attendance> FindAttendanceByUserAndTime(int userId, DateTime timeBegin, DateTime timeEnd)
         {
             try
@@ -59,6 +60,7 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
+
         public static Attendance FindAttendanceByUserAndDay(int userId, DateTime time)
         {
             try
@@ -79,14 +81,14 @@ namespace DataAccess
             }
         }
 
-        public static Attendance FindAttendanceByUser(int userId)
+        public static List<Attendance> FindAttendanceByUser(int userId)
         {
             try
             {
                 using (var context = new MyDbContext())
                 {
-                    return context.Attendances.Include(s => s.User)
-                        .SingleOrDefault(c => c.EmployeeId == userId);
+                    return context.Attendances.Include(s => s.User).ToList()
+                        .Where(c => c.EmployeeId == userId).ToList();
                 }
             }
             catch (Exception ex)
@@ -109,7 +111,7 @@ namespace DataAccess
                         && c.StartDate >= attendance.Date
                         && c.EndDate <= attendance.Date
                         ).ToList();
-                    if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+                    if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
                     var contact = context.Contracts
                         .Where(c => c.EmployeeId == attendance.EmployeeId
@@ -117,7 +119,7 @@ namespace DataAccess
                         //&& c.StartDate >= attendance.Date
                         && c.EndDate.Date >= attendance.Date.Date
                         ).ToList();
-                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee's contact is not exist");
+                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendance of employee's contact is not exist");
                     context.Attendances.Add(attendance);
                     context.SaveChanges();
                 }
@@ -142,7 +144,8 @@ namespace DataAccess
                        && c.StartDate >= attendance.Date
                        && c.EndDate <= attendance.Date
                        ).ToList();
-                if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+                if (!takeLeave.IsNullOrEmpty())
+                    throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
                 var contact = context.Contracts
                     .Where(c => c.EmployeeId == attendance.EmployeeId
@@ -150,9 +153,11 @@ namespace DataAccess
                     //&& c.StartDate >= attendance.Date
                     && c.EndDate.Date >= attendance.Date.Date
                     ).ToList();
-                if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee's contact is not exist");
+                if (contact.IsNullOrEmpty())
+                    throw new ArgumentException("Can not create attendance of employee's contact is not exist");
 
-                if (context.Users.SingleOrDefault(e => e.Id == attendance.EmployeeId) == null) throw new Exception("Employee is not exxist");
+                if (context.Users.SingleOrDefault(e => e.Id == attendance.EmployeeId) == null)
+                    throw new Exception("Employee is not exist");
 
                 context.Entry(attendance).State = EntityState.Modified;
                 context.SaveChanges();
@@ -176,7 +181,8 @@ namespace DataAccess
                        && c.StartDate >= attendance.Date
                        && c.EndDate <= attendance.Date
                        ).ToList();
-                    if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee allready have TakeLeave");
+                    if (!takeLeave.IsNullOrEmpty())
+                        throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
                     var contact = context.Contracts
                         .Where(c => c.EmployeeId == attendance.EmployeeId
@@ -184,7 +190,7 @@ namespace DataAccess
                         //&& c.StartDate >= attendance.Date
                         && c.EndDate.Date >= attendance.Date.Date
                         ).ToList();
-                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendence bs of employee's contact is not exist");
+                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendance of employee's contact is not exist");
                     context.Entry(attendance).State = EntityState.Modified;
                     context.SaveChanges();
                 }
@@ -204,6 +210,59 @@ namespace DataAccess
                     context.Attendances.Remove(Attendance);
                     context.SaveChanges();
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public static List<Attendance> GetAllAttendancesByEmployeeIdInMonth(int employeeId, DateTime date)
+        {
+            var context = new MyDbContext();
+            return context.Attendances.Where(x => x.EmployeeId == employeeId && (x.Date.Month == date.Month && x.Date.Year == date.Date.Year) && x.Status == EnumList.AttendanceStatus.Approved).ToList();
+        }
+        public static double getHour(int userId, DateTime timeBegin, DateTime timeEnd)
+        {
+            try
+            {
+                double hour = 0;
+                List<Attendance> list = null;
+                using (var context = new MyDbContext())
+                {
+                    list = context.Attendances
+                       .Include(s => s.User)
+                       .Where(c => c.EmployeeId == userId
+                               & c.Date >= timeBegin
+                               & c.Date <= timeEnd
+                               & c.Status == AttendanceStatus.Approved
+                               ).ToList();
+                }
+                hour = list.Sum(c => c.Hour);
+                return hour;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public static double getOtHour(int userId, DateTime timeBegin, DateTime timeEnd)
+        {
+            try
+            {
+                double hour = 0;
+                List<Attendance> list = null;
+                using (var context = new MyDbContext())
+                {
+                    list = context.Attendances
+                       .Include(s => s.User)
+                       .Where(c => c.EmployeeId == userId
+                               & c.Date >= timeBegin
+                               & c.Date <= timeEnd
+                               & c.Status == AttendanceStatus.Approved
+                               ).ToList();
+                }
+                hour = list.Sum(c => c.OTHour);
+                return hour;
             }
             catch (Exception ex)
             {

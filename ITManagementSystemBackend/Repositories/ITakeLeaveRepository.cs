@@ -15,5 +15,7 @@ namespace Repositories
         Contract GetActiveContractByEmployeeIdEqual(int employeeId);
         int CalculateLeaveDays(DateTime startDate, DateTime endDate);
         int CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(int employeeId, int year);
+        public int CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(int employeeId, DateTime startDate, DateTime endDate);
+
     }
 }

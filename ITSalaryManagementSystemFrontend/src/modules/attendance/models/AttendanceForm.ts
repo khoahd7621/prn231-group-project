@@ -7,3 +7,10 @@ export type AttendanceForm = {
   type :number,
   employeeId: number
 };
+export type AttendanceEmployeeForm = {
+  date: Dayjs
+  hour: number,
+  otHour: number,
+  type :number,
+};
+

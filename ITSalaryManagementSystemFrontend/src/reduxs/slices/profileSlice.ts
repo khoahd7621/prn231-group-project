@@ -10,7 +10,7 @@ export const fetchUserProfile = createAsyncThunk("profiles/fetchUserProfile", as
   try {
     return await AuthApis.getProfile();
   } catch (error) {
-    thunkApi.dispatch(remove());
+    thunkApi.dispatch(removeProfile());
     thunkApi.dispatch(logout());
     return Promise.reject(error);
   }
@@ -37,13 +37,16 @@ export const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    fetch: (state, action: PayloadAction<User>) => {
+    setProfileLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    fetchProfile: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
     updateFirstLogin: (state) => {
       state.user.isFirstLogin = false;
     },
-    remove: (state) => {
+    removeProfile: (state) => {
       state.user = {
         ...initialState.user,
       };
@@ -57,6 +60,7 @@ export const profileSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchUserProfile.rejected, (state) => {
+        state.loading = true;
         state.user = {
           ...initialState.user,
         };
@@ -65,6 +69,6 @@ export const profileSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { fetch, remove, updateFirstLogin } = profileSlice.actions;
+export const { setProfileLoading, fetchProfile, removeProfile, updateFirstLogin } = profileSlice.actions;
 
 export default profileSlice.reducer;

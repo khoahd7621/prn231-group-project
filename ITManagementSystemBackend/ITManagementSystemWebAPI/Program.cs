@@ -16,7 +16,7 @@ modelBuilder.EntitySet<Position>("Position");
 modelBuilder.EntitySet<Level>("Level");
 modelBuilder.EntitySet<Contract>("Contract");
 modelBuilder.EntitySet<Attendance>("Attendance");
-//modelBuilder.EntitySet<PayRoll>("PayRoll");
+modelBuilder.EntitySet<PayRoll>("PayRoll");
 modelBuilder.EntitySet<TakeLeave>("TakeLeave");
 
 // Config CORS
@@ -33,6 +33,7 @@ builder.Services.AddCors(option =>
 
 // Add services to the container.
 builder.Services.AddTransient<ITakeLeaveRepository, TakeLeaveRepository>();
+builder.Services.AddTransient<IPayrollRepository, PayrollRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
