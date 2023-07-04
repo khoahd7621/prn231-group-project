@@ -1,10 +1,7 @@
-﻿using BusinessObject.DTO;
-using DataTransfer.Request;
-using Microsoft.AspNetCore.Http;
+﻿using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
-using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
 {

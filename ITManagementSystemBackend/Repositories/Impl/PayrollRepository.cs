@@ -3,7 +3,7 @@ using DataAccess;
 using DataTransfer.Request;
 using DataTransfer.Response;
 using Repositories.Helper;
-using System.Diagnostics.Contracts;
+
 
 namespace Repositories.Impl
 {
