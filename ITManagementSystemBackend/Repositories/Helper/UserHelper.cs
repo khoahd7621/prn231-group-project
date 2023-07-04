@@ -77,6 +77,32 @@ namespace Repositories.Helper
             var idEmployee = claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value;
             return int.Parse(idEmployee);
         }
+        public static int GetTotalDayInMonth(int year, int month)
+        {
+            int totalDays = DateTime.DaysInMonth(year, month);
+            int count = 0;
+
+            for (int day = 1; day <= totalDays; day++)
+            {
+                DateTime date = new DateTime(year, month, day);
+
+                if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public static decimal TotalPayroll(decimal baseSalaryPerHours, decimal realWorkingHours,decimal oTSalaryPerHours,decimal oTWorkingHours,int dayOfHasSalary,decimal bonus)
+        {
+            var total = (baseSalaryPerHours * realWorkingHours)+(oTSalaryPerHours*oTWorkingHours)+bonus;
+            if(dayOfHasSalary !=0)
+            {
+                total += ((dayOfHasSalary*8)* baseSalaryPerHours);
+            }
+            return total;
+        }
 
     }
 }
