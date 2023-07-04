@@ -7,6 +7,7 @@ import AuthApis from "../modules/authentication/apis/AuthApis";
 import { LoginForm } from "../modules/authentication/models";
 import { useAppDispatch } from "../reduxs/hooks";
 import { login } from "../reduxs/slices/authSlice";
+import { fetchProfile, setProfileLoading } from "../reduxs/slices/profileSlice";
 
 export function Login() {
   const [form] = Form.useForm();
@@ -34,6 +35,11 @@ export function Login() {
       .then((res) => {
         form.resetFields();
         dispatch(login(res));
+        dispatch(setProfileLoading(true));
+        AuthApis.getProfile().then((res) => {
+          dispatch(fetchProfile(res));
+          dispatch(setProfileLoading(false));
+        });
       })
       .catch((err) => {
         console.log(err);
