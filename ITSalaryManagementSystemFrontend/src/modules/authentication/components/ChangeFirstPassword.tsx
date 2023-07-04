@@ -4,7 +4,7 @@ import { Button, Form, Input, Layout, Space } from "antd";
 
 import { useAppDispatch } from "../../../reduxs/hooks";
 import { logout } from "../../../reduxs/slices/authSlice";
-import { remove, updateFirstLogin } from "../../../reduxs/slices/profileSlice";
+import { removeProfile, updateFirstLogin } from "../../../reduxs/slices/profileSlice";
 import AuthApis from "../apis/AuthApis";
 import { ChangeFirstPassword as ChangeFirstPasswordModel } from "../models";
 
@@ -78,7 +78,7 @@ export function ChangeFirstPassword() {
 
   const handleLogout = () => {
     dispatch(logout());
-    dispatch(remove());
+    dispatch(removeProfile());
   };
 
   return (

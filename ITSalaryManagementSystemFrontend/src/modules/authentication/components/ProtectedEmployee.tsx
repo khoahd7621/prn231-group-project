@@ -15,7 +15,11 @@ export function ProtectedEmployee({ children }: Props) {
     return <Navigate to="/" />;
   }
 
-  if (+Role[profileState.user.role] === Role.Admin) {
+  if (profileState.loading) {
+    return <div>Loading ...</div>;
+  }
+
+  if (profileState.user.role === Role.Admin) {
     return <Navigate to="/admin" />;
   }
 

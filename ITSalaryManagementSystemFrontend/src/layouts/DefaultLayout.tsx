@@ -1,10 +1,13 @@
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
-import { Layout, Menu, theme } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
+import { Button, Layout, Menu, theme } from "antd";
 
 import { Role } from "../constants/enum";
-import { useAppSelector } from "../reduxs/hooks";
+import { useAppDispatch, useAppSelector } from "../reduxs/hooks";
+import { logout } from "../reduxs/slices/authSlice";
+import { removeProfile } from "../reduxs/slices/profileSlice";
 import { AdminRoute, AdminRouteEnum, EmployeeRoute, EmployeeRouteEnum } from "../routes/AppRoute";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -14,9 +17,15 @@ export const DefaultLayout: React.FC = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const profileState = useAppSelector((state) => state.profile);
 
   const rootPath = `${location.pathname.split("/")[2] || ""}`;
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(removeProfile());
+  };
 
   return (
     <Layout>
@@ -68,7 +77,25 @@ export const DefaultLayout: React.FC = () => {
           minHeight: "100vh",
         }}
       >
-        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Header style={{ padding: "0 24px", background: colorBgContainer }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <Button
+              type="text"
+              danger
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          </div>
+        </Header>
         <Content style={{ margin: "24px 16px 0" }}>
           <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }}>
             <Outlet />
