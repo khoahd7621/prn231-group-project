@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
-import { Card, Col, Descriptions, Input, Modal, Row, Space, Table, Tag } from "antd";
+import { Card, Col, Descriptions, Input, Modal, Row, Space, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
@@ -23,22 +23,13 @@ type DataContracType = {
   key: number;
 } & ContractModel;
 
+const { Title: AntdTitle } = Typography;
 const { Search } = Input;
 const optionsChart = {
   responsive: true,
   plugins: {
     legend: {
       position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Attendance in week",
-    },
-  },
-  scales: {
-    y: {
-      max: 8,
-      beginAtZero: true,
     },
   },
 };
@@ -224,23 +215,25 @@ export const EmpDashBoard: React.FC = () => {
   };
   return (
     <>
-      <div style={{ display: "flex" }}>
-        <div style={{ width: "40%", height: "60%" }}>
+      <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
+        <div style={{ width: "50%" }}>
+          <AntdTitle level={4}>
+            Logged working hours from {dayjs().startOf("week").format("DD/MM/YYYY")} to{" "}
+            {dayjs().endOf("week").format("DD/MM/YYYY")}
+          </AntdTitle>
           <Bar
             options={optionsChart}
             data={chartData}
           />
         </div>
-        <div style={{ borderLeft: "1px solid", margin: "10px" }}></div>
-        <div style={{ width: "60%", height: "60%%" }}>
-          <>User Contract</>
+        <div style={{ width: "50%" }}>
+          <AntdTitle level={4}>Current Active Contract</AntdTitle>
           <Row gutter={24}>
             {contracts.map((item) => (
               <Col span={12}>
                 <Card
                   key={item.Id}
                   title={dayjs(item.StartDate).format("DD-MM-YYYY") + "~" + dayjs(item.EndDate).format("DD-MM-YYYY")}
-                  // bordered={true}
                   onClick={() => ShowDetailContract(item)}
                   style={{ cursor: "pointer" }}
                 >
