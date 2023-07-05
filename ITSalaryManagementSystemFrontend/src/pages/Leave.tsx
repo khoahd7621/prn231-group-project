@@ -1,69 +1,55 @@
+import { Dayjs } from "dayjs";
 import React, { useEffect } from "react";
-import {
-  DeleteOutlined,
-  QuestionCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Popconfirm,
-  Select,
-  Space,
-  Table,
-  message,
-} from "antd";
-import { RangeValue } from "rc-picker/lib/interface";
+
+import { DeleteOutlined, QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Form, Popconfirm, Select, Space, Table, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { LeaveStatus, LeaveType } from "../constants/enum";
+import { RangeValue } from "rc-picker/lib/interface";
+
+import { LeaveStatus, LeaveType, Role } from "../constants/enum";
+import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 import LeaveApis from "../modules/leave/apis/LeaveApis";
 import { CreateModal, LeaveStatusTag } from "../modules/leave/components";
 import { LeaveModel } from "../modules/leave/models/LeaveModel";
-import EmployeeApis from "../modules/employee/apis/EmployeeApis";
-import { Dayjs } from "dayjs";
+
 type DataType = {
   key: number;
 } & LeaveModel;
+
 type OptionItem = {
   value: number;
   label: string;
 };
+
 export const Leave: React.FC = () => {
   const handleConfirm = async (id: number, status: string) => {
     try {
       setSending(true);
       await LeaveApis.patch(id, { status: status });
       message.success("Leave status updated successfully");
-      fetchLeave();
+      fetchLeave(query);
     } catch (error: any) {
       console.error("Error leave patch request:", error);
-      message.error(
-        `Error updating leave:  ${
-          error.response?.data?.error?.message || "An error occurred."
-        }`
-      );
+      message.error(`Error updating leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
     } finally {
       setSending(false);
     }
   };
+
   const handleConfirmDelete = async (id: number) => {
     try {
       setSending(true);
       await LeaveApis.delete(id);
       message.success("Leave deleted successfully");
-      fetchLeave();
+      fetchLeave(query);
     } catch (error: any) {
       console.error("Error leave delete request:", error);
-      message.error(
-        `Error deleting leave:  ${
-          error.response?.data?.error?.message || "An error occurred."
-        }`
-      );
+      message.error(`Error deleting leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
     } finally {
       setSending(false);
     }
   };
+
   const handleCancel = () => {
     if (sending) return;
   };
@@ -75,9 +61,7 @@ export const Leave: React.FC = () => {
     }
     if (selectedDateRange) {
       filters.push(
-        `StartDate le ${selectedDateRange[1]
-          ?.toISOString()
-          .slice(0, 10)} and EndDate ge ${selectedDateRange[0]
+        `StartDate le ${selectedDateRange[1]?.toISOString().slice(0, 10)} and EndDate ge ${selectedDateRange[0]
           ?.toISOString()
           .slice(0, 10)}`
       );
@@ -89,9 +73,10 @@ export const Leave: React.FC = () => {
       filters.push(`Status eq '${LeaveStatus[selectedStatus]}'`);
     }
     // Join the filter expressions with 'and' operator
-    setQuery(filters.length > 0 ? `&$filter=${filters.join(" and ")}` : "");
-    console.log(query);
-    fetchLeave();
+    if (filters.length > 0) {
+      const tmpQuery = `&$filter=${filters.join(" and ")}`;
+      setQuery(tmpQuery);
+    }
   };
 
   const columns: ColumnsType<DataType> = [
@@ -106,24 +91,21 @@ export const Leave: React.FC = () => {
       title: "Leave Days",
       dataIndex: "LeaveDays",
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) =>
-        a.LeaveDays.toString().localeCompare(b.LeaveDays.toString()),
+      sorter: (a, b) => a.LeaveDays.toString().localeCompare(b.LeaveDays.toString()),
     },
     {
       title: "Start Date",
       dataIndex: "StartDate",
       render: (value: string) => new Date(value).toISOString().slice(0, 10),
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) =>
-        new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime(),
+      sorter: (a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime(),
     },
     {
       title: "End Date",
       dataIndex: "EndDate",
       render: (value: string) => new Date(value).toISOString().slice(0, 10),
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) =>
-        new Date(a.EndDate).getTime() - new Date(b.EndDate).getTime(),
+      sorter: (a, b) => new Date(a.EndDate).getTime() - new Date(b.EndDate).getTime(),
     },
     {
       title: "Type",
@@ -156,9 +138,7 @@ export const Leave: React.FC = () => {
                 title="Approve the leave"
                 placement="leftTop"
                 description="Are you sure to approve this leave?"
-                onConfirm={() =>
-                  handleConfirm(record.key, LeaveStatus.APPROVED.toString())
-                }
+                onConfirm={() => handleConfirm(record.key, LeaveStatus.APPROVED.toString())}
                 cancelButtonProps={{
                   disabled: sending,
                 }}
@@ -180,9 +160,7 @@ export const Leave: React.FC = () => {
                 title="Reject the leave"
                 placement="leftTop"
                 description="Are you sure to reject this leave?"
-                onConfirm={() =>
-                  handleConfirm(record.key, LeaveStatus.REJECTED.toString())
-                }
+                onConfirm={() => handleConfirm(record.key, LeaveStatus.REJECTED.toString())}
                 cancelButtonProps={{
                   disabled: sending,
                 }}
@@ -211,7 +189,10 @@ export const Leave: React.FC = () => {
                 onCancel={handleCancel}
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
               >
-                <Button type="primary" danger>
+                <Button
+                  type="primary"
+                  danger
+                >
                   Delete
                 </Button>
               </Popconfirm>
@@ -233,7 +214,10 @@ export const Leave: React.FC = () => {
                 onCancel={handleCancel}
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
               >
-                <Button type="primary" danger>
+                <Button
+                  type="primary"
+                  danger
+                >
                   Delete
                 </Button>
               </Popconfirm>
@@ -253,18 +237,10 @@ export const Leave: React.FC = () => {
   const [positions, setPositions] = React.useState<DataType[]>([]);
   const [sending, setSending] = React.useState<boolean>(false);
   const [options, setOptions] = React.useState<OptionItem[]>([]);
-  const [selectedEmployee, setSelectedEmployee] = React.useState<
-    string | undefined
-  >(undefined);
-  const [selectedDateRange, setSelectedDateRange] = React.useState<
-    RangeValue<Dayjs> | undefined
-  >(undefined);
-  const [selectedType, setSelectedType] = React.useState<number | undefined>(
-    undefined
-  );
-  const [selectedStatus, setSelectedStatus] = React.useState<
-    number | undefined
-  >(undefined);
+  const [selectedEmployee, setSelectedEmployee] = React.useState<string | undefined>(undefined);
+  const [selectedDateRange, setSelectedDateRange] = React.useState<RangeValue<Dayjs> | undefined>(undefined);
+  const [selectedType, setSelectedType] = React.useState<number | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = React.useState<number | undefined>(undefined);
   const [query, setQuery] = React.useState<string | "">("");
   const [form] = Form.useForm();
   const statusOptions = Object.keys(LeaveStatus)
@@ -283,26 +259,27 @@ export const Leave: React.FC = () => {
         label: key.toUpperCase().split("_").join(" "),
       };
     });
+
   useEffect(() => {
-    fetchLeave();
-  }, []);
+    fetchLeave(query);
+  }, [query]);
 
   useEffect(() => {
     EmployeeApis.getAll()
       .then((res) => {
         setOptions(
           res.value
-          .filter((v) => +Role[v.Role] === Role.Employee)
-          .map((item) => ({
-            value: item.Id,
-            label: `${item.EmployeeCode} - ${item.EmployeeName}`,
-          }))
+            .filter((v) => +Role[v.Role] === Role.Employee)
+            .map((item) => ({
+              value: item.Id,
+              label: `${item.EmployeeCode} - ${item.EmployeeName}`,
+            }))
         );
       })
       .catch((err) => console.log(err));
   }, []);
 
-  const fetchLeave = async () => {
+  const fetchLeave = (query: string) => {
     setLoading(true);
     LeaveApis.getAll(query)
       .then((res) => {
@@ -315,7 +292,7 @@ export const Leave: React.FC = () => {
 
   const successCallback = () => {
     setPage(1);
-    fetchLeave();
+    fetchLeave(query);
   };
 
   return (
@@ -334,18 +311,17 @@ export const Leave: React.FC = () => {
           form={form}
         >
           <Space.Compact block>
-            <Form.Item noStyle name={"employeeid"}>
+            <Form.Item
+              noStyle
+              name={"employeeid"}
+            >
               <Select
-                style={{ width: "30%" }}
+                style={{ width: "20%" }}
                 showSearch
                 allowClear
                 placeholder="Select a employee"
                 onChange={setSelectedEmployee}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
+                filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
                 options={options.map((key) => {
                   return {
                     value: key.value,
@@ -354,40 +330,55 @@ export const Leave: React.FC = () => {
                 })}
               />
             </Form.Item>
-            <Form.Item noStyle name={"rangepicker"}>
+            <Form.Item
+              noStyle
+              name={"rangepicker"}
+            >
               <DatePicker.RangePicker
                 style={{ width: "20%" }}
                 onChange={setSelectedDateRange}
               />
             </Form.Item>
-            <Form.Item noStyle name={"type"}>
+            <Form.Item
+              noStyle
+              name={"type"}
+              initialValue={-1}
+            >
               <Select
                 style={{ width: "15%" }}
-                placeholder={"ALL TYPE"}
                 onChange={setSelectedType}
-                options={[{ value: "", label: "ALL TYPE" }, ...typeOptions]}
+                options={[{ value: -1, label: "ALL TYPE" }, ...typeOptions]}
               />
             </Form.Item>
-            <Form.Item noStyle name={"status"}>
+            <Form.Item
+              noStyle
+              name={"status"}
+              initialValue={-1}
+            >
               <Select
                 style={{ width: "15%" }}
-                placeholder={"ALL STATUS"}
                 onChange={setSelectedStatus}
-                options={[{ value: "", label: "ALL STATUS" }, ...statusOptions]}
+                options={[{ value: -1, label: "ALL STATUS" }, ...statusOptions]}
               />
             </Form.Item>
 
             <Form.Item noStyle>
-              <Button
-                onClick={() => {
-                  form.resetFields(),
-                    setSelectedDateRange(undefined),
-                    setSelectedStatus(undefined),
-                    setSelectedType(undefined),
+              {query && (
+                <Button
+                  onClick={() => {
+                    form.resetFields();
+                    setQuery("");
+                    setSelectedDateRange(undefined);
+                    setSelectedStatus(undefined);
+                    setSelectedType(undefined);
                     setSelectedEmployee(undefined);
-                }}
-                icon={<DeleteOutlined />}
-              />
+                  }}
+                  icon={<DeleteOutlined />}
+                  style={{
+                    borderRadius: 0,
+                  }}
+                />
+              )}
               <Button
                 type="primary"
                 icon={<SearchOutlined />}
