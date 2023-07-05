@@ -43,25 +43,24 @@ export const CreateModal = ({ successCallback }: Props) => {
         setSubmittable(false);
       }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values]);
+  }, [values, form]);
 
   const fetchEmployee = () => {
     EmployeeApis.getAll()
       .then((res) => setEmployees(res.value.filter((v) => +Role[v.Role] === Role.Employee)))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const fetchLevel = () => {
     LevelApis.getAll()
       .then((res) => setLevels(res.value))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const fetchPosition = () => {
     PositionApis.getAll()
       .then((res) => setPositions(res.value))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const showModal = () => {
@@ -81,6 +80,7 @@ export const CreateModal = ({ successCallback }: Props) => {
     }
     if (value.employeeType === EmployeeType.PartTime) {
       createPayload.otSalaryRate = 0;
+      createPayload.dateOffPerYear = 0;
     }
     ContractApis.post(createPayload)
       .then(() => {
@@ -89,7 +89,7 @@ export const CreateModal = ({ successCallback }: Props) => {
         successCallback?.();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         alert("Create contract failed! Please refresh page and try again!");
       })
       .finally(() => setSending(false));
@@ -251,7 +251,13 @@ export const CreateModal = ({ successCallback }: Props) => {
             label="Day off per year"
             name="dateOffPerYear"
             initialValue={14}
-            rules={[{ required: true, message: "Please number of manual day off per year!" }]}
+            rules={[
+              {
+                required: form.getFieldValue("employeeType") === EmployeeType.FullTime,
+                message: "Please number of manual day off per year!",
+              },
+            ]}
+            hidden={form.getFieldValue("employeeType") === EmployeeType.PartTime}
           >
             <InputNumber
               min={1}
@@ -259,48 +265,60 @@ export const CreateModal = ({ successCallback }: Props) => {
               addonAfter="days"
             />
           </Form.Item>
-          {form.getFieldValue("employeeType") === EmployeeType.FullTime && (
-            <Form.Item
-              label="OT salary rate"
-              name="otSalaryRate"
-              initialValue={10}
-              rules={[{ required: true, message: "Please input ot salary rate!" }]}
-            >
-              <InputNumber
-                min={0}
-                max={100}
-                addonAfter="%"
-              />
-            </Form.Item>
-          )}
-          {form.getFieldValue("salaryType") === SalaryType.Gross && (
-            <>
-              <Form.Item
-                label="Insurance rate"
-                name="insuranceRate"
-                initialValue={10}
-                rules={[{ required: true, message: "Please input insurance rate!" }]}
-              >
-                <InputNumber
-                  min={1}
-                  max={100}
-                  addonAfter="%"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Tax rate"
-                name="taxRate"
-                initialValue={10}
-                rules={[{ required: true, message: "Please input tax rate!" }]}
-              >
-                <InputNumber
-                  min={0}
-                  max={100}
-                  addonAfter="%"
-                />
-              </Form.Item>
-            </>
-          )}
+          <Form.Item
+            label="OT salary rate"
+            name="otSalaryRate"
+            initialValue={10}
+            rules={[
+              {
+                required: form.getFieldValue("employeeType") === EmployeeType.FullTime,
+                message: "Please input ot salary rate!",
+              },
+            ]}
+            hidden={form.getFieldValue("employeeType") === EmployeeType.PartTime}
+          >
+            <InputNumber
+              min={0}
+              max={100}
+              addonAfter="%"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Insurance rate"
+            name="insuranceRate"
+            initialValue={10}
+            rules={[
+              {
+                required: form.getFieldValue("salaryType") === SalaryType.Gross,
+                message: "Please input insurance rate!",
+              },
+            ]}
+            hidden={form.getFieldValue("salaryType") === SalaryType.Net}
+          >
+            <InputNumber
+              min={1}
+              max={100}
+              addonAfter="%"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Tax rate"
+            name="taxRate"
+            initialValue={10}
+            rules={[
+              {
+                required: form.getFieldValue("salaryType") === SalaryType.Gross,
+                message: "Please input tax rate!",
+              },
+            ]}
+            hidden={form.getFieldValue("salaryType") === SalaryType.Net}
+          >
+            <InputNumber
+              min={0}
+              max={100}
+              addonAfter="%"
+            />
+          </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
             <Space>
