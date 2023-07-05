@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
+using Repositories.Helper;
 using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
@@ -21,6 +22,8 @@ namespace ITManagementSystemWebAPI.Controllers
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
+
+
             var check = employeeRepository.GetEmployeeById(key);
             return check == null ? NotFound() : Ok(check);
         }

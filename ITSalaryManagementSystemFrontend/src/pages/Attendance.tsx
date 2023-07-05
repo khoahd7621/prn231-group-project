@@ -177,7 +177,7 @@ export const Attendance: React.FC = () => {
           marginBottom: 16,
         }}>
         <Search
-          placeholder="Search level"
+          placeholder="Search attendance"
           style={{
             width: 400,
           }}

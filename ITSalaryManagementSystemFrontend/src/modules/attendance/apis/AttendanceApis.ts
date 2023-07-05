@@ -6,8 +6,8 @@ import { AttendanceEmployeeReq, AttendanceReq } from "../models/AttendanceReq";
 
 const AttendanceApis = {
   getAll: (): Promise<Response<AttendanceModel[]>> => AxiosClient.get("/Attendance?$expand=User"),
-  getByEmployee: (): Promise<Response<AttendanceModel[]>> =>
-    AxiosClient.get("/AttendanceEmployee?$expand=User"),
+  getEmployee: (query: string): Promise<Response<AttendanceModel[]>> =>
+    AxiosClient.get("/SpecificEmployee" + query),
   post: (data: AttendanceReq): Promise<void> => AxiosClient.post("/Attendance", data),
   postByEmployee: (data: AttendanceEmployeeReq): Promise<void> =>
     AxiosClient.post("/AttendanceEmployee", data),

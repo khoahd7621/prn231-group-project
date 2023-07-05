@@ -13,5 +13,6 @@ export type CreateForm = {
   dateOffPerYear: number;
   levelId: number;
   positionId: number;
+  otSalaryRate: number;
   salaryType: SalaryType;
 };

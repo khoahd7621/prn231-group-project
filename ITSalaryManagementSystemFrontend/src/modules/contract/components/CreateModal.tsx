@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, InputNumber, Modal, Select, Space } from "antd";
 
-import { EmployeeType, Gender, Role, SalaryType } from "../../../constants/enum";
-import ContractApis from "../apis/ContractApis";
-import { CreateForm } from "../models";
-import { EmployeeModel } from "../../employee/models";
+import { EmployeeType, Role, SalaryType } from "../../../constants/enum";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
-import { LevelModel } from "../../level/models";
-import { PositionModel } from "../../position/models";
+import { EmployeeModel } from "../../employee/models";
 import LevelApis from "../../level/apis/LevelApis";
+import { LevelModel } from "../../level/models";
 import PositionApis from "../../position/apis/PositionApis";
+import { PositionModel } from "../../position/models";
+import ContractApis from "../apis/ContractApis";
+import { CreateForm, CreatePayload } from "../models";
 
 type Props = {
   successCallback?: () => void;
@@ -70,11 +70,19 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   const handleSubmit = (value: CreateForm) => {
     setSending(true);
-    ContractApis.post({
+    const createPayload: CreatePayload = {
       ...value,
       startDate: value.startDate.toISOString(),
       endDate: value.endDate.toISOString(),
-    })
+    };
+    if (value.salaryType === SalaryType.Net) {
+      createPayload.insuranceRate = 0;
+      createPayload.taxRate = 0;
+    }
+    if (value.employeeType === EmployeeType.PartTime) {
+      createPayload.otSalaryRate = 0;
+    }
+    ContractApis.post(createPayload)
       .then(() => {
         setIsModalOpen(false);
         form.resetFields();
@@ -230,36 +238,13 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="Base salary"
             name="baseSalary"
-            initialValue={1}
+            initialValue={15000000}
             rules={[{ required: true, message: "Please input base salary!" }]}
           >
             <InputNumber
               min={1}
               addonAfter="VND"
-            />
-          </Form.Item>
-          <Form.Item
-            label="Insurance rate"
-            name="insuranceRate"
-            initialValue={10}
-            rules={[{ required: true, message: "Please input insurance rate!" }]}
-          >
-            <InputNumber
-              min={1}
-              max={100}
-              addonAfter="%"
-            />
-          </Form.Item>
-          <Form.Item
-            label="Tax rate"
-            name="taxRate"
-            initialValue={10}
-            rules={[{ required: true, message: "Please input tax rate!" }]}
-          >
-            <InputNumber
-              min={0}
-              max={100}
-              addonAfter="%"
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             />
           </Form.Item>
           <Form.Item
@@ -271,8 +256,51 @@ export const CreateModal = ({ successCallback }: Props) => {
             <InputNumber
               min={1}
               max={100}
+              addonAfter="days"
             />
           </Form.Item>
+          {form.getFieldValue("employeeType") === EmployeeType.FullTime && (
+            <Form.Item
+              label="OT salary rate"
+              name="otSalaryRate"
+              initialValue={10}
+              rules={[{ required: true, message: "Please input ot salary rate!" }]}
+            >
+              <InputNumber
+                min={0}
+                max={100}
+                addonAfter="%"
+              />
+            </Form.Item>
+          )}
+          {form.getFieldValue("salaryType") === SalaryType.Gross && (
+            <>
+              <Form.Item
+                label="Insurance rate"
+                name="insuranceRate"
+                initialValue={10}
+                rules={[{ required: true, message: "Please input insurance rate!" }]}
+              >
+                <InputNumber
+                  min={1}
+                  max={100}
+                  addonAfter="%"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Tax rate"
+                name="taxRate"
+                initialValue={10}
+                rules={[{ required: true, message: "Please input tax rate!" }]}
+              >
+                <InputNumber
+                  min={0}
+                  max={100}
+                  addonAfter="%"
+                />
+              </Form.Item>
+            </>
+          )}
 
           <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
             <Space>

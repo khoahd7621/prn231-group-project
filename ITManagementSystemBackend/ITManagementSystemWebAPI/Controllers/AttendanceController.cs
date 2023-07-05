@@ -19,21 +19,6 @@ namespace ITManagementSystemWebAPI.Controllers
         public IActionResult Get() => Ok(attendanceRepository.GetAttendances());
 
         [EnableQuery]
-        [HttpGet("odata/AttendanceEmployee")]
-        public IActionResult EmployeeGet()
-        {
-            string token = HttpContext.Request.Headers["Authorization"];
-            if (string.IsNullOrEmpty(token))
-                return BadRequest("Invalid token");
-            if (token.StartsWith("Bearer "))
-                token = token.Substring("Bearer ".Length).Trim();
-            var employeeid = UserHelper.GetEmployeeIdFromToken(token);
-
-            var list = attendanceRepository.FindAttendanceByUser(employeeid);
-            return Ok(list);
-        }
-
-        [EnableQuery]
         public ActionResult<Attendance> Get(int key)
         {
             var item = attendanceRepository.FindAttendanceById(key);

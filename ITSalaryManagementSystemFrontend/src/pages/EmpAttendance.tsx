@@ -54,7 +54,7 @@ export const EmpAttendance: React.FC = () => {
       sorter: (a, b) => a.Status - b.Status,
       render: (value: AttendanceStatus) => (
         <div>
-          <AttendanceStatusTag status={AttendanceStatus[value]} />
+          <AttendanceStatusTag status={value} />
         </div>
       ),
     },
@@ -83,21 +83,13 @@ export const EmpAttendance: React.FC = () => {
     {
       width: "20px",
       render: (_, record) => {
-        switch (record.Status) {
-          case 0:
-            return (
-              <Space>
-                <EditModal data={record} successCallback={fetchAttendances} />
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
-              </Space>
-            );
-          case 2:
-            return (
-              <Space>
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
-              </Space>
-            );
-        }
+        if (record.Status != (AttendanceStatus[1] as any).valueOf())
+          return (
+            <Space>
+              <EditModal data={record} successCallback={fetchAttendances} />
+              <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+            </Space>
+          );
       },
     },
   ];
@@ -114,11 +106,12 @@ export const EmpAttendance: React.FC = () => {
 
   const fetchAttendances = () => {
     setLoading(true);
-    AttendanceApis.getByEmployee()
+    AttendanceApis.getEmployee("?$expand=Attendances($expand=User)")
       .then((res) => {
-       
-        setAttendances(res.map((item: { Id: any }) => ({ ...item, key: item.Id })));
-        setTotal(res.length);
+        setAttendances(
+          (res as any).Attendances.map((item: { Id: any }) => ({ ...item, key: item.Id }))
+        );
+        setTotal((res as any).Attendances.length);
       })
       .catch((err) => console.log(err));
     setLoading(false);
@@ -137,7 +130,7 @@ export const EmpAttendance: React.FC = () => {
           marginBottom: 16,
         }}>
         <Search
-          placeholder="Search level"
+          placeholder="Search attendance"
           style={{
             width: 400,
           }}
