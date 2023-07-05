@@ -14,5 +14,6 @@ namespace Repositories
         public void SaveAttendance(Attendance Attendance);
         public void UpdateAttendance(Attendance Attendance);
         public void DeleteAttendance(Attendance Attendance);
+
     }
 }
