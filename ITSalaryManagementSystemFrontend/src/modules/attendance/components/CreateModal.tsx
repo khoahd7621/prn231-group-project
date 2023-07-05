@@ -201,13 +201,23 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
 
             <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
               <Space>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={!submittable || form.isFieldsTouched() === false}
-                  loading={sending}>
-                  Submit
-                </Button>
+                {isEmp ? (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!submittable}
+                    loading={sending}>
+                    Submit
+                  </Button>
+                ) : (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!submittable || form.isFieldsTouched() === false}
+                    loading={sending}>
+                    Submit
+                  </Button>
+                )}
                 <Button htmlType="button" onClick={() => form.resetFields()}>
                   Reset
                 </Button>
