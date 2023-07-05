@@ -184,14 +184,14 @@ namespace BusinessObject.Migrations
                             Id = 1,
                             Address = "HCM",
                             CCCD = "1234567890",
-                            CreatedDate = new DateTime(2023, 7, 5, 14, 27, 48, 852, DateTimeKind.Local).AddTicks(2762),
+                            CreatedDate = new DateTime(2023, 7, 5, 16, 10, 13, 662, DateTimeKind.Local).AddTicks(3243),
                             Dob = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@projectx.com",
                             EmployeeCode = "SD0001",
                             EmployeeName = "Admin",
                             Gender = 0,
                             IsFirstLogin = true,
-                            Password = "$2a$11$7VCkXhQhLlmLMrY2JWTm0OxLYB4H4s2DqHQqipUFrb7IyAgOZUmia",
+                            Password = "$2a$11$mN9vAQuoea/NRxFNkbMl..y5Q6ajIctMaFM0bqIuVUrbQdzIUF/iu",
                             Phone = "0792123456",
                             Role = 0,
                             Status = 0
@@ -259,13 +259,13 @@ namespace BusinessObject.Migrations
                     b.Property<decimal>("Bonus")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ContractId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DayOfHasSalary")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
@@ -294,7 +294,7 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("ContractId");
 
                     b.ToTable("Payrolls");
                 });
@@ -422,13 +422,13 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.PayRoll", b =>
                 {
-                    b.HasOne("BusinessObject.Employee", "User")
+                    b.HasOne("BusinessObject.Contract", "contract")
                         .WithMany("PayRolls")
-                        .HasForeignKey("EmployeeId")
+                        .HasForeignKey("ContractId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("contract");
                 });
 
             modelBuilder.Entity("BusinessObject.TakeLeave", b =>
@@ -442,13 +442,16 @@ namespace BusinessObject.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BusinessObject.Contract", b =>
+                {
+                    b.Navigation("PayRolls");
+                });
+
             modelBuilder.Entity("BusinessObject.Employee", b =>
                 {
                     b.Navigation("Attendances");
 
                     b.Navigation("Contracts");
-
-                    b.Navigation("PayRolls");
 
                     b.Navigation("TakeLeaves");
                 });

@@ -16,7 +16,8 @@ namespace DataAccess
         public static List<PayRoll> GetPayRollByEmployeeId(int EmployeeId)
         {
             var context = new MyDbContext();
-            return context.Payrolls.Where(x => x.EmployeeId == EmployeeId).OrderBy(x => x.Id).ToList();
+
+            return context.Payrolls.Where(x => x.contract.EmployeeId == EmployeeId).OrderBy(x => x.Id).ToList();
         }
         public static List<PayRoll> GetAll()
         {
@@ -27,6 +28,12 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             return context.Payrolls.FirstOrDefault(x => x.Id == Id);
+        }
+        public static void UpdateStatusPayroll(PayRoll payroll)
+        {
+            var context = new MyDbContext();
+            context.Entry<PayRoll>(payroll).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
         }
 
     }
