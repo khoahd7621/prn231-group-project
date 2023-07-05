@@ -51,6 +51,22 @@ export const EmpAttendance: React.FC = () => {
       title: "Status",
       dataIndex: "Status",
       sortDirections: ["descend", "ascend"],
+      filters: [
+        {
+          text: AttendanceStatus[0],
+          value: AttendanceStatus[0],
+        },
+        {
+          text: AttendanceStatus[1],
+          value: AttendanceStatus[1],
+        },
+        {
+          text: AttendanceStatus[2],
+          value: AttendanceStatus[2],
+        },
+      ],
+      filterMode: "tree",
+      onFilter: (value: any, record) => record.Status.toString() === value.toString(),
       sorter: (a, b) => a.Status - b.Status,
       render: (value: AttendanceStatus) => (
         <div>
@@ -61,6 +77,18 @@ export const EmpAttendance: React.FC = () => {
     {
       title: "Type",
       dataIndex: "Type",
+      filters: [
+        {
+          text: AttendanceType[0],
+          value: AttendanceType.Offline.toString(),
+        },
+        {
+          text: AttendanceType[1],
+          value: AttendanceType.Online.toString(),
+        },
+      ],
+      filterMode: "tree",
+      onFilter: (value: any, record) => record.Type == parseInt(value),
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.Type - b.Type,
       render: (value: AttendanceType) => {
@@ -81,7 +109,7 @@ export const EmpAttendance: React.FC = () => {
       },
     },
     {
-      width: "20px",
+      width: "200px",
       render: (_, record) => {
         if (record.Status != (AttendanceStatus[1] as any).valueOf())
           return (

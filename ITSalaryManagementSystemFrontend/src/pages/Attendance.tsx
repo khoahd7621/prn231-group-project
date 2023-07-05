@@ -64,6 +64,22 @@ export const Attendance: React.FC = () => {
       dataIndex: "Status",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.Status - b.Status,
+      filters: [
+        {
+          text: AttendanceStatus[0],
+          value: AttendanceStatus[0],
+        },
+        {
+          text: AttendanceStatus[1],
+          value: AttendanceStatus[1],
+        },
+        {
+          text: AttendanceStatus[2],
+          value: AttendanceStatus[2],
+        },
+      ],
+      filterMode: "tree",
+      onFilter: (value: any, record) => record.Status.toString() === value.toString(),
       render: (value: AttendanceStatus) => (
         <div>
           <AttendanceStatusTag status={value} />
@@ -73,8 +89,20 @@ export const Attendance: React.FC = () => {
     {
       title: "Type",
       dataIndex: "Type",
-      sortDirections: ["descend", "ascend"],
+      filters: [
+        {
+          text: AttendanceType[0],
+          value: AttendanceType.Offline.toString(),
+        },
+        {
+          text: AttendanceType[1],
+          value: AttendanceType.Online.toString(),
+        },
+      ],
+      filterMode: "tree",
+      onFilter: (value: any, record) => record.Type == parseInt(value),
       sorter: (a, b) => a.Type - b.Type,
+      sortDirections: ["descend", "ascend"],
       render: (value: AttendanceType) => {
         switch (value) {
           case AttendanceType.Online.valueOf():
@@ -93,7 +121,8 @@ export const Attendance: React.FC = () => {
       },
     },
     {
-      width: "20px",
+      key: "action",
+      width: "350px",
       render: (_, record) => {
         switch (record.Status.valueOf()) {
           case (AttendanceStatus[0] as any).valueOf():
@@ -131,6 +160,7 @@ export const Attendance: React.FC = () => {
   const [current, setCurrent] = React.useState<DataType | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [attendances, setAttendances] = React.useState<DataType[]>([]);
+  
 
   useEffect(() => {
     fetchAttendances();
@@ -186,6 +216,7 @@ export const Attendance: React.FC = () => {
         <CreateModal isEmp={false} successCallback={successCallback} />
       </div>
       <Table
+        //tableLayout={"auto"}
         columns={columns}
         dataSource={attendances}
         loading={loading}
