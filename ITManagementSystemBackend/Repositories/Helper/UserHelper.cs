@@ -94,12 +94,12 @@ namespace Repositories.Helper
             return count;
         }
 
-        public static decimal TotalPayroll(decimal baseSalaryPerHours, decimal realWorkingHours,decimal oTSalaryPerHours,decimal oTWorkingHours,int dayOfHasSalary,decimal bonus)
+        public static decimal TotalPayroll(decimal baseSalaryPerHours, decimal realWorkingHours, decimal oTSalaryPerHours, decimal oTWorkingHours, int dayOfHasSalary, decimal bonus)
         {
-            var total = (baseSalaryPerHours * realWorkingHours)+(oTSalaryPerHours*oTWorkingHours)+bonus;
-            if(dayOfHasSalary !=0)
+            var total = (baseSalaryPerHours * realWorkingHours) + (oTSalaryPerHours * oTWorkingHours) + bonus;
+            if (dayOfHasSalary != 0)
             {
-                total += ((dayOfHasSalary*8)* baseSalaryPerHours);
+                total += ((dayOfHasSalary * 8) * baseSalaryPerHours);
             }
             return total;
         }

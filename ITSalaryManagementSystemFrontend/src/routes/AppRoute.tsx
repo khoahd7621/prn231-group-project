@@ -3,8 +3,10 @@ import {
   AuditOutlined,
   PieChartOutlined,
   PullRequestOutlined,
-  UserOutlined,
+  NodeExpandOutlined,
   UsergroupAddOutlined,
+  PoweroffOutlined,
+  FileUnknownOutlined,
 } from "@ant-design/icons";
 import React from "react";
 
@@ -22,6 +24,7 @@ export enum AdminRouteEnum {
   ManageContract = "ManageContract",
   ManageAttendance = "ManageAttendance",
   ManageLeave = "ManageLeave",
+  ManagePayroll = "ManagePayroll",
 }
 
 export const AdminRoute: {
@@ -55,12 +58,17 @@ export const AdminRoute: {
   [AdminRouteEnum.ManageAttendance]: {
     path: "manage-attendance",
     name: "Manage Attendance",
-    icon: <UserOutlined />,
+    icon: <NodeExpandOutlined />,
   },
   [AdminRouteEnum.ManageLeave]: {
     path: "manage-leave",
     name: "Manage Leave",
-    icon: <UserOutlined />,
+    icon: <PoweroffOutlined />,
+  },
+  [AdminRouteEnum.ManagePayroll]: {
+    path: "manage-payroll",
+    name: "Manage Payroll",
+    icon: <FileUnknownOutlined />,
   },
 };
 
@@ -69,6 +77,7 @@ export enum EmployeeRouteEnum {
   ManageContract = "ManageContract",
   ManageAttendance = "ManageAttendance",
   ManageLeave = "ManageLeave",
+  ManagePayroll = "ManagePayroll",
 }
 
 export const EmployeeRoute: {
@@ -87,11 +96,16 @@ export const EmployeeRoute: {
   [EmployeeRouteEnum.ManageAttendance]: {
     path: "manage-attendance",
     name: "Manage Attendance",
-    icon: <UserOutlined />,
+    icon: <NodeExpandOutlined />,
   },
   [EmployeeRouteEnum.ManageLeave]: {
     path: "manage-leave",
     name: "Manage Leave",
-    icon: <UserOutlined />,
+    icon: <PoweroffOutlined />,
+  },
+  [EmployeeRouteEnum.ManagePayroll]: {
+    path: "manage-payroll",
+    name: "Manage Payroll",
+    icon: <FileUnknownOutlined />,
   },
 };
