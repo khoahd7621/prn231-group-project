@@ -89,9 +89,7 @@ namespace Repositories.Impl
                         }
                         if (contract.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                         {
-                            payroll.Total -= (payroll.Total * ((decimal)contract.InsuranceRate/100));
-                            payroll.Total -= (payroll.Total * ((decimal)contract.TaxRate/100));
-
+                            payroll.Total -= (payroll.Total * ((decimal)payroll.Tax / 100));
                         }
                         if(check)
                             listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
@@ -137,8 +135,8 @@ namespace Repositories.Impl
                         }
                         if (contract.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                         {
-                            payroll.Total -= (payroll.Total * (decimal)contract.InsuranceRate);
-                            payroll.Total -= (payroll.Total * (decimal)contract.TaxRate);
+                            payroll.Total -= (payroll.Total * ((decimal)payroll.Tax / 100));
+                           
 
                         }
                         if(check)
@@ -191,8 +189,7 @@ namespace Repositories.Impl
                 }
                 if (contractActiveOfThisEmployee.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                 {
-                    payroll.Total -= (payroll.Total * ((decimal)contractActiveOfThisEmployee.InsuranceRate / 100));
-                    payroll.Total -= (payroll.Total * ((decimal)contractActiveOfThisEmployee.TaxRate / 100));
+                    payroll.Total -= (payroll.Total * ((decimal)payroll.Tax / 100));
 
                 }
                 if(check)
