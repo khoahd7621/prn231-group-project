@@ -61,8 +61,7 @@ namespace ITManagementSystemWebAPI.Controllers
             if (checkPayroll == null) return BadRequest("This payroll not exist");
             if (checkPayroll.Status == EnumList.PayrollStatus.Approved)
                 return BadRequest("Status must be different approved");
-            checkPayroll.Status = EnumList.PayrollStatus.Deleted;
-            _payrollRepository.UpdatePayroll(checkPayroll);
+            _payrollRepository.DeletePayroll(checkPayroll);
             return Ok("Deleted");
         }
 

@@ -203,6 +203,11 @@ namespace Repositories.Impl
             return listIdPayroll;
         }
 
+        public void DeletePayroll(PayRoll payRoll)
+        {
+            PayrollDAO.DeletePayroll(payRoll);
+        }
+
         public List<PayRoll> GetAllPayrolls()
         {
             return PayrollDAO.GetAll();
