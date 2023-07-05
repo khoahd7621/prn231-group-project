@@ -4,25 +4,21 @@ import React, { useEffect } from "react";
 import { Card, Col, Descriptions, Input, Modal, Row, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Title,
-  Tooltip,
-} from "chart.js";
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
+
 import { AttendanceStatus, AttendanceType, ContractStatus } from "../constants/enum";
 import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
 import { AttendanceStatusTag, DeleteModal, EditModal } from "../modules/attendance/components";
 import { AttendanceModel } from "../modules/attendance/models";
 import { ContractModel } from "../modules/contract/models";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
 type DataAttendanceType = {
   key: number;
 } & AttendanceModel;
+
 type DataContracType = {
   key: number;
 } & ContractModel;
@@ -48,6 +44,7 @@ const optionsChart = {
 };
 
 const labels = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+
 export const EmpDashBoard: React.FC = () => {
   const weekFormat = "YYYY-MM-DD";
   const columns: ColumnsType<DataAttendanceType> = [
@@ -116,14 +113,25 @@ export const EmpDashBoard: React.FC = () => {
           case 0:
             return (
               <Space>
-                <EditModal data={record} successCallback={fetchAttendances} />
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+                <EditModal
+                  data={record}
+                  successCallback={fetchAttendances}
+                />
+                <DeleteModal
+                  data={record}
+                  isDisable={false}
+                  successCallback={successCallback}
+                />
               </Space>
             );
           case 2:
             return (
               <Space>
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+                <DeleteModal
+                  data={record}
+                  isDisable={false}
+                  successCallback={successCallback}
+                />
               </Space>
             );
         }
@@ -192,12 +200,8 @@ export const EmpDashBoard: React.FC = () => {
     , Contracts($filter=Status eq 'Active' ;$expand=Level, Position)`;
     AttendanceApis.getEmployee(query)
       .then((res) => {
-        setAttendances(
-          (res as any).Attendances.map((item: { Id: any }) => ({ ...item, key: item.Id }))
-        );
-        setContracts(
-          (res as any).Contracts.map((item: { Id: any }) => ({ ...item, key: item.Id }))
-        );
+        setAttendances((res as any).Attendances.map((item: { Id: any }) => ({ ...item, key: item.Id })));
+        setContracts((res as any).Contracts.map((item: { Id: any }) => ({ ...item, key: item.Id })));
         setTotal((res as any).Attendances.length);
       })
       .catch((err) => console.log(err));
@@ -222,7 +226,10 @@ export const EmpDashBoard: React.FC = () => {
     <>
       <div style={{ display: "flex" }}>
         <div style={{ width: "40%", height: "60%" }}>
-          <Bar options={optionsChart} data={chartData} />
+          <Bar
+            options={optionsChart}
+            data={chartData}
+          />
         </div>
         <div style={{ borderLeft: "1px solid", margin: "10px" }}></div>
         <div style={{ width: "60%", height: "60%%" }}>
@@ -232,14 +239,11 @@ export const EmpDashBoard: React.FC = () => {
               <Col span={12}>
                 <Card
                   key={item.Id}
-                  title={
-                    dayjs(item.StartDate).format("DD-MM-YYYY") +
-                    "~" +
-                    dayjs(item.EndDate).format("DD-MM-YYYY")
-                  }
+                  title={dayjs(item.StartDate).format("DD-MM-YYYY") + "~" + dayjs(item.EndDate).format("DD-MM-YYYY")}
                   // bordered={true}
                   onClick={() => ShowDetailContract(item)}
-                  style={{ cursor: "pointer" }}>
+                  style={{ cursor: "pointer" }}
+                >
                   <Tag>{item.EmployeeType}</Tag>
                   <p></p>
                   <Tag> {item.SalaryType}</Tag>
@@ -260,31 +264,25 @@ export const EmpDashBoard: React.FC = () => {
         footer={false}
         open={isModalOpen}
         width="80%"
-        onCancel={handleCancel}>
-        <Descriptions bordered column={6} layout="vertical">
-          <Descriptions.Item label="Employee Type">
-            {contractSelect?.EmployeeType}
-          </Descriptions.Item>
+        onCancel={handleCancel}
+      >
+        <Descriptions
+          bordered
+          column={6}
+          layout="vertical"
+        >
+          <Descriptions.Item label="Employee Type">{contractSelect?.EmployeeType}</Descriptions.Item>
           <Descriptions.Item label="Start Date">
             {dayjs(contractSelect?.StartDate).format("DD-MM-YYYY")}
           </Descriptions.Item>
-          <Descriptions.Item label="End Date">
-            {" "}
-            {dayjs(contractSelect?.EndDate).format("DD-MM-YYYY")}
-          </Descriptions.Item>
+          <Descriptions.Item label="End Date"> {dayjs(contractSelect?.EndDate).format("DD-MM-YYYY")}</Descriptions.Item>
           <Descriptions.Item label="Base Salary">{contractSelect?.BaseSalary}$</Descriptions.Item>
-          <Descriptions.Item label="Date Off Per Year">
-            {contractSelect?.DateOffPerYear}
-          </Descriptions.Item>
+          <Descriptions.Item label="Date Off Per Year">{contractSelect?.DateOffPerYear}</Descriptions.Item>
           <Descriptions.Item label="Level">{contractSelect?.Level.LevelName}</Descriptions.Item>
-          <Descriptions.Item label="Insurance Rate">
-            {contractSelect?.InsuranceRate}%
-          </Descriptions.Item>
+          <Descriptions.Item label="Insurance Rate">{contractSelect?.InsuranceRate}%</Descriptions.Item>
           <Descriptions.Item label="Tax Rate">{contractSelect?.TaxRate}%</Descriptions.Item>
           <Descriptions.Item label="Salary Type">{contractSelect?.SalaryType}.</Descriptions.Item>
-          <Descriptions.Item label="Position">
-            {contractSelect?.Position.PositionName}
-          </Descriptions.Item>
+          <Descriptions.Item label="Position">{contractSelect?.Position.PositionName}</Descriptions.Item>
           <Descriptions.Item label="Status">
             <Tag color="success">{contractSelect?.Status}</Tag>
           </Descriptions.Item>
@@ -295,7 +293,8 @@ export const EmpDashBoard: React.FC = () => {
           display: "flex",
           justifyContent: "space-between",
           marginBottom: 16,
-        }}>
+        }}
+      >
         <Search
           placeholder="Search attendance"
           style={{

@@ -11,5 +11,6 @@ export type CreatePayload = {
   dateOffPerYear: number;
   levelId: number;
   positionId: number;
+  otSalaryRate: number;
   salaryType: SalaryType;
 };
