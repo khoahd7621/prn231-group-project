@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import { Button, Input, Space, Table } from "antd";
+import { Input, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { PayrollStatus } from "../constants/enum";
 import PayrollApis from "../modules/payroll/apis/PayrollApis";
-import { CreateModal, DetailModal, PayrollStatusTag } from "../modules/payroll/components";
+import { CreateModal, DeleteModal, DetailModal, PayrollStatusTag } from "../modules/payroll/components";
 import { PayrollModel } from "../modules/payroll/models/PayrollModel";
 import { formatMoney } from "../utils/formatter";
 
@@ -91,12 +91,10 @@ export const Payroll: React.FC = () => {
       render: (_, record: DataType) => (
         <Space>
           {+PayrollStatus[record.Status] === PayrollStatus.Waiting && (
-            <Button
-              type="primary"
-              danger
-            >
-              Delete
-            </Button>
+            <DeleteModal
+              data={record}
+              successCallback={() => fetchPayrolls(query)}
+            />
           )}
         </Space>
       ),

@@ -41,7 +41,6 @@ export enum AttendanceType {
 }
 
 export enum PayrollStatus {
-  Deleted,
   Approved,
   Rejected,
   Waiting,
