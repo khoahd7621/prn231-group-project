@@ -28,28 +28,28 @@ namespace BusinessObject
             modelBuilder.Entity<Level>().HasData(
                  new Level
                  {
-                      Id = 1,
-                      LevelName = "Intern"
+                     Id = 1,
+                     LevelName = "Intern"
                  },
                  new Level
                  {
-                      Id = 2,
-                      LevelName = "Fresher"
+                     Id = 2,
+                     LevelName = "Fresher"
                  },
                  new Level
                  {
-                      Id = 3,
-                      LevelName = "Junior"
+                     Id = 3,
+                     LevelName = "Junior"
                  },
                  new Level
                  {
-                      Id = 4,
-                      LevelName = "Senior"
+                     Id = 4,
+                     LevelName = "Senior"
                  },
                  new Level
                  {
-                      Id = 5,
-                      LevelName = "Specialized"
+                     Id = 5,
+                     LevelName = "Specialized"
                  }
             );
             modelBuilder.Entity<Position>().HasData(

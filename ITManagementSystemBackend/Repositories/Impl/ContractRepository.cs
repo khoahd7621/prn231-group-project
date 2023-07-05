@@ -15,12 +15,12 @@ namespace Repositories.Impl
             var checkEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(contract.EmployeeId);
             if (checkEmployee != null)
                 return false;
-            var listContractOfThisEmp= ContractDAO.GetContractsByEmpId(contract.EmployeeId);
-            foreach(var cont in listContractOfThisEmp)
+            var listContractOfThisEmp = ContractDAO.GetContractsByEmpId(contract.EmployeeId);
+            foreach (var cont in listContractOfThisEmp)
             {
-                if(cont.EndDate.Date == contract.StartDate.Date) check = true;
+                if (cont.EndDate.Date == contract.StartDate.Date) check = true;
             }
-            if(check) contract.StartDate = contract.StartDate.AddDays(1);
+            if (check) contract.StartDate = contract.StartDate.AddDays(1);
             contract.Status = EnumList.ContractStatus.Active;
             ContractDAO.UpdateContract(contract);
             return true;
@@ -50,13 +50,13 @@ namespace Repositories.Impl
                 if (req.TaxRate <= 0 || req.InsuranceRate <= 0)
                     return "gross & insurance larger than 0";
             }
-            if(req.EmployeeType == EnumList.EmployeeType.PartTime)
+            if (req.EmployeeType == EnumList.EmployeeType.PartTime)
             {
                 req.OTSalaryRate = 1;
             }
             else
             {
-                if(req.OTSalaryRate <=0 || req.OTSalaryRate > 100)
+                if (req.OTSalaryRate <= 0 || req.OTSalaryRate > 100)
                 {
                     return "OT rate of fulltime must grather than 0";
                 }

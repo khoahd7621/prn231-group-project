@@ -15,7 +15,7 @@ namespace DataTransfer.Request
         public DateTime EndDate { get; set; }
         [Required]
         public decimal BaseSalary { get; set; }
-        
+
         public double OTSalaryRate { get; set; }
 
         public double InsuranceRate { get; set; }

@@ -36,6 +36,6 @@ namespace BusinessObject
         [Required]
         public decimal Total { get; set; }
 
-        public virtual Contract contract { get; set; }
+        public virtual Contract Contract { get; set; }
     }
 }

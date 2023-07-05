@@ -1,7 +1,5 @@
-import { Modal, Tag } from "antd";
+import { Modal, Tag, Typography } from "antd";
 import dayjs from "dayjs";
-
-import { Typography } from "antd";
 
 import { EmployeeStatusTag, EmployeeTypeTag, RenderAvatar } from ".";
 import { ContractStatus, Gender } from "../../../constants/enum";

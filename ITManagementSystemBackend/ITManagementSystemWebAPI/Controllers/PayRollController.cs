@@ -36,7 +36,7 @@ namespace ITManagementSystemWebAPI.Controllers
         public IActionResult Approve(int key)
         {
             var checkPayroll = _payrollRepository.GetPayRollById(key);
-            if(checkPayroll == null) return BadRequest("This payroll not exist");
+            if (checkPayroll == null) return BadRequest("This payroll not exist");
             if (checkPayroll.Status != EnumList.PayrollStatus.Waiting)
                 return BadRequest("Status must be waiting");
             checkPayroll.Status = EnumList.PayrollStatus.Approved;
