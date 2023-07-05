@@ -225,7 +225,7 @@ export const EmpDashBoard: React.FC = () => {
         {
           const previousWeekHours = (res as any).Attendances.filter(
             (item: { Status: string; Date: string }) =>
-              item.Status !== "Approved" &&
+              item.Status == "Approved" &&
               dayjs(item.Date) >= dayjs().startOf("week").subtract(1, "week") &&
               dayjs(item.Date) <= dayjs().endOf("week").subtract(1, "week")
           ).map((item: { Id: any; Hour: any }) => item.Hour);
@@ -238,7 +238,7 @@ export const EmpDashBoard: React.FC = () => {
         {
           const previiousOrvertimeWeekHours = (res as any).Attendances.filter(
             (item: { Status: string; Date: string }) =>
-              item.Status !== "Approved" &&
+              item.Status == "Approved" &&
               dayjs(item.Date) >= dayjs().startOf("week").subtract(1, "week") &&
               dayjs(item.Date) <= dayjs().endOf("week").subtract(1, "week")
           ).map((item: { Id: any; Hour: any }) => item.Hour);
