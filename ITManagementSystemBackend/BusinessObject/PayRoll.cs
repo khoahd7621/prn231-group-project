@@ -14,7 +14,7 @@ namespace BusinessObject
         [Required]
         public DateTime EndDate { get; set; }
         [Required]
-        public double Tax { get; set; }
+        public double TotalDeductionRate { get; set; }
         [Required]
         public decimal BaseSalaryPerHours { get; set; }
         [Required]
@@ -36,6 +36,6 @@ namespace BusinessObject
         [Required]
         public decimal Total { get; set; }
 
-        public virtual Contract contract { get; set; }
+        public virtual Contract Contract { get; set; }
     }
 }

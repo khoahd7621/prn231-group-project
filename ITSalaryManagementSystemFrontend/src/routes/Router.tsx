@@ -15,10 +15,12 @@ import {
   EmpContract,
   EmpDashBoard,
   EmpLeave,
+  EmpPayroll,
   Employee,
   Leave,
   Level,
   Login,
+  Payroll,
   Position,
 } from "../pages";
 import { AdminRoute, AdminRouteEnum, EmployeeRoute, EmployeeRouteEnum } from "./AppRoute";
@@ -57,6 +59,7 @@ const Router = createBrowserRouter([
           { path: AdminRoute[AdminRouteEnum.ManageContract].path, element: <Contract /> },
           { path: AdminRoute[AdminRouteEnum.ManageAttendance].path, element: <Attendance /> },
           { path: AdminRoute[AdminRouteEnum.ManageLeave].path, element: <Leave /> },
+          { path: AdminRoute[AdminRouteEnum.ManagePayroll].path, element: <Payroll /> },
         ],
       },
       {
@@ -73,6 +76,7 @@ const Router = createBrowserRouter([
           { path: EmployeeRoute[EmployeeRouteEnum.ManageContract].path, element: <EmpContract /> },
           { path: EmployeeRoute[EmployeeRouteEnum.ManageAttendance].path, element: <EmpAttendance /> },
           { path: EmployeeRoute[EmployeeRouteEnum.ManageLeave].path, element: <EmpLeave /> },
+          { path: EmployeeRoute[EmployeeRouteEnum.ManagePayroll].path, element: <EmpPayroll /> },
         ],
       },
     ],

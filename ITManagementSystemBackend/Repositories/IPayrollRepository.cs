@@ -1,6 +1,5 @@
 ﻿using BusinessObject;
 using DataTransfer.Request;
-using DataTransfer.Response;
 
 namespace Repositories
 {
