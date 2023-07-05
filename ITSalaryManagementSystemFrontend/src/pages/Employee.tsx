@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Button, Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-import { ContractStatus, EmployeeStatus } from "../constants/enum";
+import { ContractStatus, EmployeeStatus, Role } from "../constants/enum";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 import {
   CreateModal,
@@ -166,7 +166,9 @@ export const Employee: React.FC = () => {
     setLoading(true);
     EmployeeApis.getAll()
       .then((res) => {
-        setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
+        setPositions(
+          res.value.filter((v) => +Role[v.Role] === Role.Employee).map((item) => ({ ...item, key: item.Id }))
+        );
         setTotal(res.value.length);
       })
       .catch((err) => console.log(err));
