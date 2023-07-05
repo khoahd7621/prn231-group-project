@@ -1,26 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
-import { Button, Input, Space, Table, Tag } from "antd";
+import { Button, DatePicker, Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { AttendanceStatus, AttendanceType } from "../constants/enum";
 import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
-import {
-  AttendanceStatusTag,
-  CreateModal,
-  DeleteModal,
-  EditModal,
-} from "../modules/attendance/components";
+import { AttendanceStatusTag, CreateModal, DeleteModal, EditModal } from "../modules/attendance/components";
 import { AttendanceModel } from "../modules/attendance/models";
+import { SearchOutlined } from "@ant-design/icons";
 
 type DataType = {
   key: number;
 } & AttendanceModel;
 
-const { Search } = Input;
-
 export const Attendance: React.FC = () => {
+  const pageSizeOptions = [5, 10, 20, 50];
+
   const columns: ColumnsType<DataType> = [
     {
       title: "Employee Name",
@@ -28,6 +25,38 @@ export const Attendance: React.FC = () => {
       dataIndex: ["User", "EmployeeName"],
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeId - b.EmployeeId,
+      filterMultiple: false,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+          <Input
+            placeholder="Search name"
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}>
+              Search
+            </Button>
+            <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+      onFilter: (value, record) =>
+        (record.User as any).EmployeeName.toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
       render: (value: string, record: DataType) => (
         <div>
           {(record.User as any).EmployeeCode} - {value}
@@ -37,6 +66,51 @@ export const Attendance: React.FC = () => {
     {
       title: "Date",
       dataIndex: "Date",
+      filterMultiple: false,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 10 }} onKeyDown={(e) => e.stopPropagation()}>
+          <RangePicker
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e ? [e] : []);
+            }}
+            onPressEnter={() => confirm}
+            style={{ marginBottom: 10, display: "flex" }}
+          />
+
+          <Space style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}>
+              Search
+            </Button>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+              }}
+              size="small"
+              style={{ width: 90 }}>
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+      onFilter: (value, record) => {
+        const recordDate = dayjs(record.Date);
+        const startDate = value[0];
+        const endDate = value[1];
+        return startDate && endDate
+          ? (recordDate.isAfter(startDate, "day") || recordDate.isSame(startDate, "day")) &&
+              (recordDate.isBefore(endDate, "day") || recordDate.isSame(startDate, "day"))
+          : true;
+      },
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const dateA = new Date(a.Date.toString());
@@ -128,9 +202,7 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[0] as any).valueOf():
             return (
               <Space>
-                <Button
-                  style={{ backgroundColor: "#00cc00", color: "white" }}
-                  onClick={() => handleApprove(record.Id)}>
+                <Button style={{ backgroundColor: "#00cc00", color: "white" }} onClick={() => handleApprove(record.Id)}>
                   Aprrove
                 </Button>
                 <Button danger onClick={() => handleReject(record.Id)}>
@@ -152,15 +224,8 @@ export const Attendance: React.FC = () => {
       },
     },
   ];
-
-  const [limit, setLimit] = React.useState<number>(5);
-  const [page, setPage] = React.useState<number>(1);
-  const [total, setTotal] = React.useState<number>(0);
-
-  const [current, setCurrent] = React.useState<DataType | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [attendances, setAttendances] = React.useState<DataType[]>([]);
-  
 
   useEffect(() => {
     fetchAttendances();
@@ -171,14 +236,12 @@ export const Attendance: React.FC = () => {
     AttendanceApis.getAll()
       .then((res) => {
         setAttendances(res.value.map((item) => ({ ...item, key: item.Id })));
-        setTotal(res.value.length);
       })
       .catch((err) => console.log(err));
     setLoading(false);
   };
 
   const successCallback = () => {
-    setPage(1);
     fetchAttendances();
   };
 
@@ -197,37 +260,26 @@ export const Attendance: React.FC = () => {
       })
       .catch((err) => console.log(err));
   };
-
+  const { RangePicker } = DatePicker;
   return (
     <>
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           marginBottom: 16,
         }}>
-        <Search
-          placeholder="Search attendance"
-          style={{
-            width: 400,
-          }}
-          allowClear
-        />
         <CreateModal isEmp={false} successCallback={successCallback} />
       </div>
       <Table
-        //tableLayout={"auto"}
+        size="large"
         columns={columns}
         dataSource={attendances}
         loading={loading}
         pagination={{
-          current: page,
-          pageSize: limit,
-          total: total,
-          onChange: (page, pageSize) => {
-            setPage(page);
-            setLimit(pageSize || 5);
-          },
+          pageSizeOptions,
+          showSizeChanger: true,
+          position: ["topLeft"],
         }}
       />
     </>
