@@ -11,5 +11,7 @@ namespace Repositories
         public List<PayRoll> GetAllPayrolls();
         public List<PayRoll> GetListPayrollByEmpId(int empId);
         public PayRoll GetPayRollById(int id);
+
+        public void UpdatePayroll(PayRoll payroll);
     }
 }

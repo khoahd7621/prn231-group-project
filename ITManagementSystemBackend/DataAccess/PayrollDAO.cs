@@ -28,6 +28,12 @@ namespace DataAccess
             var context = new MyDbContext();
             return context.Payrolls.FirstOrDefault(x => x.Id == Id);
         }
+        public static void UpdateStatusPayroll(PayRoll payroll)
+        {
+            var context = new MyDbContext();
+            context.Entry<PayRoll>(payroll).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.SaveChanges();
+        }
 
     }
 }

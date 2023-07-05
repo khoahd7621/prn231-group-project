@@ -187,5 +187,10 @@ namespace Repositories.Impl
         {
             return PayrollDAO.FindPayrollById(id);
         }
+
+        public void UpdatePayroll(PayRoll payroll)
+        {
+            PayrollDAO.UpdateStatusPayroll(payroll);
+        }
     }
 }
