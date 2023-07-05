@@ -57,7 +57,7 @@ namespace Repositories.Impl
                         {
                             var dayTakeLeave = takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(req.EmployeeId, startDate.Date, contract.EndDate.Date);
                             payroll.BaseSalaryPerHours = contract.BaseSalary / hoursWorkingInMonth;
-                            payroll.Tax = contract.TaxRate + contract.InsuranceRate;
+                            payroll.TotalDeductionRate = contract.TaxRate + contract.InsuranceRate;
                             payroll.OTSalaryPerHours = payroll.BaseSalaryPerHours + (payroll.BaseSalaryPerHours * ((decimal)contract.OTSalaryRate / 100));
                             payroll.DayOfHasSalary = dayTakeLeave;
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
@@ -73,7 +73,7 @@ namespace Repositories.Impl
                         else
                         {
                             payroll.BaseSalaryPerHours = contract.BaseSalary;
-                            payroll.Tax = contract.TaxRate + contract.InsuranceRate;
+                            payroll.TotalDeductionRate = contract.TaxRate + contract.InsuranceRate;
                             payroll.OTSalaryPerHours += payroll.BaseSalaryPerHours;
                             payroll.DayOfHasSalary = 0;
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
@@ -88,9 +88,7 @@ namespace Repositories.Impl
                         }
                         if (contract.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                         {
-                            payroll.Total -= (payroll.Total * ((decimal)contract.InsuranceRate / 100));
-                            payroll.Total -= (payroll.Total * ((decimal)contract.TaxRate / 100));
-
+                            payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
                         }
                         if(check)
                             listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
@@ -103,7 +101,7 @@ namespace Repositories.Impl
                         {
                             var dayTakeLeave = takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(req.EmployeeId, startDate.Date, lastDate.Date);
                             payroll.BaseSalaryPerHours = contract.BaseSalary / hoursWorkingInMonth;
-                            payroll.Tax = contract.TaxRate + contract.InsuranceRate;
+                            payroll.TotalDeductionRate = contract.TaxRate + contract.InsuranceRate;
                             payroll.OTSalaryPerHours = payroll.BaseSalaryPerHours + (payroll.BaseSalaryPerHours * ((decimal)contract.OTSalaryRate / 100));
                             payroll.DayOfHasSalary = dayTakeLeave;
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
@@ -120,7 +118,7 @@ namespace Repositories.Impl
                         else
                         {
                             payroll.BaseSalaryPerHours = contract.BaseSalary;
-                            payroll.Tax = contract.TaxRate + contract.InsuranceRate;
+                            payroll.TotalDeductionRate = contract.TaxRate + contract.InsuranceRate;
                             payroll.OTSalaryPerHours = payroll.BaseSalaryPerHours;
                             payroll.DayOfHasSalary = 0;
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
@@ -136,8 +134,8 @@ namespace Repositories.Impl
                         }
                         if (contract.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                         {
-                            payroll.Total -= (payroll.Total * (decimal)contract.InsuranceRate);
-                            payroll.Total -= (payroll.Total * (decimal)contract.TaxRate);
+                            payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
+                           
 
                         }
                         if(check)
@@ -158,7 +156,7 @@ namespace Repositories.Impl
                 {
                     var dayTakeLeave = takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(req.EmployeeId, startDate.Date, lastDate.Date);
                     payroll.BaseSalaryPerHours = contractActiveOfThisEmployee.BaseSalary / hoursWorkingInMonth;
-                    payroll.Tax = contractActiveOfThisEmployee.TaxRate + contractActiveOfThisEmployee.InsuranceRate;
+                    payroll.TotalDeductionRate = contractActiveOfThisEmployee.TaxRate + contractActiveOfThisEmployee.InsuranceRate;
                     payroll.OTSalaryPerHours = payroll.BaseSalaryPerHours + (payroll.BaseSalaryPerHours * ((decimal)contractActiveOfThisEmployee.OTSalaryRate / 100));
                     payroll.DayOfHasSalary = dayTakeLeave;
                     payroll.BaseWorkingHours = hoursWorkingInMonth;
@@ -175,7 +173,7 @@ namespace Repositories.Impl
                 else
                 {
                     payroll.BaseSalaryPerHours = contractActiveOfThisEmployee.BaseSalary;
-                    payroll.Tax = contractActiveOfThisEmployee.TaxRate + contractActiveOfThisEmployee.InsuranceRate;
+                    payroll.TotalDeductionRate = contractActiveOfThisEmployee.TaxRate + contractActiveOfThisEmployee.InsuranceRate;
                     payroll.OTSalaryPerHours = payroll.BaseSalaryPerHours;
                     payroll.DayOfHasSalary = 0;
                     payroll.BaseWorkingHours = hoursWorkingInMonth;
@@ -191,8 +189,7 @@ namespace Repositories.Impl
                 }
                 if (contractActiveOfThisEmployee.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                 {
-                    payroll.Total -= (payroll.Total * ((decimal)contractActiveOfThisEmployee.InsuranceRate / 100));
-                    payroll.Total -= (payroll.Total * ((decimal)contractActiveOfThisEmployee.TaxRate / 100));
+                    payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
 
                 }
                 if(check)
@@ -204,6 +201,11 @@ namespace Repositories.Impl
                 return listIdPayroll;
             }
             return listIdPayroll;
+        }
+
+        public void DeletePayroll(PayRoll payRoll)
+        {
+            PayrollDAO.DeletePayroll(payRoll);
         }
 
         public List<PayRoll> GetAllPayrolls()

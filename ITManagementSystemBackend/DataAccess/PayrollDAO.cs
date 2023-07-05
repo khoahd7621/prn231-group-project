@@ -54,5 +54,12 @@ namespace DataAccess
             context.Entry(payroll).State = EntityState.Modified;
             context.SaveChanges();
         }
+        public static void DeletePayroll(PayRoll payRoll)
+        {
+            var context = new MyDbContext();
+            context.Payrolls.Remove(payRoll);
+            context.SaveChanges();
+        }
+
     }
 }

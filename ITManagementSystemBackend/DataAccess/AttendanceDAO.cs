@@ -181,7 +181,7 @@ namespace DataAccess
                        && c.StartDate >= attendance.Date
                        && c.EndDate <= attendance.Date
                        ).ToList();
-                    if (!takeLeave.IsNullOrEmpty())
+                    if (takeLeave.Count() != 0)
                         throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
                     var contact = context.Contracts
@@ -190,7 +190,7 @@ namespace DataAccess
                         //&& c.StartDate >= attendance.Date
                         && c.EndDate.Date >= attendance.Date.Date
                         ).ToList();
-                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendance of employee's contact is not exist");
+                    if (contact.Count() == 0) throw new ArgumentException("Can not create attendance of employee's contact is not exist");
                     context.Entry(attendance).State = EntityState.Modified;
                     context.SaveChanges();
                 }

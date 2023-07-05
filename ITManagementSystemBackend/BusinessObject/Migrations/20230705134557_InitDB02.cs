@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace BusinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB01 : Migration
+    public partial class InitDB02 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -165,7 +166,7 @@ namespace BusinessObject.Migrations
                     ContractId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Tax = table.Column<double>(type: "float", nullable: false),
+                    TotalDeductionRate = table.Column<double>(type: "float", nullable: false),
                     BaseSalaryPerHours = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OTSalaryPerHours = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BaseWorkingHours = table.Column<double>(type: "float", nullable: false),
@@ -215,7 +216,7 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Address", "CCCD", "CreatedDate", "Dob", "Email", "EmployeeCode", "EmployeeName", "Gender", "IsFirstLogin", "Password", "Phone", "Role", "Status" },
-                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 5, 16, 10, 13, 662, DateTimeKind.Local).AddTicks(3243), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$mN9vAQuoea/NRxFNkbMl..y5Q6ajIctMaFM0bqIuVUrbQdzIUF/iu", "0792123456", 0, 0 });
+                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 5, 20, 45, 57, 246, DateTimeKind.Local).AddTicks(9484), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$Hqjd5HaxrGCrlBUTia8gAeuJoUOSN9wB2U2ppKC35tB2jGNMHF6.C", "0792123456", 0, 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_EmployeeId",
