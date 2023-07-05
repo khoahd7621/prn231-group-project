@@ -6,7 +6,7 @@ namespace Repositories
 {
     public interface IPayrollRepository
     {
-        public List<ContractAndPayrollResponse> CreatePayroll(PayrollReq payroll);
+        public List<int> CreatePayroll(PayrollReq payroll);
         public bool CheckEmployeeAlreadyHasPayroll(DateTime date, int empId);
         public List<PayRoll> GetAllPayrolls();
         public List<PayRoll> GetListPayrollByEmpId(int empId);
