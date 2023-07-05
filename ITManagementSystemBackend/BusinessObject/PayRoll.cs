@@ -8,7 +8,7 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public int EmployeeId { get; set; }
+        public int ContractId { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
@@ -36,6 +36,6 @@ namespace BusinessObject
         [Required]
         public decimal Total { get; set; }
 
-        public virtual Employee User { get; set; }
+        public virtual Contract contract { get; set; }
     }
 }

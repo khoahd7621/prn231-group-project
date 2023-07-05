@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Enum;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject
 {
@@ -38,5 +39,7 @@ namespace BusinessObject
         public virtual Employee User { get; set; }
         public virtual Level Level { get; set; }
         public virtual Position Position { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<PayRoll> PayRolls { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using DataAccess;
 using DataTransfer.Request;
 using Repositories.Helper;
+using System.Diagnostics.Contracts;
 
 
 namespace Repositories.Impl
@@ -48,7 +49,7 @@ namespace Repositories.Impl
                     var payroll = new PayRoll();     
                     payroll.StartDate = startDateOfMonth;
                     payroll.EndDate = lastDateOfMonth;
-                    payroll.EmployeeId = req.EmployeeId;
+                    payroll.ContractId = contract.Id;
                     if (contract.Status == BusinessObject.Enum.EnumList.ContractStatus.Expired)
                     {
 
@@ -130,7 +131,7 @@ namespace Repositories.Impl
                 var payroll = new PayRoll();
                 payroll.StartDate = startDateOfMonth;
                 payroll.EndDate = lastDateOfMonth;
-                payroll.EmployeeId = req.EmployeeId;
+                payroll.ContractId = contractActiveOfThisEmployee.Id;
                 if (contractActiveOfThisEmployee.EmployeeType == BusinessObject.Enum.EnumList.EmployeeType.FullTime)
                 {
                     var dayTakeLeave = takeLeaveRepository.CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(req.EmployeeId, startDate.Date, lastDate.Date);
