@@ -30,7 +30,7 @@ namespace ITManagementSystemWebAPI.Controllers
             var checkEmployeeHasAnyPayrollOfThisMonth = _payrollRepository.CheckEmployeeAlreadyHasPayroll(payrollReq.dateTime, payrollReq.EmployeeId);
             if (!checkEmployeeHasAnyPayrollOfThisMonth) return BadRequest("This user already has payroll");
             var check = _payrollRepository.CreatePayroll(payrollReq);
-            return check != null ? Ok(check) : BadRequest("This User don't has any contract in this month");
+            return check.Count>0 ? Ok(check) : BadRequest("This User don't has any contract in this month Or Don't have Attendance & day off has salary");
         }
         [HttpPatch("odata/PayRoll/Approve/{key}")]
         public IActionResult Approve(int key)
@@ -61,8 +61,7 @@ namespace ITManagementSystemWebAPI.Controllers
             if (checkPayroll == null) return BadRequest("This payroll not exist");
             if (checkPayroll.Status == EnumList.PayrollStatus.Approved)
                 return BadRequest("Status must be different approved");
-            checkPayroll.Status = EnumList.PayrollStatus.Deleted;
-            _payrollRepository.UpdatePayroll(checkPayroll);
+            _payrollRepository.DeletePayroll(checkPayroll);
             return Ok("Deleted");
         }
 

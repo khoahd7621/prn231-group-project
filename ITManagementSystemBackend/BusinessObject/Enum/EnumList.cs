@@ -31,7 +31,6 @@
         }
         public enum PayrollStatus
         {
-            Deleted,
             Approved,
             Rejected,
             Waiting

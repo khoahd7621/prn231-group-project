@@ -12,5 +12,6 @@ namespace Repositories
         public PayRoll GetPayRollById(int id);
 
         public void UpdatePayroll(PayRoll payroll);
+        public void DeletePayroll(PayRoll payRoll);
     }
 }

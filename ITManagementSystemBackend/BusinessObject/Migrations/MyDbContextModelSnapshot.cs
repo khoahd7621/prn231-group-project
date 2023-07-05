@@ -184,14 +184,14 @@ namespace BusinessObject.Migrations
                             Id = 1,
                             Address = "HCM",
                             CCCD = "1234567890",
-                            CreatedDate = new DateTime(2023, 7, 5, 16, 10, 13, 662, DateTimeKind.Local).AddTicks(3243),
+                            CreatedDate = new DateTime(2023, 7, 5, 20, 45, 57, 246, DateTimeKind.Local).AddTicks(9484),
                             Dob = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@projectx.com",
                             EmployeeCode = "SD0001",
                             EmployeeName = "Admin",
                             Gender = 0,
                             IsFirstLogin = true,
-                            Password = "$2a$11$mN9vAQuoea/NRxFNkbMl..y5Q6ajIctMaFM0bqIuVUrbQdzIUF/iu",
+                            Password = "$2a$11$Hqjd5HaxrGCrlBUTia8gAeuJoUOSN9wB2U2ppKC35tB2jGNMHF6.C",
                             Phone = "0792123456",
                             Role = 0,
                             Status = 0
@@ -286,11 +286,11 @@ namespace BusinessObject.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<double>("Tax")
-                        .HasColumnType("float");
-
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<double>("TotalDeductionRate")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -422,13 +422,13 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.PayRoll", b =>
                 {
-                    b.HasOne("BusinessObject.Contract", "contract")
+                    b.HasOne("BusinessObject.Contract", "Contract")
                         .WithMany("PayRolls")
                         .HasForeignKey("ContractId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("contract");
+                    b.Navigation("Contract");
                 });
 
             modelBuilder.Entity("BusinessObject.TakeLeave", b =>
