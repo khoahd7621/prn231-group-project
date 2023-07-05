@@ -8,7 +8,7 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             payroll.Status = BusinessObject.Enum.EnumList.PayrollStatus.Waiting;
-            payroll.StartDate = DateTime.Now.Date;
+            payroll.CreatedDate = DateTime.Now.Date;
             context.Payrolls.Add(payroll);
             context.SaveChanges();
             return context.Payrolls.Find(payroll.Id);

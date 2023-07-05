@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230704160619_Init database")]
-    partial class Initdatabase
+    [Migration("20230705072749_InitDB")]
+    partial class InitDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,14 +187,14 @@ namespace BusinessObject.Migrations
                             Id = 1,
                             Address = "HCM",
                             CCCD = "1234567890",
-                            CreatedDate = new DateTime(2023, 7, 4, 23, 6, 18, 935, DateTimeKind.Local).AddTicks(4520),
+                            CreatedDate = new DateTime(2023, 7, 5, 14, 27, 48, 852, DateTimeKind.Local).AddTicks(2762),
                             Dob = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@projectx.com",
                             EmployeeCode = "SD0001",
                             EmployeeName = "Admin",
                             Gender = 0,
                             IsFirstLogin = true,
-                            Password = "$2a$11$MMIxbbjWzvs1F7XNt8D4tucE7W3R0towJYgsNDX24ooSW64l5SRGS",
+                            Password = "$2a$11$7VCkXhQhLlmLMrY2JWTm0OxLYB4H4s2DqHQqipUFrb7IyAgOZUmia",
                             Phone = "0792123456",
                             Role = 0,
                             Status = 0
@@ -261,6 +261,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<decimal>("Bonus")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DayOfHasSalary")
                         .HasColumnType("int");

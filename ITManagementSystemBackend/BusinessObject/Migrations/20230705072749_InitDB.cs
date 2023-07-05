@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BusinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class Initdatabase : Migration
+    public partial class InitDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -146,6 +146,7 @@ namespace BusinessObject.Migrations
                     BaseWorkingHours = table.Column<double>(type: "float", nullable: false),
                     RealWorkingHours = table.Column<double>(type: "float", nullable: false),
                     OTWorkingHours = table.Column<double>(type: "float", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DayOfHasSalary = table.Column<int>(type: "int", nullable: false),
                     Bonus = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -215,7 +216,7 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Address", "CCCD", "CreatedDate", "Dob", "Email", "EmployeeCode", "EmployeeName", "Gender", "IsFirstLogin", "Password", "Phone", "Role", "Status" },
-                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 4, 23, 6, 18, 935, DateTimeKind.Local).AddTicks(4520), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$MMIxbbjWzvs1F7XNt8D4tucE7W3R0towJYgsNDX24ooSW64l5SRGS", "0792123456", 0, 0 });
+                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 5, 14, 27, 48, 852, DateTimeKind.Local).AddTicks(2762), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$7VCkXhQhLlmLMrY2JWTm0OxLYB4H4s2DqHQqipUFrb7IyAgOZUmia", "0792123456", 0, 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_EmployeeId",

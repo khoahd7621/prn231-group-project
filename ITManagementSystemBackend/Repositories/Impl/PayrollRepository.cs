@@ -1,7 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess;
 using DataTransfer.Request;
-using DataTransfer.Response;
 using Repositories.Helper;
 
 
@@ -29,7 +28,7 @@ namespace Repositories.Impl
             return false;
         }
 
-        public List<ContractAndPayrollResponse> CreatePayroll(PayrollReq req)
+        public List<int> CreatePayroll(PayrollReq req)
         {
             
             var contractActiveOfThisEmployee = ContractDAO.checkEmployeeHasAnyActiveContract(req.EmployeeId);
@@ -38,15 +37,17 @@ namespace Repositories.Impl
             var hoursWorkingInMonth = days * 8;
             var startDate = new DateTime(req.dateTime.Year, req.dateTime.Month, 1);
             var totalDays = DateTime.DaysInMonth(req.dateTime.Date.Year, req.dateTime.Date.Month);
+            var startDateOfMonth = new DateTime(req.dateTime.Year, req.dateTime.Month, 1);
+            var lastDateOfMonth = new DateTime(req.dateTime.Year, req.dateTime.Month, totalDays);
             var lastDate = new DateTime(req.dateTime.Year, req.dateTime.Month, totalDays);
-            var listContractAndPayrollReturn = new List<ContractAndPayrollResponse>();
+            var listIdPayroll = new List<int>();
             if (contractInMonth != null)
             {
                 foreach (var contract in contractInMonth)
                 {
-                    var payroll = new PayRoll();
-                    var contractAndPayroll = new ContractAndPayrollResponse();
-                    payroll.StartDate = lastDate;
+                    var payroll = new PayRoll();     
+                    payroll.StartDate = startDateOfMonth;
+                    payroll.EndDate = lastDateOfMonth;
                     payroll.EmployeeId = req.EmployeeId;
                     if (contract.Status == BusinessObject.Enum.EnumList.ContractStatus.Expired)
                     {
@@ -82,10 +83,7 @@ namespace Repositories.Impl
                             payroll.Total -= (payroll.Total * ((decimal)contract.TaxRate/100));
 
                         }
-                        contractAndPayroll.Payroll= PayrollDAO.CreatePayroll(payroll);
-                        contractAndPayroll.Contract = contract;
-                        listContractAndPayrollReturn.Add(contractAndPayroll);
-
+                        listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
                         startDate = contract.EndDate.Date.AddDays(1);
                     }
                     else if (contract.Status == BusinessObject.Enum.EnumList.ContractStatus.Active)
@@ -123,17 +121,15 @@ namespace Repositories.Impl
                             payroll.Total -= (payroll.Total * (decimal)contract.TaxRate);
 
                         }
-                        contractAndPayroll.Payroll = PayrollDAO.CreatePayroll(payroll);
-                        contractAndPayroll.Contract = contract;
-                        listContractAndPayrollReturn.Add(contractAndPayroll);
+                        listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);                        
                     }
 
                 }
             }else if(contractActiveOfThisEmployee !=null)
             {
                 var payroll = new PayRoll();
-                var contractAndPayroll = new ContractAndPayrollResponse();
-                payroll.StartDate = lastDate;
+                payroll.StartDate = startDateOfMonth;
+                payroll.EndDate = lastDateOfMonth;
                 payroll.EmployeeId = req.EmployeeId;
                 if (contractActiveOfThisEmployee.EmployeeType == BusinessObject.Enum.EnumList.EmployeeType.FullTime)
                 {
@@ -168,16 +164,13 @@ namespace Repositories.Impl
                     payroll.Total -= (payroll.Total * ((decimal)contractActiveOfThisEmployee.TaxRate / 100));
 
                 }
-                contractAndPayroll.Payroll = PayrollDAO.CreatePayroll(payroll);
-                contractAndPayroll.Contract = contractActiveOfThisEmployee;
-                listContractAndPayrollReturn.Add(contractAndPayroll);
- 
+                listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
             }
             else
             {
                 return null;
             }
-            return listContractAndPayrollReturn;
+            return listIdPayroll;
         }
 
         public List<PayRoll> GetAllPayrolls()
