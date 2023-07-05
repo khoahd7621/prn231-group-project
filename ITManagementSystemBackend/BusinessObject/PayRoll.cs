@@ -27,6 +27,7 @@ namespace BusinessObject
         public double OTWorkingHours { get; set; }
         [Required]
         public DateTime CreatedDate { get; set; }
+        [Required]
         public int DayOfHasSalary { get; set; }
         [Required]
         public decimal Bonus { get; set; }
