@@ -101,7 +101,9 @@ namespace DataAccess
         {
             try
             {
-                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday || attendance.Date.DayOfWeek == DayOfWeek.Saturday) { throw new Exception("Can not create attendance at Sunday or Saturday"); }
+                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday 
+                    || attendance.Date.DayOfWeek == DayOfWeek.Saturday) 
+                { throw new Exception("Can not create attendance at Sunday or Saturday"); }
                 attendance.Status = EnumList.AttendanceStatus.Waiting;
 
                 using (var context = new MyDbContext())
@@ -112,7 +114,7 @@ namespace DataAccess
                         && c.StartDate >= attendance.Date
                         && c.EndDate <= attendance.Date
                         ).ToList();
-                    if (!takeLeave.IsNullOrEmpty()) throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
+                    if (takeLeave.Count != 0) throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
                     var contact = context.Contracts
                         .Where(c => c.EmployeeId == attendance.EmployeeId
@@ -120,7 +122,7 @@ namespace DataAccess
                         //&& c.StartDate >= attendance.Date
                         && c.EndDate.Date >= attendance.Date.Date
                         ).ToList();
-                    if (contact.IsNullOrEmpty()) throw new ArgumentException("Can not create attendance of employee's contact is not exist");
+                    if (contact.Count == 0) throw new ArgumentException("Can not create attendance of employee's contact is not exist");
                     context.Attendances.Add(attendance);
                     context.SaveChanges();
                 }
@@ -135,7 +137,9 @@ namespace DataAccess
         {
             try
             {
-                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday || attendance.Date.DayOfWeek == DayOfWeek.Saturday) { throw new Exception("Can not create attendance at Sunday or Saturday"); }
+                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday 
+                    || attendance.Date.DayOfWeek == DayOfWeek.Saturday) 
+                { throw new Exception("Can not create attendance at Sunday or Saturday"); }
                 attendance.Status = EnumList.AttendanceStatus.Waiting;
 
                 var context = new MyDbContext();
@@ -146,7 +150,7 @@ namespace DataAccess
                        && c.StartDate >= attendance.Date
                        && c.EndDate <= attendance.Date
                        ).ToList();
-                if (!takeLeave.IsNullOrEmpty())
+                if (takeLeave.Count != 0)
                     throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
                 var contact = context.Contracts
@@ -155,7 +159,7 @@ namespace DataAccess
                     //&& c.StartDate >= attendance.Date
                     && c.EndDate.Date >= attendance.Date.Date
                     ).ToList();
-                if (contact.IsNullOrEmpty())
+                if (contact.Count == 0)
                     throw new ArgumentException("Can not create attendance of employee's contact is not exist");
 
                 if (context.Users.SingleOrDefault(e => e.Id == attendance.EmployeeId) == null)
