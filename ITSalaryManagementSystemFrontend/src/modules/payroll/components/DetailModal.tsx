@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { PayrollStatusTag } from ".";
 import { formatMoney } from "../../../utils/formatter";
 import { PayrollModel } from "../models/PayrollModel";
+import { EmployeeType } from "../../../constants/enum";
 
 const { Title } = Typography;
 
@@ -93,26 +94,39 @@ export const DetailModal = ({ data, setData }: Props) => {
               }}
             >
               <tbody>
-                <tr>
-                  <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Standard WK hours:</td>
-                  <td>{data.BaseWorkingHours}</td>
-                </tr>
-                <tr>
-                  <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Actual WK hours:</td>
-                  <td>{data.RealWorkingHours}</td>
-                </tr>
-                <tr>
-                  <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>OT WK hours:</td>
-                  <td>{data.OTWorkingHours}</td>
-                </tr>
-                <tr>
-                  <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Paid leave hours:</td>
-                  <td>{data.DayOfHasSalary}</td>
-                </tr>
-                <tr>
-                  <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Unpaid leave hours:</td>
-                  <td>{data.BaseWorkingHours - data.RealWorkingHours - data.DayOfHasSalary}</td>
-                </tr>
+                {+EmployeeType[data.Contract.EmployeeType] === EmployeeType.FullTime ? (
+                  <>
+                    <tr>
+                      <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>
+                        Standard WK hours:
+                      </td>
+                      <td>{data.BaseWorkingHours}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Actual WK hours:</td>
+                      <td>{data.RealWorkingHours}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>OT WK hours:</td>
+                      <td>{data.OTWorkingHours}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Paid leave hours:</td>
+                      <td>{data.DayOfHasSalary}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>
+                        Unpaid leave hours:
+                      </td>
+                      <td>{data.BaseWorkingHours - data.RealWorkingHours - data.DayOfHasSalary}</td>
+                    </tr>
+                  </>
+                ) : (
+                  <tr>
+                    <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Actual WK hours:</td>
+                    <td>{data.RealWorkingHours}</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -170,18 +184,20 @@ export const DetailModal = ({ data, setData }: Props) => {
                 {formatMoney.format(data.BaseSalaryPerHours * data.RealWorkingHours)}
               </td>
             </tr>
-            <tr>
-              <td></td>
-              <td>2. OT Working</td>
-              <td style={{ textAlign: "end" }}>
-                {formatMoney.format(data.OTSalaryPerHours)} * {data.OTWorkingHours} ={" "}
-                {formatMoney.format(data.OTSalaryPerHours * data.OTWorkingHours)}
-              </td>
-            </tr>
+            {+EmployeeType[data.Contract.EmployeeType] === EmployeeType.FullTime && (
+              <tr>
+                <td></td>
+                <td>2. OT Working</td>
+                <td style={{ textAlign: "end" }}>
+                  {formatMoney.format(data.OTSalaryPerHours)} * {data.OTWorkingHours} ={" "}
+                  {formatMoney.format(data.OTSalaryPerHours * data.OTWorkingHours)}
+                </td>
+              </tr>
+            )}
             <tr>
               <td style={{ color: "purple" }}>(C)</td>
               <td style={{ color: "purple" }}>Deduction</td>
-              <td style={{ textAlign: "end" }}>{formatMoney.format(TOTAL_INCOME * (data.Tax / 100))}</td>
+              <td style={{ textAlign: "end" }}>{formatMoney.format(data.Tax ? TOTAL_INCOME * (data.Tax / 100) : 0)}</td>
             </tr>
             <tr>
               <td></td>

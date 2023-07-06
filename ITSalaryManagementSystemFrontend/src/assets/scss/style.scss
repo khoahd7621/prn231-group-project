@@ -1,0 +1,44 @@
+/*!
+Template Name: Dashbyte - Premium Admin & Dashboard Template
+Author: Themepixels
+Version: 1.0.0
+Website: http://themepixels.me/demo/dashbyte
+Contact: themepixels@gmail.com
+*/
+
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap');
+
+// Variables & Mixins
+@import "variables";
+@import "mixins";
+
+// Bootstrap Framework
+@import "bootstrap/scss/bootstrap";
+
+// Dashboard
+@import "dashboard/sales";
+@import "dashboard/analytics";
+@import "dashboard/crypto";
+@import "dashboard/finance";
+@import "dashboard/helpdesk";
+@import "dashboard/events";
+@import "dashboard/storage";
+@import "dashboard/product";
+
+// Plugins
+@import "plugins/jqueryui";
+@import "plugins/colorpicker";
+@import "plugins/wizards";
+@import "plugins/vmap";
+@import "plugins/gridjs";
+
+
+// Utilities
+@import "utils";
+
+
+@import "component/badge"

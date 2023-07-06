@@ -1,6 +1,7 @@
 import { ContractStatus, EmployeeType, SalaryType } from "../../../constants/enum";
 import { EmployeeModel } from "../../employee/models";
 import { LevelModel } from "../../level/models";
+import { PayrollModel } from "../../payroll/models/PayrollModel";
 import { PositionModel } from "../../position/models";
 
 export type ContractModel = {
@@ -20,4 +21,5 @@ export type ContractModel = {
   User: EmployeeModel;
   Level: LevelModel;
   Position: PositionModel;
+  PayRolls: PayrollModel[];
 };

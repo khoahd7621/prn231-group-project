@@ -71,7 +71,7 @@ export function ChangeFirstPassword() {
         dispatch(updateFirstLogin());
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       })
       .finally(() => setLoading(false));
   };
@@ -133,6 +133,10 @@ export function ChangeFirstPassword() {
                   {
                     required: true,
                     message: "Please input your password!",
+                  },
+                  {
+                    min: 6,
+                    message: "Password must be at least 6 characters!",
                   },
                 ]}
                 hasFeedback

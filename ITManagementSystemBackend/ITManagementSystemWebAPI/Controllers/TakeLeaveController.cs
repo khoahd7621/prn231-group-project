@@ -48,6 +48,10 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return BadRequest("Please provide the start day and end date within the same calendar year. This will help us accurately calculate the duration leave of your request. Thank you!");
             }
+            if (takeLeaveRepository.existApprovedAttendanceByDateEqualAndEmployeeEqual(postTakeLeave.EmployeeId,postTakeLeave.StartDate,postTakeLeave.EndDate))
+            {
+                return BadRequest("An attendance record already exists for the selected leave period.");
+            }
             if (postTakeLeave.StartDate > postTakeLeave.EndDate)
             {
                 DateTime temp = postTakeLeave.StartDate;
@@ -109,6 +113,10 @@ namespace ITManagementSystemWebAPI.Controllers
                         return BadRequest($"Don't have enough ANNUAL LEAVE to edit Leave!(need: {leaveDays}, available: {leaveBalance})");
                     }
                 }
+                if (takeLeaveRepository.existApprovedAttendanceByDateEqualAndEmployeeEqual(postTakeLeave.EmployeeId, postTakeLeave.StartDate, postTakeLeave.EndDate))
+                {
+                    return BadRequest("An attendance record already exists for the selected leave period.");
+                }
 
             }
             var _mappedTakeLeave = _mapper.Map<TakeLeave>(postTakeLeave);
@@ -162,8 +170,12 @@ namespace ITManagementSystemWebAPI.Controllers
                         return BadRequest($"Don't have enough ANNUAL LEAVE to edit Leave!(need: {takeLeave.LeaveDays}, available: {leaveBalance})");
                     }
                 }
-
+                if (takeLeaveRepository.existApprovedAttendanceByDateEqualAndEmployeeEqual(takeLeave.EmployeeId, takeLeave.StartDate, takeLeave.EndDate))
+                {
+                    return BadRequest("An attendance record already exists for the selected leave period.");
+                }
             }
+
             takeLeaveRepository.UpdateTakeLeave(takeLeave);
             return Ok(takeLeave);
         }

@@ -42,7 +42,7 @@ export function Login() {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         form.setFields([
           {
             name: "email",

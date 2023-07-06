@@ -1,51 +1,31 @@
 import dayjs from "dayjs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  Card,
-  Col,
-  Descriptions,
-  Input,
-  Modal,
-  Progress,
-  Row,
-  Table,
-  Tag,
-  Typography
-} from "antd";
+import { Card, Col, Progress, Row, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Title,
-  Tooltip,
-} from "chart.js";
+
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-const { Text } = Typography;
-
-import { ContractStatus } from "../constants/enum";
-import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
+import { AttendanceStatus, AttendanceType, ContractStatus } from "../constants/enum";
+import { AttendanceStatusTag } from "../modules/attendance/components";
 import { AttendanceModel, AttendanceStisticModel } from "../modules/attendance/models";
+import { ContractDetail } from "../modules/contract/components";
 import { ContractModel } from "../modules/contract/models";
+import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 type DataAttendanceType = {
   key: number;
 } & AttendanceModel;
+
 type DataAttendanceStatisticType = {
   key: number;
 } & AttendanceStisticModel;
-type DataContracType = {
-  key: number;
-} & ContractModel;
 
-const { Title: AntdTitle } = Typography;
-const { Search } = Input;
+const { Title: AntdTitle, Text } = Typography;
+
 const optionsChart = {
   responsive: true,
   plugins: {
@@ -54,24 +34,21 @@ const optionsChart = {
     },
   },
 };
-
 const labels = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+const pageSizeOptions = [5, 10, 20, 50];
 
 export const EmpDashBoard: React.FC = () => {
-  const [limit, setLimit] = React.useState<number>(5);
-  const [page, setPage] = React.useState<number>(1);
-  const [total, setTotal] = React.useState<number>(0);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [attendancesWeek, setAttendancesWeek] = React.useState<DataAttendanceType[]>([]);
-  const [attendancesMonth, setAttendancesMonth] = React.useState<DataAttendanceStatisticType[]>([]);
-  const [contracts, setContracts] = React.useState<DataContracType[]>([]);
-  const [contractSelect, setContractSelect] = React.useState<ContractModel>();
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [currentWeeksHours, setCurrentWeeksHours] = React.useState<number>(0);
-  const [unApproveHours, setUnApproveHours] = React.useState<number>(0);
-  const [previousWeekHours, setPreviousWeekHours] = React.useState<number>(0);
-  const [previousOrvertimeWeekHours, setPreviiousOrvertimeWeekHours] = React.useState<number>(0);
+  const [attendancesWeek, setAttendancesWeek] = useState<DataAttendanceType[]>([]);
+  const [attendancesMonthly, setAttendancesMonthly] = useState<DataAttendanceType[]>([]);
+  const [attendancesWeekly, setAttendancesWeekly] = useState<DataAttendanceStatisticType[]>([]);
+  const [contract, setContract] = useState<ContractModel | null>(null);
+  const [currentWeeksHours, setCurrentWeeksHours] = useState<number>(0);
+  const [unApproveHours, setUnApproveHours] = useState<number>(0);
+  const [previousWeekHours, setPreviousWeekHours] = useState<number>(0);
+  const [previousOrvertimeWeekHours, setPreviiousOrvertimeWeekHours] = useState<number>(0);
+
   const chartData = {
     labels,
     datasets: [
@@ -79,41 +56,81 @@ export const EmpDashBoard: React.FC = () => {
         label: "Hour",
         data: labels.map((item) => {
           let value = 0;
-          attendancesWeek.find((attendance) => {
-            ({ ...attendance, key: attendance.Id });
+          for (const attendance of attendancesWeek) {
             const temp = dayjs(attendance.Date, "YYYY-MM-DD");
             const dayOfWeek = temp.format("dddd");
             if (dayOfWeek.toUpperCase() === item) {
               value = attendance.Hour;
-              return true;
+              break;
             }
-            return false;
-          });
+          }
           return value;
         }),
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        backgroundColor: "blue",
       },
       {
         label: "OT Hour",
         data: labels.map((item) => {
           let value = 0;
-          attendancesWeek.find((attendance) => {
-            ({ ...attendance, key: attendance.Id });
+          for (const attendance of attendancesWeek) {
             const temp = dayjs(attendance.Date, "YYYY-MM-DD");
             const dayOfWeek = temp.format("dddd");
             if (dayOfWeek.toUpperCase() === item) {
               value = attendance.Hour;
-              return true;
+              break;
             }
-            return false;
-          });
+          }
           return value;
         }),
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        backgroundColor: "red",
       },
     ],
   };
-  const columns: ColumnsType<DataAttendanceStatisticType> = [
+
+  const columnsWeelyTable: ColumnsType<DataAttendanceStatisticType> = [
+    {
+      title: "Date",
+      dataIndex: "key",
+      defaultSortOrder: "ascend",
+      render: (value: string) => <div>{value}</div>,
+    },
+    {
+      title: "Expected",
+      dataIndex: "Expected",
+    },
+    {
+      title: "Logged",
+      dataIndex: "Logged",
+    },
+    {
+      render: (value: AttendanceStisticModel) => (
+        <div>
+          <Progress
+            type="circle"
+            percent={(value.Logged / value.Expected) * 100}
+            size={30}
+          />
+        </div>
+      ),
+    },
+    {
+      render: (value: AttendanceStisticModel) =>
+        value.Logged > value.Expected ? (
+          <div>
+            <Progress
+              strokeColor={{ "0%": "red", "100%": "#red" }}
+              type="circle"
+              percent={((value.Logged - value.Expected) / value.Expected) * 100}
+              size={30}
+            />
+          </div>
+        ) : (
+          <></>
+        ),
+    },
+  ];
+
+  const columnsMonthly: ColumnsType<DataAttendanceType> = [
     {
       title: "Date",
       dataIndex: "Date",
@@ -126,273 +143,318 @@ export const EmpDashBoard: React.FC = () => {
       render: (value: string) => <div>{dayjs(value).format("YYYY-MM-DD ")}</div>,
     },
     {
-      title: "Expected",
-      dataIndex: "Expected",
+      title: "Hour",
+      dataIndex: "Hour",
       sortDirections: ["descend", "ascend"],
-
+      sorter: (a, b) => a.Hour - b.Hour,
       render: (value: string) => <div>{value}</div>,
     },
     {
-      title: "Logged",
-      dataIndex: "Logged",
+      title: "OTHour",
+      dataIndex: "OTHour",
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => a.Logged - b.Logged,
+      sorter: (a, b) => a.OTHour - b.OTHour,
       render: (value: string) => <div>{value}</div>,
     },
     {
-      title: "%",
-      // dataIndex: "Status",
+      title: "Status",
+      dataIndex: "Status",
       sortDirections: ["descend", "ascend"],
-
-      render: (value: AttendanceStisticModel) => (
+      sorter: (a, b) => a.Status - b.Status,
+      render: (value: AttendanceStatus) => (
         <div>
-          {" "}
-          <Progress type="circle" percent={(value.Logged / value.Expected) * 100} size={40} />
+          <AttendanceStatusTag status={value} />
         </div>
       ),
     },
+    {
+      title: "Type",
+      dataIndex: "Type",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.Type - b.Type,
+      render: (value: AttendanceType) => {
+        switch (value) {
+          case AttendanceType.Online.valueOf():
+            return (
+              <div>
+                <Tag color="success">{AttendanceType[value]} </Tag>
+              </div>
+            );
+          case AttendanceType.Offline.valueOf():
+            return (
+              <div>
+                <Tag color="default">{AttendanceType[value]} </Tag>
+              </div>
+            );
+        }
+      },
+    },
   ];
+
   useEffect(() => {
     fetchAttendances();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const fetchAttendances = () => {
     setLoading(true);
-    // const query = `?$expand=Attendances($filter=
-    // date ge ${dayjs().startOf("week").format(weekFormat)}
-    // and date le ${dayjs().endOf("week").format(weekFormat)}
-    // and Status eq 'Approved')
-    // , Contracts($filter=Status eq 'Active' ;$expand=Level, Position)`;
-    // const query = `?$expand=Attendances($filter=
-    // date ge ${dayjs().startOf("week").format(weekFormat)}
-    // and date le ${dayjs().endOf("week").format(weekFormat)})
-    // , Contracts($filter=Status eq 'Active' ;$expand=Level, Position)`;
     const query = `?$expand=Attendances
-    , Contracts($filter=Status eq 'Active' ;$expand=Level, Position)`;
-    AttendanceApis.getEmployee(query)
+    , Contracts($filter=Status eq 'Active' ;$expand=Level,Position,User)`;
+    EmployeeApis.getCurrentEmployee(query)
       .then((res) => {
         setAttendancesWeek(
-          (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status === "Approved" &&
+          res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week") &&
               dayjs(item.Date) <= dayjs().endOf("week")
-          ).map((item: { Id: any }) => ({ ...item, key: item.Id }))
+          ).map((item) => ({ ...item, key: item.Id }))
         );
-        setAttendancesMonth(
-          (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status === "Approved" &&
+        setAttendancesMonthly(
+          res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("month") &&
               dayjs(item.Date) <= dayjs().endOf("month")
-          ).map((item: { Hour: any; Id: any }) => ({
-            ...item,
-            key: item.Id,
-            Expected: 8,
-            Logged: item.Hour,
-          }))
+          ).map((item) => ({ ...item, key: item.Id }))
         );
-        setContracts(
-          (res as any).Contracts.map((item: { Id: any }) => ({ ...item, key: item.Id }))
-        );
-        setTotal(attendancesMonth.length);
+        const attendanceByWeekly = res.Attendances.filter(
+          (item) =>
+            +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
+            dayjs(item.Date) >= dayjs().startOf("month") &&
+            dayjs(item.Date) <= dayjs().endOf("month")
+        ).reduce((acc: any, item) => {
+          const weekStartDate = dayjs(item.Date).startOf("week");
+          const weekEndDate = dayjs(item.Date).endOf("week");
+          const weekKey = `${weekStartDate.format("DD/MM/YYYY")} - ${weekEndDate.format("DD/MM/YYYY")}`;
+          if (!acc[weekKey]) {
+            acc[weekKey] = {
+              key: weekKey,
+              Date: weekStartDate,
+              Expected: 0,
+              Logged: 0,
+            };
+          }
+          acc[weekKey].Expected = 40;
+          acc[weekKey].Logged += item.Hour + item.OTHour;
+          return acc;
+        }, {});
+        setAttendancesWeekly(Object.values(attendanceByWeekly));
+
+        setContract(res.Contracts.find((item) => +ContractStatus[item.Status] === ContractStatus.Active) ?? null);
 
         {
-          const currentWeeksHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status === "Approved" &&
+          const currentWeeksHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week") &&
               dayjs(item.Date) <= dayjs().endOf("week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumCurrentWeeksHours = currentWeeksHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setCurrentWeeksHours(sumCurrentWeeksHours);
         }
         {
-          const unApprovedHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status !== "Approved" &&
+          const unApprovedHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Waiting &&
               dayjs(item.Date) >= dayjs().startOf("week") &&
               dayjs(item.Date) <= dayjs().endOf("week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumUnApprovedHours = unApprovedHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setUnApproveHours(sumUnApprovedHours);
         }
         {
-          const previousWeekHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status == "Approved" &&
+          const previousWeekHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week").subtract(1, "week") &&
               dayjs(item.Date) <= dayjs().endOf("week").subtract(1, "week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumPreviousWeekHours = previousWeekHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setPreviousWeekHours(sumPreviousWeekHours);
         }
         {
-          const previiousOrvertimeWeekHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status == "Approved" &&
+          const previiousOrvertimeWeekHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week").subtract(1, "week") &&
               dayjs(item.Date) <= dayjs().endOf("week").subtract(1, "week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumPreviiousOrvertimeWeekHours = previiousOrvertimeWeekHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setPreviiousOrvertimeWeekHours(sumPreviiousOrvertimeWeekHours);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 
-  const successCallback = () => {
-    setPage(1);
-    fetchAttendances();
-  };
-
-  const ShowDetailContract = (data: ContractModel) => {
-    setContractSelect(data);
-    console.log(data);
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
   return (
-    <>
-      <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
-        <div style={{ width: "50%" }}>
+    <div style={{ display: "flex", gap: "3rem", marginBottom: "2rem" }}>
+      <div style={{ width: "60%" }}>
+        <Row gutter={24}>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                Current weeks attendance hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {currentWeeksHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                All upapprove attendance hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {unApproveHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                Previous week's attendance hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {previousWeekHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                Previous week's overtime hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {previousOrvertimeWeekHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+        </Row>
+
+        <div
+          style={{
+            marginTop: "2rem",
+          }}
+        >
+          <AntdTitle level={4}>Weekly attandance summary (hours)</AntdTitle>
+          <Table
+            size="small"
+            columns={columnsWeelyTable}
+            dataSource={attendancesWeekly}
+            loading={loading}
+            pagination={false}
+          />
+        </div>
+
+        <div
+          style={{
+            marginTop: "2rem",
+          }}
+        >
+          <AntdTitle level={4}>Monthly Attendance</AntdTitle>
+          <Table
+            scroll={{ x: 700 }}
+            size="small"
+            columns={columnsMonthly}
+            dataSource={attendancesMonthly}
+            loading={loading}
+            pagination={{
+              pageSizeOptions,
+              showSizeChanger: true,
+            }}
+          />
+        </div>
+      </div>
+      <div style={{ width: "40%" }}>
+        <div>
           <AntdTitle level={4}>
             Logged working hours from {dayjs().startOf("week").format("DD/MM/YYYY")} to{" "}
             {dayjs().endOf("week").format("DD/MM/YYYY")}
           </AntdTitle>
-          <Bar options={optionsChart} data={chartData} />
+          <Bar
+            options={optionsChart}
+            data={chartData}
+          />
         </div>
-        <div style={{ width: "50%" }}>
+
+        <div
+          style={{
+            marginTop: "2rem",
+          }}
+        >
           <AntdTitle level={4}>Current Active Contract</AntdTitle>
           <Row gutter={24}>
-            {contracts.map((item) => (
-              <Col span={12}>
-                <Card
-                  key={item.Id}
-                  title={
-                    dayjs(item.StartDate).format("DD-MM-YYYY") +
-                    "~" +
-                    dayjs(item.EndDate).format("DD-MM-YYYY")
-                  }
-                  onClick={() => ShowDetailContract(item)}
-                  style={{ cursor: "pointer" }}>
-                  <Tag>{item.EmployeeType}</Tag>
-                  <p></p>
-                  <Tag> {item.SalaryType}</Tag>
-                  <p></p>
-                  {item.Status.toString() == ContractStatus[1].toString() ? (
-                    <Tag color="success">{item.Status}</Tag>
-                  ) : (
-                    <Tag color="error">{item.Status}</Tag>
-                  )}
-                </Card>
-              </Col>
-            ))}
+            {contract ? (
+              <div
+                style={{
+                  border: "1px solid #d9d9d9",
+                  borderRadius: "6px",
+                  padding: "6px 10px",
+                }}
+              >
+                <ContractDetail data={contract} />
+              </div>
+            ) : (
+              <Tag color="#2D4356">Not Available</Tag>
+            )}
           </Row>
         </div>
       </div>
-      <Modal
-        title="Detail Contract"
-        footer={false}
-        open={isModalOpen}
-        width="80%"
-        onCancel={handleCancel}>
-        <Descriptions bordered column={6} layout="vertical">
-          <Descriptions.Item label="Employee Type">
-            {contractSelect?.EmployeeType}
-          </Descriptions.Item>
-          <Descriptions.Item label="Start Date">
-            {dayjs(contractSelect?.StartDate).format("DD-MM-YYYY")}
-          </Descriptions.Item>
-          <Descriptions.Item label="End Date">
-            {" "}
-            {dayjs(contractSelect?.EndDate).format("DD-MM-YYYY")}
-          </Descriptions.Item>
-          <Descriptions.Item label="Base Salary">{contractSelect?.BaseSalary}$</Descriptions.Item>
-          <Descriptions.Item label="Date Off Per Year">
-            {contractSelect?.DateOffPerYear}
-          </Descriptions.Item>
-          <Descriptions.Item label="Level">{contractSelect?.Level.LevelName}</Descriptions.Item>
-          <Descriptions.Item label="Insurance Rate">
-            {contractSelect?.InsuranceRate}%
-          </Descriptions.Item>
-          <Descriptions.Item label="Tax Rate">{contractSelect?.TaxRate}%</Descriptions.Item>
-          <Descriptions.Item label="Salary Type">{contractSelect?.SalaryType}.</Descriptions.Item>
-          <Descriptions.Item label="Position">
-            {contractSelect?.Position.PositionName}
-          </Descriptions.Item>
-          <Descriptions.Item label="Status">
-            <Tag color="success">{contractSelect?.Status}</Tag>
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}>
-        <Search
-          placeholder="Search attendance"
-          style={{
-            width: 400,
-          }}
-          allowClear
-        />
-      </div>
-      <div style={{ margin: "10px 0 10px 0" }}>
-        <Row gutter={24}>
-          <Col span={6}>
-            <Card title="Current weeks timesheet hours">
-              <AntdTitle> {currentWeeksHours}</AntdTitle> <Text>Timesheets</Text>
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card title="All upapprove hours">
-              <AntdTitle> {unApproveHours}</AntdTitle> <Text>Timesheets</Text>
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card title="Previous week's timesheet hours">
-              <AntdTitle> {previousWeekHours}</AntdTitle> <Text>Timesheets</Text>
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card title="Previous week's overtime hours">
-              <AntdTitle> {previousOrvertimeWeekHours}</AntdTitle> <Text>Timesheets</Text>
-            </Card>
-          </Col>
-        </Row>
-      </div>
-      <Table
-        columns={columns}
-        dataSource={attendancesMonth}
-        loading={loading}
-        pagination={{
-          current: page,
-          pageSize: limit,
-          total: total,
-          onChange: (page, pageSize) => {
-            setPage(page);
-            setLimit(pageSize || 5);
-          },
-        }}
-      />
-    </>
+    </div>
   );
 };

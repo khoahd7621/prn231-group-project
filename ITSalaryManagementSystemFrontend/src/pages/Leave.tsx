@@ -28,6 +28,7 @@ export const Leave: React.FC = () => {
       await LeaveApis.patch(id, { status: status });
       message.success("Leave status updated successfully");
       fetchLeave(query);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error leave patch request:", error);
       message.error(`Error updating leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
@@ -42,6 +43,7 @@ export const Leave: React.FC = () => {
       await LeaveApis.delete(id);
       message.success("Leave deleted successfully");
       fetchLeave(query);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error leave delete request:", error);
       message.error(`Error deleting leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
@@ -276,7 +278,7 @@ export const Leave: React.FC = () => {
             }))
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   const fetchLeave = (query: string) => {
@@ -286,7 +288,7 @@ export const Leave: React.FC = () => {
         setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
         setTotal(res.value.length);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 
@@ -301,7 +303,7 @@ export const Leave: React.FC = () => {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: 16,
+          marginBottom: "2rem",
         }}
       >
         <Form

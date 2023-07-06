@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Button, Input, Space, Table, Tag } from "antd";
+import { Button, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { ContractStatus, EmployeeStatus, Role } from "../constants/enum";
@@ -19,8 +19,6 @@ import { EmployeeModel } from "../modules/employee/models";
 type DataType = {
   key: number;
 } & EmployeeModel;
-
-const { Search } = Input;
 
 export const Employee: React.FC = () => {
   const columns: ColumnsType<DataType> = [
@@ -107,7 +105,7 @@ export const Employee: React.FC = () => {
       },
     },
     {
-      title: "Company Join Date",
+      title: "Join Date",
       dataIndex: "CreatedDate",
       render: (value: string, record: DataType) => (
         <div
@@ -150,9 +148,7 @@ export const Employee: React.FC = () => {
     },
   ];
 
-  const [limit, setLimit] = React.useState<number>(10);
   const [page, setPage] = React.useState<number>(1);
-  const [total, setTotal] = React.useState<number>(0);
 
   const [loading, setLoading] = React.useState<boolean>(true);
   const [positions, setPositions] = React.useState<DataType[]>([]);
@@ -169,9 +165,8 @@ export const Employee: React.FC = () => {
         setPositions(
           res.value.filter((v) => +Role[v.Role] === Role.Employee).map((item) => ({ ...item, key: item.Id }))
         );
-        setTotal(res.value.length);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 
@@ -185,31 +180,24 @@ export const Employee: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
+          justifyContent: "flex-end",
+          marginBottom: "2rem",
         }}
       >
-        <Search
-          placeholder="Search by staff code, full name"
-          style={{
-            width: 400,
-          }}
-          allowClear
-        />
-
         <CreateModal successCallback={successCallback} />
       </div>
       <Table
+        scroll={{ x: 1200 }}
         columns={columns}
         dataSource={positions}
         loading={loading}
         pagination={{
           current: page,
-          pageSize: limit,
-          total: total,
-          onChange: (page, pageSize) => {
+          defaultPageSize: 10,
+          pageSizeOptions: ["5", "10", "20", "50", "100"],
+          showSizeChanger: true,
+          onChange: (page) => {
             setPage(page);
-            setLimit(pageSize || 5);
           },
         }}
       />

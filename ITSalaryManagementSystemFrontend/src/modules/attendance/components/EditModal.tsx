@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, notification } from "antd";
 
 import { RangePickerProps } from "antd/es/date-picker";
 import { AttendanceType } from "../../../constants/enum";
@@ -12,7 +12,7 @@ type Props = {
   data: AttendanceModel;
   successCallback?: () => void;
 };
-
+type NotificationType = "success" | "info" | "warning" | "error";
 export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -21,8 +21,16 @@ export const EditModal = ({ data, successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
+    api[type]({
+      message: message,
+      description: description,
+      duration: 1,
+    });
+  };
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return current < dayjs().startOf("week");
+    return current < dayjs().startOf("week") || current.day() === 0 || current.day() === 6;
   };
 
   useEffect(() => {
@@ -43,15 +51,15 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   const handleSubmit = (value: AttendancePutForm) => {
     setSending(true);
-    console.log(value);
     AttendanceApis.put(data.Id, { ...value, date: value.date.toISOString() })
       .then(() => {
         setIsModalOpen(false);
         successCallback?.();
+        openNotificationWithIcon("success", "Edit", "Edit attendance success");
       })
-      .catch((err) => {
-        console.log(err);
-        alert("Something went wrong! Please refresh page and try again later.");
+      .catch((error) => {
+        console.error(error);
+        openNotificationWithIcon("error", "Edit", error.response.data.message);
       })
       .finally(() => setSending(false));
   };
@@ -64,19 +72,22 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      {contextHolder}
+      <Button
+        type="primary"
+        onClick={showModal}
+      >
         Edit
       </Button>
       <Modal
-        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${
-          (data.User as any).EmployeeName
-        }`}
+        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${(data.User as any).EmployeeName}`}
         open={isModalOpen}
         footer={null}
         cancelButtonProps={{
           disabled: sending,
         }}
-        onCancel={handleCancel}>
+        onCancel={handleCancel}
+      >
         <Form
           disabled={sending}
           form={form}
@@ -91,18 +102,27 @@ export const EditModal = ({ data, successCallback }: Props) => {
             hour: data.Hour,
             otHour: data.OTHour,
             type: data.Type,
-          }}>
+          }}
+        >
           <Form.Item
             label="Employee"
             name="employeeId"
-            rules={[{ required: true, message: "Please select employee!" }]}>
-            <Input type="hidden" readOnly />
-            <Input value={(data.User as any).EmployeeCode} readOnly />
+            rules={[{ required: true, message: "Please select employee!" }]}
+          >
+            <Input
+              type="hidden"
+              readOnly
+            />
+            <Input
+              value={(data.User as any).EmployeeCode}
+              readOnly
+            />
           </Form.Item>
           <Form.Item
             label="Date of work"
             name="date"
-            rules={[{ required: true, message: "Please input date of work!" }]}>
+            rules={[{ required: true, message: "Please input date of work!" }]}
+          >
             <DatePicker
               disabledDate={disabledDate}
               placeholder="Select date of work"
@@ -119,8 +139,13 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 required: true,
                 message: "Please input number of work hour!",
               },
-            ]}>
-            <InputNumber min={1} max={8} style={{ width: "100%" }} />
+            ]}
+          >
+            <InputNumber
+              min={1}
+              max={8}
+              style={{ width: "100%" }}
+            />
           </Form.Item>
           <Form.Item
             label="OT Hour"
@@ -130,10 +155,19 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 required: true,
                 message: "Please input number of OT hour!",
               },
-            ]}>
-            <InputNumber min={0} max={8} style={{ width: "100%" }} />
+            ]}
+          >
+            <InputNumber
+              min={0}
+              max={8}
+              style={{ width: "100%" }}
+            />
           </Form.Item>
-          <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+          <Form.Item
+            label="Type"
+            name="type"
+            rules={[{ required: true }]}
+          >
             <Select
               options={Object.keys(AttendanceType)
                 .filter((v) => isNaN(Number(v)))
@@ -152,10 +186,14 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 type="primary"
                 htmlType="submit"
                 disabled={!submittable || form.isFieldsTouched() === false}
-                loading={sending}>
+                loading={sending}
+              >
                 Submit
               </Button>
-              <Button htmlType="button" onClick={() => form.resetFields()}>
+              <Button
+                htmlType="button"
+                onClick={() => form.resetFields()}
+              >
                 Reset
               </Button>
             </Space>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import LevelApis from "../apis/LevelApis";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
 export const CreateModal = ({ successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
+  const [messageApi, contextHolder] = message.useMessage();
   const [submittable, setSubmittable] = useState<boolean>(false);
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,8 +40,11 @@ export const CreateModal = ({ successCallback }: Props) => {
         successCallback?.();
       })
       .catch((err) => {
-        console.log(err);
-        alert("Something went wrong! Please refresh page and try again later.");
+        console.error(err);
+        messageApi.open({
+          type: "error",
+          content: "Something went wrong! Please refresh page and try again later.",
+        });
       });
     setSending(false);
   };
@@ -53,6 +57,7 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button
         type="primary"
         onClick={showModal}

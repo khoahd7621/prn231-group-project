@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Button, Modal } from "antd";
+import { Button, Modal, message } from "antd";
 
 import PositionApis from "../apis/PositionApis";
 import { PositionModel } from "../models";
@@ -11,6 +11,7 @@ type Props = {
 };
 
 export const DeleteModal = ({ data, successCallback }: Props) => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -26,8 +27,11 @@ export const DeleteModal = ({ data, successCallback }: Props) => {
         successCallback?.();
       })
       .catch((err) => {
-        console.log(err);
-        alert("Something went wrong! Please refresh page and try again later.");
+        console.error(err);
+        messageApi.open({
+          type: "error",
+          content: "Something went wrong! Please refresh page and try again later.",
+        });
       });
     setSending(false);
   };
@@ -39,6 +43,7 @@ export const DeleteModal = ({ data, successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button
         type="primary"
         danger
