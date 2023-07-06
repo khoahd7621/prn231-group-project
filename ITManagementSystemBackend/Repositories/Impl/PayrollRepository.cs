@@ -63,7 +63,7 @@ namespace Repositories.Impl
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
                             payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
                             payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
-                            if(dayTakeLeave== 0 && payroll.RealWorkingHours == 0)
+                            if (dayTakeLeave == 0 && payroll.RealWorkingHours == 0)
                             {
                                 check = false;
                             }
@@ -90,7 +90,7 @@ namespace Repositories.Impl
                         {
                             payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
                         }
-                        if(check)
+                        if (check)
                             listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
                         check = true;
                         startDate = contract.EndDate.Date.AddDays(1);
@@ -135,10 +135,10 @@ namespace Repositories.Impl
                         if (contract.SalaryType == BusinessObject.Enum.EnumList.SalaryType.Gross)
                         {
                             payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
-                           
+
 
                         }
-                        if(check)
+                        if (check)
                             listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
                         check = true;
                     }
@@ -192,7 +192,7 @@ namespace Repositories.Impl
                     payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
 
                 }
-                if(check)
+                if (check)
                     listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
                 check = true;
             }
