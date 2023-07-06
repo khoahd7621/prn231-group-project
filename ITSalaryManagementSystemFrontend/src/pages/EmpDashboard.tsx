@@ -296,7 +296,7 @@ export const EmpDashBoard: React.FC = () => {
           setPreviiousOrvertimeWeekHours(sumPreviiousOrvertimeWeekHours);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

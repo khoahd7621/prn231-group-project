@@ -50,7 +50,7 @@ export const Level: React.FC = () => {
       .then((res) => {
         setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

@@ -2,15 +2,16 @@ import { useState } from "react";
 
 import { Button, Modal, message } from "antd";
 
-import ContractApis from "../apis/ContractApis";
-import { ContractModel } from "../models";
+import dayjs from "dayjs";
+import PayrollApis from "../apis/PayrollApis";
+import { PayrollModel } from "../models/PayrollModel";
 
 type Props = {
-  data: ContractModel;
+  data: PayrollModel;
   successCallback?: () => void;
 };
 
-export const DeactivateModal = ({ data, successCallback }: Props) => {
+export const ApproveModal = ({ data, successCallback }: Props) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,7 +22,7 @@ export const DeactivateModal = ({ data, successCallback }: Props) => {
 
   const handleOk = () => {
     setSending(true);
-    ContractApis.deactivate(data.Id)
+    PayrollApis.approve(data.Id)
       .then(() => {
         setIsModalOpen(false);
         successCallback?.();
@@ -46,10 +47,12 @@ export const DeactivateModal = ({ data, successCallback }: Props) => {
       {contextHolder}
       <Button
         type="primary"
-        danger
         onClick={showModal}
+        style={{
+          backgroundColor: "#52c41a",
+        }}
       >
-        Deactivate
+        Approve
       </Button>
       <Modal
         title="Warning"
@@ -64,9 +67,7 @@ export const DeactivateModal = ({ data, successCallback }: Props) => {
         }}
         onCancel={handleCancel}
       >
-        <p>
-          Are you sure to deactivate contract of employee "{data.User.EmployeeCode} - {data.User.EmployeeName}"
-        </p>
+        <p>Are you sure to approve payroll in month "{dayjs(data.CreatedDate).format("MM/YYYY")}"</p>
       </Modal>
     </>
   );

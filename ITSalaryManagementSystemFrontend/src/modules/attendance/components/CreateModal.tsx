@@ -18,7 +18,9 @@ type OptionItem = {
   value: number;
   label: string;
 };
+
 type NotificationType = "success" | "info" | "warning" | "error";
+
 export const CreateModal = ({ isEmp, successCallback }: Props) => {
   const TODAY = dayjs(Date.now());
   const [form] = Form.useForm();
@@ -30,6 +32,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
   const [employees, setEmployees] = useState<OptionItem[]>([]);
 
   const [api, contextHolder] = notification.useNotification();
+
   const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
     api[type]({
       message: message,
@@ -37,6 +40,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
       duration: 1,
     });
   };
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current < dayjs().startOf("week") || current.day() === 0 || current.day() === 6;
   };
@@ -63,7 +67,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
           }))
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
 
   const showModal = () => {
@@ -87,12 +91,10 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
       })
       .catch((error) => {
         openNotificationWithIcon("error", "Create", error.response.data.error.message);
-        //alert("Create employee failed! Please refresh page and try again!");
       })
       .finally(() => setSending(false));
   };
   const handleEmplSubmit = (value: AttendanceEmployeeForm) => {
-    console.log("Employee Create\n" + value);
     setSending(true);
     AttendanceApis.postByEmployee({
       ...value,
@@ -105,9 +107,8 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
         openNotificationWithIcon("success", "Create", "Create attendance success");
       })
       .catch((error) => {
-        console.log(error.response.data.message);
+        console.error(error);
         openNotificationWithIcon("error", "Create", error.response.data.message);
-        // alert("Create employee failed! Please refresh page and try again!");
       })
       .finally(() => setSending(false));
   };
@@ -121,7 +122,10 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
   return (
     <>
       {contextHolder}
-      <Button type="primary" onClick={showModal}>
+      <Button
+        type="primary"
+        onClick={showModal}
+      >
         Create new attendance
       </Button>
       <>
@@ -133,7 +137,8 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
             disabled: sending,
           }}
           onCancel={handleCancel}
-          width={widthModal}>
+          width={widthModal}
+        >
           <Form
             disabled={sending}
             form={form}
@@ -147,13 +152,15 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
               hour: 8,
               otHour: 0,
               type: AttendanceType.Offline,
-            }}>
-            {isEmp == false ? (
+            }}
+          >
+            {isEmp === false ? (
               <Form.Item
                 hidden={isEmp}
                 label="Employee"
                 name="employeeId"
-                rules={[{ required: true, message: "Please select employee!" }]}>
+                rules={[{ required: true, message: "Please select employee!" }]}
+              >
                 <Select
                   options={employees.map((key) => {
                     return {
@@ -169,8 +176,13 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
             <Form.Item
               label="Date of work"
               name="date"
-              rules={[{ required: true, message: "Please input date of work!" }]}>
-              <DatePicker disabledDate={disabledDate} placeholder="Select date of work" style={{ width: "100%" }} />
+              rules={[{ required: true, message: "Please input date of work!" }]}
+            >
+              <DatePicker
+                disabledDate={disabledDate}
+                placeholder="Select date of work"
+                style={{ width: "100%" }}
+              />
             </Form.Item>
             <Form.Item
               label="Hour"
@@ -180,8 +192,12 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                   required: true,
                   message: "Please input number of work hour!",
                 },
-              ]}>
-              <InputNumber min={1} max={8} />
+              ]}
+            >
+              <InputNumber
+                min={1}
+                max={8}
+              />
             </Form.Item>
             <Form.Item
               label="OT Hour"
@@ -191,10 +207,18 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                   required: true,
                   message: "Please input number of OT hour!",
                 },
-              ]}>
-              <InputNumber min={0} max={8} />
+              ]}
+            >
+              <InputNumber
+                min={0}
+                max={8}
+              />
             </Form.Item>
-            <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+            <Form.Item
+              label="Type"
+              name="type"
+              rules={[{ required: true }]}
+            >
               <Select
                 options={Object.keys(AttendanceType)
                   .filter((v) => isNaN(Number(v)))
@@ -210,7 +234,12 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
             <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
               <Space>
                 {isEmp ? (
-                  <Button type="primary" htmlType="submit" disabled={!submittable} loading={sending}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!submittable}
+                    loading={sending}
+                  >
                     Submit
                   </Button>
                 ) : (
@@ -218,17 +247,25 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                     type="primary"
                     htmlType="submit"
                     disabled={!submittable || form.isFieldsTouched() === false}
-                    loading={sending}>
+                    loading={sending}
+                  >
                     Submit
                   </Button>
                 )}
-                <Button htmlType="button" onClick={() => form.resetFields()}>
+                <Button
+                  htmlType="button"
+                  onClick={() => form.resetFields()}
+                >
                   Reset
                 </Button>
               </Space>
             </Form.Item>
           </Form>
-          <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ maxWidth: 600, margin: "2rem 0" }}></Form>
+          <Form
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
+            style={{ maxWidth: 600, margin: "2rem 0" }}
+          ></Form>
         </Modal>
       </>
     </>

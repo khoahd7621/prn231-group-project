@@ -1,25 +1,14 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Select,
-  Space,
-  message,
-} from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import {
-  LeaveCategory,
-  LeaveStatus,
-  LeaveType,
-  Role,
-} from "../../../constants/enum";
+
+import { Button, DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
+
+import { LeaveCategory, LeaveStatus, LeaveType, Role } from "../../../constants/enum";
+import { useAppSelector } from "../../../reduxs/hooks";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
 import LeaveApis from "../apis/LeaveApis";
 import { LeaveForm } from "../models";
-import { useAppSelector } from "../../../reduxs/hooks";
+
 const { TextArea } = Input;
 
 type Props = {
@@ -38,26 +27,24 @@ export const CreateModal = ({ successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [options, setOptions] = React.useState<OptionItem[]>([]);
-  const [selectedCategoryOption, setSelectedCategoryOption] =
-    React.useState<boolean>(false);
+  const [selectedCategoryOption, setSelectedCategoryOption] = React.useState<boolean>(false);
   const profileState = useAppSelector((state) => state.profile);
-  const isEmp = useAppSelector(
-    (state) => state.profile?.user?.role === Role.Employee
-  );
+  const isEmp = useAppSelector((state) => state.profile?.user?.role === Role.Employee);
+
   useEffect(() => {
     if (!isEmp) {
       EmployeeApis.getAll()
         .then((res) => {
           setOptions(
             res.value
-            .filter((v) => +Role[v.Role] === Role.Employee)
-            .map((item) => ({
-              value: item.Id,
-              label: `${item.EmployeeCode} - ${item.EmployeeName}`,
-            }))
+              .filter((v) => +Role[v.Role] === Role.Employee)
+              .map((item) => ({
+                value: item.Id,
+                label: `${item.EmployeeCode} - ${item.EmployeeName}`,
+              }))
           );
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   }, [isEmp]);
 
@@ -93,12 +80,8 @@ export const CreateModal = ({ successCallback }: Props) => {
         message.success("Leave created successfully");
       })
       .catch((error) => {
-        console.log(error);
-        message.error(
-          `Error creating leave:  ${
-            error.response?.data?.error?.message || "An error occurred."
-          }`
-        );
+        console.error(error);
+        message.error(`Error creating leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
       })
       .finally(() => setSending(false));
   };
@@ -112,7 +95,10 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button
+        type="primary"
+        onClick={showModal}
+      >
         Create new leave
       </Button>
       <Modal
@@ -143,11 +129,7 @@ export const CreateModal = ({ successCallback }: Props) => {
               showSearch
               disabled={isEmp}
               placeholder="Select a employee"
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
+              filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
               options={options.map((key) => {
                 return {
                   value: key.value,
@@ -226,7 +208,10 @@ export const CreateModal = ({ successCallback }: Props) => {
             name="reason"
             rules={[{ required: true, message: "Please input reason!" }]}
           >
-            <TextArea showCount maxLength={100} />
+            <TextArea
+              showCount
+              maxLength={100}
+            />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
             <Space>
@@ -241,7 +226,8 @@ export const CreateModal = ({ successCallback }: Props) => {
               <Button
                 htmlType="button"
                 onClick={() => {
-                  form.resetFields(), setSelectedCategoryOption(false);
+                  form.resetFields();
+                  setSelectedCategoryOption(false);
                 }}
               >
                 Reset

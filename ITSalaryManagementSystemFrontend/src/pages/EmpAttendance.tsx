@@ -2,9 +2,9 @@ import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
 import { SearchOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-import { Button, DatePicker, Space, Table, Tag } from "antd";
 import { AttendanceStatus, AttendanceType } from "../constants/enum";
 import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
 import { AttendanceStatusTag, CreateModal, DeleteModal, EditModal } from "../modules/attendance/components";
@@ -187,7 +187,7 @@ export const EmpAttendance: React.FC = () => {
       .then((res) => {
         setAttendances(res.Attendances.map((item: { Id: any }) => ({ ...item, key: item.Id })));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

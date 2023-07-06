@@ -34,14 +34,11 @@ export const DeleteModal = ({ data, successCallback }: Props) => {
       .then(() => {
         setIsModalOpen(false);
         successCallback?.();
-        alert("Something went wrong! Please refresh page and try again later.");
         openNotificationWithIcon("success", "Delete", "Delete attendance success");
       })
       .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.message);
+        console.error(error);
         openNotificationWithIcon("error", "Delete", error.response.data.message);
-        //alert("Something went wrong! Please refresh page and try again later.");
       })
       .finally(() => setSending(false));
   };
@@ -54,7 +51,11 @@ export const DeleteModal = ({ data, successCallback }: Props) => {
   return (
     <>
       {contextHolder}
-      <Button type="primary" danger onClick={showModal}>
+      <Button
+        type="primary"
+        danger
+        onClick={showModal}
+      >
         Delete
       </Button>
       <Modal
@@ -68,7 +69,8 @@ export const DeleteModal = ({ data, successCallback }: Props) => {
         cancelButtonProps={{
           disabled: sending,
         }}
-        onCancel={handleCancel}>
+        onCancel={handleCancel}
+      >
         <p>
           Are you sure to delete:<p></p>
           <Tag color="orange">{(data.User as any).EmployeeName} </Tag>

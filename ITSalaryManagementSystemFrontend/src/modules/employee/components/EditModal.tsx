@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, Input, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
 
-import { EmployeeType, Gender, Role } from "../../../constants/enum";
+import { Gender, Role } from "../../../constants/enum";
 import EmployeeApis from "../apis/EmployeeApis";
 import { EmployeeModel, EmployeePutForm } from "../models";
 
@@ -15,6 +15,7 @@ type Props = {
 export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
+  const [messageApi, contextHolder] = message.useMessage();
   const [submittable, setSubmittable] = useState<boolean>(false);
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,8 +44,11 @@ export const EditModal = ({ data, successCallback }: Props) => {
         successCallback?.();
       })
       .catch((err) => {
-        console.log(err);
-        alert("Something went wrong! Please refresh page and try again later.");
+        console.error(err);
+        messageApi.open({
+          type: "error",
+          content: "Something went wrong! Please refresh page and try again later.",
+        });
       })
       .finally(() => setSending(false));
   };
@@ -57,6 +61,7 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button
         type="primary"
         onClick={showModal}
@@ -88,7 +93,6 @@ export const EditModal = ({ data, successCallback }: Props) => {
             dob: dayjs(data.Dob),
             phone: data.Phone,
             address: data.Address,
-            employeeType: EmployeeType[data.EmployeeType],
           }}
         >
           <Form.Item

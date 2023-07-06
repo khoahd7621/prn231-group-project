@@ -51,7 +51,6 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   const handleSubmit = (value: AttendancePutForm) => {
     setSending(true);
-    console.log(value);
     AttendanceApis.put(data.Id, { ...value, date: value.date.toISOString() })
       .then(() => {
         setIsModalOpen(false);
@@ -59,10 +58,8 @@ export const EditModal = ({ data, successCallback }: Props) => {
         openNotificationWithIcon("success", "Edit", "Edit attendance success");
       })
       .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.message);
+        console.error(error);
         openNotificationWithIcon("error", "Edit", error.response.data.message);
-        //alert("Something went wrong! Please refresh page and try again later.");
       })
       .finally(() => setSending(false));
   };
@@ -76,7 +73,10 @@ export const EditModal = ({ data, successCallback }: Props) => {
   return (
     <>
       {contextHolder}
-      <Button type="primary" onClick={showModal}>
+      <Button
+        type="primary"
+        onClick={showModal}
+      >
         Edit
       </Button>
       <Modal
@@ -86,7 +86,8 @@ export const EditModal = ({ data, successCallback }: Props) => {
         cancelButtonProps={{
           disabled: sending,
         }}
-        onCancel={handleCancel}>
+        onCancel={handleCancel}
+      >
         <Form
           disabled={sending}
           form={form}
@@ -101,18 +102,27 @@ export const EditModal = ({ data, successCallback }: Props) => {
             hour: data.Hour,
             otHour: data.OTHour,
             type: data.Type,
-          }}>
+          }}
+        >
           <Form.Item
             label="Employee"
             name="employeeId"
-            rules={[{ required: true, message: "Please select employee!" }]}>
-            <Input type="hidden" readOnly />
-            <Input value={(data.User as any).EmployeeCode} readOnly />
+            rules={[{ required: true, message: "Please select employee!" }]}
+          >
+            <Input
+              type="hidden"
+              readOnly
+            />
+            <Input
+              value={(data.User as any).EmployeeCode}
+              readOnly
+            />
           </Form.Item>
           <Form.Item
             label="Date of work"
             name="date"
-            rules={[{ required: true, message: "Please input date of work!" }]}>
+            rules={[{ required: true, message: "Please input date of work!" }]}
+          >
             <DatePicker
               disabledDate={disabledDate}
               placeholder="Select date of work"
@@ -129,8 +139,13 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 required: true,
                 message: "Please input number of work hour!",
               },
-            ]}>
-            <InputNumber min={1} max={8} style={{ width: "100%" }} />
+            ]}
+          >
+            <InputNumber
+              min={1}
+              max={8}
+              style={{ width: "100%" }}
+            />
           </Form.Item>
           <Form.Item
             label="OT Hour"
@@ -140,10 +155,19 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 required: true,
                 message: "Please input number of OT hour!",
               },
-            ]}>
-            <InputNumber min={0} max={8} style={{ width: "100%" }} />
+            ]}
+          >
+            <InputNumber
+              min={0}
+              max={8}
+              style={{ width: "100%" }}
+            />
           </Form.Item>
-          <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+          <Form.Item
+            label="Type"
+            name="type"
+            rules={[{ required: true }]}
+          >
             <Select
               options={Object.keys(AttendanceType)
                 .filter((v) => isNaN(Number(v)))
@@ -162,10 +186,14 @@ export const EditModal = ({ data, successCallback }: Props) => {
                 type="primary"
                 htmlType="submit"
                 disabled={!submittable || form.isFieldsTouched() === false}
-                loading={sending}>
+                loading={sending}
+              >
                 Submit
               </Button>
-              <Button htmlType="button" onClick={() => form.resetFields()}>
+              <Button
+                htmlType="button"
+                onClick={() => form.resetFields()}
+              >
                 Reset
               </Button>
             </Space>

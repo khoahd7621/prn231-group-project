@@ -123,7 +123,7 @@ export const EmpContract: React.FC = () => {
         }
         setContracts(res.Contracts.map((item) => ({ ...item, key: item.Id })));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

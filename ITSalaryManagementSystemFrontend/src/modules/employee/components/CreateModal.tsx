@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, Input, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
 import { Gender, Role } from "../../../constants/enum";
 import EmployeeApis from "../apis/EmployeeApis";
 import { EmployeePostForm } from "../models";
@@ -10,6 +10,7 @@ type Props = {
 };
 
 export const CreateModal = ({ successCallback }: Props) => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
   const [submittable, setSubmittable] = useState<boolean>(false);
@@ -44,8 +45,11 @@ export const CreateModal = ({ successCallback }: Props) => {
         successCallback?.();
       })
       .catch((error) => {
-        console.log(error);
-        alert("Create employee failed! Please refresh page and try again!");
+        console.error(error);
+        messageApi.open({
+          type: "error",
+          content: "Create employee failed! Please refresh page and try again!",
+        });
       })
       .finally(() => setSending(false));
   };
@@ -58,6 +62,7 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button
         type="primary"
         onClick={showModal}

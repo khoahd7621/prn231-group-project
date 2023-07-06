@@ -278,7 +278,7 @@ export const Leave: React.FC = () => {
             }))
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   const fetchLeave = (query: string) => {
@@ -288,7 +288,7 @@ export const Leave: React.FC = () => {
         setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
         setTotal(res.value.length);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

@@ -52,7 +52,7 @@ export const EmpLeave: React.FC = () => {
     }
     // Join the filter expressions with 'and' operator
     setQuery(`?$filter=${filters.join(" and ")}`);
-    console.log(query);
+    console.error(query);
     fetchLeave();
   };
 
@@ -169,7 +169,7 @@ export const EmpLeave: React.FC = () => {
         setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
         setTotal(res.value.length);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

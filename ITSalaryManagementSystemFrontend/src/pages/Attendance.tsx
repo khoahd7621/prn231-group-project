@@ -227,8 +227,14 @@ export const Attendance: React.FC = () => {
                 >
                   Reject
                 </Button>
-                <EditModal data={record} successCallback={fetchAttendances} />
-                <DeleteModal data={record} successCallback={successCallback} />
+                <EditModal
+                  data={record}
+                  successCallback={fetchAttendances}
+                />
+                <DeleteModal
+                  data={record}
+                  successCallback={successCallback}
+                />
               </Space>
             );
           case (AttendanceStatus[1] as any).valueOf():
@@ -236,7 +242,10 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[2] as any).valueOf():
             return (
               <Space>
-                <DeleteModal data={record} successCallback={successCallback} />
+                <DeleteModal
+                  data={record}
+                  successCallback={successCallback}
+                />
               </Space>
             );
         }
@@ -263,7 +272,7 @@ export const Attendance: React.FC = () => {
       .then((res) => {
         setAttendances(res.value.map((item) => ({ ...item, key: item.Id })));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 
@@ -278,7 +287,7 @@ export const Attendance: React.FC = () => {
         openNotificationWithIcon("success", "Approve", "Approve attendance success");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         openNotificationWithIcon("error", "Approve", err.response.data.message);
       });
   };
@@ -290,7 +299,7 @@ export const Attendance: React.FC = () => {
         fetchAttendances();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         openNotificationWithIcon("error", "Reject", err.response.data.message);
       });
   };

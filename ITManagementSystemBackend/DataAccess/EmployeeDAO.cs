@@ -42,6 +42,8 @@ namespace DataAccess
                 .ThenInclude(c => c.Position)
                 .Include(u => u.Contracts)
                 .ThenInclude(c => c.Level)
+                .Include(u => u.Contracts)
+                .ThenInclude(c => c.PayRolls)
                 .ToList();
         }
 
@@ -94,6 +96,8 @@ namespace DataAccess
                 .Include(u => u.Contracts)
                 .ThenInclude(c => c.Level)
                 .Include(u => u.Attendances)
+                .Include(u => u.Contracts)
+                .ThenInclude(c => c.PayRolls)
                 .SingleOrDefault(x => x.Id == id);
         }
 

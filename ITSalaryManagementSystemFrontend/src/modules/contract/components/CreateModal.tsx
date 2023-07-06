@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, InputNumber, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, InputNumber, Modal, Select, Space, message } from "antd";
 
 import { EmployeeType, Role, SalaryType } from "../../../constants/enum";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
@@ -19,6 +19,7 @@ type Props = {
 export const CreateModal = ({ successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [employees, setEmployees] = useState<EmployeeModel[]>([]);
   const [levels, setLevels] = useState<LevelModel[]>([]);
@@ -90,7 +91,10 @@ export const CreateModal = ({ successCallback }: Props) => {
       })
       .catch((error) => {
         console.error(error);
-        alert("Create contract failed! Please refresh page and try again!");
+        messageApi.open({
+          type: "error",
+          content: "Create contract failed! Please refresh page and try again!",
+        });
       })
       .finally(() => setSending(false));
   };
@@ -103,6 +107,7 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button
         type="primary"
         onClick={showModal}

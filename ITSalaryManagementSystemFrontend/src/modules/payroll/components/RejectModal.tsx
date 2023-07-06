@@ -2,15 +2,16 @@ import { useState } from "react";
 
 import { Button, Modal, message } from "antd";
 
-import ContractApis from "../apis/ContractApis";
-import { ContractModel } from "../models";
+import dayjs from "dayjs";
+import PayrollApis from "../apis/PayrollApis";
+import { PayrollModel } from "../models/PayrollModel";
 
 type Props = {
-  data: ContractModel;
+  data: PayrollModel;
   successCallback?: () => void;
 };
 
-export const DeactivateModal = ({ data, successCallback }: Props) => {
+export const RejectModal = ({ data, successCallback }: Props) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,7 +22,7 @@ export const DeactivateModal = ({ data, successCallback }: Props) => {
 
   const handleOk = () => {
     setSending(true);
-    ContractApis.deactivate(data.Id)
+    PayrollApis.reject(data.Id)
       .then(() => {
         setIsModalOpen(false);
         successCallback?.();
@@ -49,7 +50,7 @@ export const DeactivateModal = ({ data, successCallback }: Props) => {
         danger
         onClick={showModal}
       >
-        Deactivate
+        Reject
       </Button>
       <Modal
         title="Warning"
@@ -64,9 +65,7 @@ export const DeactivateModal = ({ data, successCallback }: Props) => {
         }}
         onCancel={handleCancel}
       >
-        <p>
-          Are you sure to deactivate contract of employee "{data.User.EmployeeCode} - {data.User.EmployeeName}"
-        </p>
+        <p>Are you sure to reject payroll in month "{dayjs(data.CreatedDate).format("MM/YYYY")}"</p>
       </Modal>
     </>
   );

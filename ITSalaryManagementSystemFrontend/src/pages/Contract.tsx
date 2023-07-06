@@ -95,7 +95,7 @@ export const Contract: React.FC = () => {
       .then((res) => {
         setContracts(res.value.map((item) => ({ ...item, key: item.Id })));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 

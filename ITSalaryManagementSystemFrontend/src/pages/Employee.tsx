@@ -166,7 +166,7 @@ export const Employee: React.FC = () => {
           res.value.filter((v) => +Role[v.Role] === Role.Employee).map((item) => ({ ...item, key: item.Id }))
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
     setLoading(false);
   };
 
