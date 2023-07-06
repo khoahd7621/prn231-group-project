@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
-import { Input, Space, Table } from "antd";
+import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { ContractStatus, EmployeeType } from "../constants/enum";
@@ -20,8 +20,6 @@ import { EmployeeModel } from "../modules/employee/models";
 type DataType = {
   key: number;
 } & ContractModel;
-
-const { Search } = Input;
 
 export const Contract: React.FC = () => {
   const columns: ColumnsType<DataType> = [

@@ -1,17 +1,19 @@
 import dayjs from "dayjs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
+import { Card, Col, Progress, Row, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
 
-import { Button, Card, Col, DatePicker, Descriptions, Modal, Progress, Row, Space, Table, Tag, Typography } from "antd";
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
+
 import { AttendanceStatus, AttendanceType, ContractStatus } from "../constants/enum";
-import { AttendanceModel, AttendanceStisticModel } from "../modules/attendance/models";
-import { ContractModel } from "../modules/contract/models";
 import { AttendanceStatusTag } from "../modules/attendance/components";
-import { SearchOutlined } from "@ant-design/icons";
+import { AttendanceModel, AttendanceStisticModel } from "../modules/attendance/models";
+import { ContractDetail } from "../modules/contract/components";
+import { ContractModel } from "../modules/contract/models";
+import EmployeeApis from "../modules/employee/apis/EmployeeApis";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 type DataAttendanceType = {
@@ -22,12 +24,7 @@ type DataAttendanceStatisticType = {
   key: number;
 } & AttendanceStisticModel;
 
-type DataContracType = {
-  key: number;
-} & ContractModel;
-
 const { Title: AntdTitle, Text } = Typography;
-const { RangePicker } = DatePicker;
 
 const optionsChart = {
   responsive: true,
@@ -41,19 +38,17 @@ const labels = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"
 const pageSizeOptions = [5, 10, 20, 50];
 
 export const EmpDashBoard: React.FC = () => {
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [attendancesWeek, setAttendancesWeek] = React.useState<DataAttendanceType[]>([]);
-  const [attendancesMonthly, setAttendancesMonthly] = React.useState<DataAttendanceType[]>([]);
-  const [attendancesWeekly, setAttendancesWeekly] = React.useState<DataAttendanceStatisticType[]>([]);
-  const [contracts, setContracts] = React.useState<DataContracType[]>([]);
-  const [contractSelect, setContractSelect] = React.useState<ContractModel>();
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [currentWeeksHours, setCurrentWeeksHours] = React.useState<number>(0);
-  const [unApproveHours, setUnApproveHours] = React.useState<number>(0);
-  const [previousWeekHours, setPreviousWeekHours] = React.useState<number>(0);
-  const [previousOrvertimeWeekHours, setPreviiousOrvertimeWeekHours] = React.useState<number>(0);
-  //#region 
+  const [attendancesWeek, setAttendancesWeek] = useState<DataAttendanceType[]>([]);
+  const [attendancesMonthly, setAttendancesMonthly] = useState<DataAttendanceType[]>([]);
+  const [attendancesWeekly, setAttendancesWeekly] = useState<DataAttendanceStatisticType[]>([]);
+  const [contract, setContract] = useState<ContractModel | null>(null);
+  const [currentWeeksHours, setCurrentWeeksHours] = useState<number>(0);
+  const [unApproveHours, setUnApproveHours] = useState<number>(0);
+  const [previousWeekHours, setPreviousWeekHours] = useState<number>(0);
+  const [previousOrvertimeWeekHours, setPreviiousOrvertimeWeekHours] = useState<number>(0);
+
   const chartData = {
     labels,
     datasets: [
@@ -98,12 +93,6 @@ export const EmpDashBoard: React.FC = () => {
       dataIndex: "key",
       defaultSortOrder: "ascend",
       render: (value: string) => <div>{value}</div>,
-      sortDirections: ["descend", "ascend"],
-      sorter: (a, b) => {
-        const dateA = new Date(a.Date.toString());
-        const dateB = new Date(b.Date.toString());
-        return dateA.getTime() - dateB.getTime();
-      },
     },
     {
       title: "Expected",
@@ -116,7 +105,11 @@ export const EmpDashBoard: React.FC = () => {
     {
       render: (value: AttendanceStisticModel) => (
         <div>
-          <Progress type="circle" percent={(value.Logged / value.Expected) * 100} size={30} />
+          <Progress
+            type="circle"
+            percent={(value.Logged / value.Expected) * 100}
+            size={30}
+          />
         </div>
       ),
     },
@@ -142,53 +135,6 @@ export const EmpDashBoard: React.FC = () => {
       title: "Date",
       dataIndex: "Date",
       sortDirections: ["descend", "ascend"],
-      filterMultiple: false,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 10 }} onKeyDown={(e) => e.stopPropagation()}>
-          <Space>
-            <RangePicker
-              value={selectedKeys[0]}
-              onChange={(e) => {
-                setSelectedKeys(e ? [e] : []);
-              }}
-              onPressEnter={() => confirm}
-              style={{ marginBottom: 10, display: "flex" }}
-            />
-          </Space>
-          <Space style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              type="primary"
-              onClick={() => {
-                confirm();
-              }}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{ width: 90 }}>
-              Search
-            </Button>
-            <Button
-              onClick={() => {
-                clearFilters();
-                confirm();
-              }}
-              size="small"
-              style={{ width: 90 }}>
-              Reset
-            </Button>
-          </Space>
-        </div>
-      ),
-      filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
-      onFilter: (value, record) => {
-        const recordDate = dayjs(record.Date);
-
-        const startDate = value[0];
-        const endDate = value[1];
-        return startDate && endDate
-          ? (recordDate.isAfter(startDate, "day") || recordDate.isSame(startDate, "day")) &&
-              (recordDate.isBefore(endDate, "day") || recordDate.isSame(startDate, "day"))
-          : true;
-      },
       sorter: (a, b) => {
         const dateA = new Date(a.Date.toString());
         const dateB = new Date(b.Date.toString());
@@ -244,7 +190,7 @@ export const EmpDashBoard: React.FC = () => {
       },
     },
   ];
-  //#endregion
+
   useEffect(() => {
     fetchAttendances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,34 +199,34 @@ export const EmpDashBoard: React.FC = () => {
   const fetchAttendances = () => {
     setLoading(true);
     const query = `?$expand=Attendances
-    , Contracts($filter=Status eq 'Active' ;$expand=Level, Position)`;
-    AttendanceApis.getEmployee(query)
+    , Contracts($filter=Status eq 'Active' ;$expand=Level,Position,User)`;
+    EmployeeApis.getCurrentEmployee(query)
       .then((res) => {
         setAttendancesWeek(
-          (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status === "Approved" &&
+          res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week") &&
               dayjs(item.Date) <= dayjs().endOf("week")
-          ).map((item: { Id: any }) => ({ ...item, key: item.Id }))
+          ).map((item) => ({ ...item, key: item.Id }))
         );
         setAttendancesMonthly(
-          (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status === "Approved" &&
+          res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("month") &&
               dayjs(item.Date) <= dayjs().endOf("month")
-          ).map((item: { Id: any }) => ({ ...item, key: item.Id }))
+          ).map((item) => ({ ...item, key: item.Id }))
         );
-        const attendanceByWeekly = (res as any).Attendances.filter(
-          (item: { Status: string; Date: string }) =>
-            item.Status === "Approved" &&
+        const attendanceByWeekly = res.Attendances.filter(
+          (item) =>
+            +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
             dayjs(item.Date) >= dayjs().startOf("month") &&
             dayjs(item.Date) <= dayjs().endOf("month")
-        ).reduce((acc: any, item: { Hour: any; OTHour: any; Id: any; Date: string }) => {
+        ).reduce((acc: any, item) => {
           const weekStartDate = dayjs(item.Date).startOf("week");
           const weekEndDate = dayjs(item.Date).endOf("week");
-          const weekKey = `${weekStartDate.format("YYYY-MM-DD")}_${weekEndDate.format("YYYY-MM-DD")}`;
+          const weekKey = `${weekStartDate.format("DD/MM/YYYY")} - ${weekEndDate.format("DD/MM/YYYY")}`;
           if (!acc[weekKey]) {
             acc[weekKey] = {
               key: weekKey,
@@ -291,59 +237,60 @@ export const EmpDashBoard: React.FC = () => {
           }
           acc[weekKey].Expected = 40;
           acc[weekKey].Logged += item.Hour + item.OTHour;
-
           return acc;
         }, {});
         setAttendancesWeekly(Object.values(attendanceByWeekly));
-        setContracts((res as any).Contracts.map((item: { Id: any }) => ({ ...item, key: item.Id })));
+
+        setContract(res.Contracts.find((item) => +ContractStatus[item.Status] === ContractStatus.Active) ?? null);
+
         {
-          const currentWeeksHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status === "Approved" &&
+          const currentWeeksHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week") &&
               dayjs(item.Date) <= dayjs().endOf("week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumCurrentWeeksHours = currentWeeksHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setCurrentWeeksHours(sumCurrentWeeksHours);
         }
         {
-          const unApprovedHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status == "Waiting" &&
+          const unApprovedHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Waiting &&
               dayjs(item.Date) >= dayjs().startOf("week") &&
               dayjs(item.Date) <= dayjs().endOf("week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumUnApprovedHours = unApprovedHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setUnApproveHours(sumUnApprovedHours);
         }
         {
-          const previousWeekHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status == "Approved" &&
+          const previousWeekHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week").subtract(1, "week") &&
               dayjs(item.Date) <= dayjs().endOf("week").subtract(1, "week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumPreviousWeekHours = previousWeekHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setPreviousWeekHours(sumPreviousWeekHours);
         }
         {
-          const previiousOrvertimeWeekHours = (res as any).Attendances.filter(
-            (item: { Status: string; Date: string }) =>
-              item.Status == "Approved" &&
+          const previiousOrvertimeWeekHours = res.Attendances.filter(
+            (item) =>
+              +AttendanceStatus[item.Status] === AttendanceStatus.Approved &&
               dayjs(item.Date) >= dayjs().startOf("week").subtract(1, "week") &&
               dayjs(item.Date) <= dayjs().endOf("week").subtract(1, "week")
-          ).map((item: { Id: any; Hour: any }) => item.Hour);
+          ).map((item) => item.Hour);
           const sumPreviiousOrvertimeWeekHours = previiousOrvertimeWeekHours.reduce(
-            (accumulator: any, currentValue: any) => accumulator + currentValue,
+            (accumulator: number, currentValue: number) => accumulator + currentValue,
             0
           );
           setPreviiousOrvertimeWeekHours(sumPreviiousOrvertimeWeekHours);
@@ -353,136 +300,161 @@ export const EmpDashBoard: React.FC = () => {
     setLoading(false);
   };
 
-  const ShowDetailContract = (data: ContractModel) => {
-    setContractSelect(data);
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
   return (
-    <>
-      <div style={{ display: "flex", gap: "3rem", marginBottom: "2rem" }}>
-        <div style={{ width: "60%" }}>
-          <Row gutter={24}>
-            <Col span={6}>
-              <Card title="Current weeks timesheet hours">
-                <AntdTitle>{currentWeeksHours}</AntdTitle>
-                <Text>Timesheets</Text>
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="All upapprove hours">
-                <AntdTitle>{unApproveHours}</AntdTitle>
-                <Text>Timesheets</Text>
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="Previous week's timesheet hours">
-                <AntdTitle>{previousWeekHours}</AntdTitle>
-                <Text>Timesheets</Text>
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="Previous week's overtime hours">
-                <AntdTitle>{previousOrvertimeWeekHours}</AntdTitle>
-                <Text>Timesheets</Text>
-              </Card>
-            </Col>
-          </Row>
+    <div style={{ display: "flex", gap: "3rem", marginBottom: "2rem" }}>
+      <div style={{ width: "60%" }}>
+        <Row gutter={24}>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                Current weeks attendance hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {currentWeeksHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                All upapprove attendance hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {unApproveHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                Previous week's attendance hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {previousWeekHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <AntdTitle
+                level={5}
+                style={{
+                  margin: 0,
+                }}
+              >
+                Previous week's overtime hours
+              </AntdTitle>
+              <AntdTitle
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                {previousOrvertimeWeekHours}
+              </AntdTitle>
+              <Text>Attendances</Text>
+            </Card>
+          </Col>
+        </Row>
 
-          <div
-            style={{
-              marginTop: "2rem",
-            }}>
-            <AntdTitle level={4}>Weekly attandance summary (hours)</AntdTitle>
-            <Table
-              size="small"
-              columns={columnsWeelyTable}
-              dataSource={attendancesWeekly}
-              loading={loading}
-              pagination={false}
-            />
-          </div>
-
-          <div
-            style={{
-              marginTop: "2rem",
-            }}>
-            <AntdTitle level={4}>Monthly Attendance</AntdTitle>
-            <Table
-              columns={columnsMonthly}
-              dataSource={attendancesMonthly}
-              loading={loading}
-              pagination={{
-                pageSizeOptions,
-                showSizeChanger: true,
-                position: ["topLeft"],
-              }}
-            />
-          </div>
+        <div
+          style={{
+            marginTop: "2rem",
+          }}
+        >
+          <AntdTitle level={4}>Weekly attandance summary (hours)</AntdTitle>
+          <Table
+            size="small"
+            columns={columnsWeelyTable}
+            dataSource={attendancesWeekly}
+            loading={loading}
+            pagination={false}
+          />
         </div>
-        <div style={{ width: "40%" }}>
-          <div>
-            <AntdTitle level={4}>
-              Logged working hours from {dayjs().startOf("week").format("DD/MM/YYYY")} to{" "}
-              {dayjs().endOf("week").format("DD/MM/YYYY")}
-            </AntdTitle>
-            <Bar options={optionsChart} data={chartData} />
-          </div>
 
-          <div
-            style={{
-              marginTop: "2rem",
-            }}>
-            <AntdTitle level={4}>Current Active Contract</AntdTitle>
-            <Row gutter={24}>
-              {contracts.map((item) => (
-                <Col key={item.Id} span={12}>
-                  <Card
-                    title={dayjs(item.StartDate).format("DD-MM-YYYY") + "~" + dayjs(item.EndDate).format("DD-MM-YYYY")}
-                    onClick={() => ShowDetailContract(item)}
-                    style={{ cursor: "pointer" }}>
-                    <Tag>{item.EmployeeType}</Tag>
-                    <br />
-                    <br />
-                    <Tag> {item.SalaryType}</Tag>
-                    <br />
-                    <br />
-                    {item.Status.toString() == ContractStatus[1].toString() ? (
-                      <Tag color="success">{item.Status}</Tag>
-                    ) : (
-                      <Tag color="error">{item.Status}</Tag>
-                    )}
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          </div>
+        <div
+          style={{
+            marginTop: "2rem",
+          }}
+        >
+          <AntdTitle level={4}>Monthly Attendance</AntdTitle>
+          <Table
+            scroll={{ x: 700 }}
+            size="small"
+            columns={columnsMonthly}
+            dataSource={attendancesMonthly}
+            loading={loading}
+            pagination={{
+              pageSizeOptions,
+              showSizeChanger: true,
+            }}
+          />
         </div>
       </div>
-      <Modal title="Detail Contract" footer={false} open={isModalOpen} width="80%" onCancel={handleCancel}>
-        <Descriptions bordered column={6} layout="vertical">
-          <Descriptions.Item label="Employee Type">{contractSelect?.EmployeeType}</Descriptions.Item>
-          <Descriptions.Item label="Start Date">
-            {dayjs(contractSelect?.StartDate).format("DD-MM-YYYY")}
-          </Descriptions.Item>
-          <Descriptions.Item label="End Date"> {dayjs(contractSelect?.EndDate).format("DD-MM-YYYY")}</Descriptions.Item>
-          <Descriptions.Item label="Base Salary">{contractSelect?.BaseSalary} VND</Descriptions.Item>
-          <Descriptions.Item label="Date Off Per Year">{contractSelect?.DateOffPerYear}</Descriptions.Item>
-          <Descriptions.Item label="Level">{contractSelect?.Level.LevelName}</Descriptions.Item>
-          <Descriptions.Item label="Insurance Rate">{contractSelect?.InsuranceRate}%</Descriptions.Item>
-          <Descriptions.Item label="Tax Rate">{contractSelect?.TaxRate}%</Descriptions.Item>
-          <Descriptions.Item label="Salary Type">{contractSelect?.SalaryType}.</Descriptions.Item>
-          <Descriptions.Item label="Position">{contractSelect?.Position.PositionName}</Descriptions.Item>
-          <Descriptions.Item label="Status">
-            <Tag color="success">{contractSelect?.Status}</Tag>
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
-      <div style={{ margin: "10px 0 10px 0" }}></div>
-    </>
+      <div style={{ width: "40%" }}>
+        <div>
+          <AntdTitle level={4}>
+            Logged working hours from {dayjs().startOf("week").format("DD/MM/YYYY")} to{" "}
+            {dayjs().endOf("week").format("DD/MM/YYYY")}
+          </AntdTitle>
+          <Bar
+            options={optionsChart}
+            data={chartData}
+          />
+        </div>
+
+        <div
+          style={{
+            marginTop: "2rem",
+          }}
+        >
+          <AntdTitle level={4}>Current Active Contract</AntdTitle>
+          <Row gutter={24}>
+            {contract ? (
+              <div
+                style={{
+                  border: "1px solid #d9d9d9",
+                  borderRadius: "6px",
+                  padding: "6px 10px",
+                }}
+              >
+                <ContractDetail data={contract} />
+              </div>
+            ) : (
+              <Tag color="#2D4356">Not Available</Tag>
+            )}
+          </Row>
+        </div>
+      </div>
+    </div>
   );
 };

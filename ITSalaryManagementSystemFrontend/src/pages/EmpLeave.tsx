@@ -1,27 +1,17 @@
+import { Dayjs } from "dayjs";
 import React, { useEffect } from "react";
-import { RangeValue } from "rc-picker/lib/interface";
-import {
-  DeleteOutlined,
-  QuestionCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Popconfirm,
-  Select,
-  Space,
-  Table,
-  message,
-} from "antd";
+
+import { DeleteOutlined, QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Form, Popconfirm, Select, Space, Table, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { RangeValue } from "rc-picker/lib/interface";
+
 import { LeaveStatus, LeaveType } from "../constants/enum";
 import LeaveApis from "../modules/leave/apis/LeaveApis";
 import { CreateModal, LeaveStatusTag } from "../modules/leave/components";
 import { LeaveModel } from "../modules/leave/models/LeaveModel";
 import { useAppSelector } from "../reduxs/hooks";
-import { Dayjs } from "dayjs";
+
 type DataType = {
   key: number;
 } & LeaveModel;
@@ -33,13 +23,10 @@ export const EmpLeave: React.FC = () => {
       await LeaveApis.delete(id);
       message.success("Leave deleted successfully");
       fetchLeave();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error leave delete request:", error);
-      message.error(
-        `Error deleting leave:  ${
-          error.response?.data?.error?.message || "An error occurred."
-        }`
-      );
+      message.error(`Error deleting leave:  ${error.response?.data?.error?.message || "An error occurred."}`);
     } finally {
       setSending(false);
     }
@@ -52,9 +39,7 @@ export const EmpLeave: React.FC = () => {
     filters.push(`EmployeeId eq ${profileState?.user?.id}`);
     if (selectedDateRange) {
       filters.push(
-        `StartDate le ${selectedDateRange[1]
-          ?.toISOString()
-          .slice(0, 10)} and EndDate ge ${selectedDateRange[0]
+        `StartDate le ${selectedDateRange[1]?.toISOString().slice(0, 10)} and EndDate ge ${selectedDateRange[0]
           ?.toISOString()
           .slice(0, 10)}`
       );
@@ -76,24 +61,21 @@ export const EmpLeave: React.FC = () => {
       title: "Leave Days",
       dataIndex: "LeaveDays",
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) =>
-        a.LeaveDays.toString().localeCompare(b.LeaveDays.toString()),
+      sorter: (a, b) => a.LeaveDays.toString().localeCompare(b.LeaveDays.toString()),
     },
     {
       title: "Start Date",
       dataIndex: "StartDate",
       render: (value: string) => new Date(value).toISOString().slice(0, 10),
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) =>
-        new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime(),
+      sorter: (a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime(),
     },
     {
       title: "End Date",
       dataIndex: "EndDate",
       render: (value: string) => new Date(value).toISOString().slice(0, 10),
       sortDirections: ["descend", "ascend"],
-      sorter: (a, b) =>
-        new Date(a.EndDate).getTime() - new Date(b.EndDate).getTime(),
+      sorter: (a, b) => new Date(a.EndDate).getTime() - new Date(b.EndDate).getTime(),
     },
     {
       title: "Type",
@@ -119,10 +101,7 @@ export const EmpLeave: React.FC = () => {
       title: "Action",
       width: "2rem",
       render: (record) => {
-        if (
-          record.Status === LeaveStatus[LeaveStatus.REJECTED] ||
-          record.Status === LeaveStatus[LeaveStatus.WAITING]
-        ) {
+        if (record.Status === LeaveStatus[LeaveStatus.REJECTED] || record.Status === LeaveStatus[LeaveStatus.WAITING]) {
           return (
             <Space>
               <Popconfirm
@@ -137,7 +116,10 @@ export const EmpLeave: React.FC = () => {
                 onCancel={handleCancel}
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
               >
-                <Button type="primary" danger>
+                <Button
+                  type="primary"
+                  danger
+                >
                   Delete
                 </Button>
               </Popconfirm>
@@ -158,18 +140,10 @@ export const EmpLeave: React.FC = () => {
   const [sending, setSending] = React.useState<boolean>(false);
   const profileState = useAppSelector((state) => state.profile);
   const [form] = Form.useForm();
-  const [selectedDateRange, setSelectedDateRange] = React.useState<
-    RangeValue<Dayjs> | undefined
-  >(undefined);
-  const [selectedType, setSelectedType] = React.useState<number | undefined>(
-    undefined
-  );
-  const [selectedStatus, setSelectedStatus] = React.useState<
-    number | undefined
-  >(undefined);
-  const [query, setQuery] = React.useState<string>(
-    `?$filter=EmployeeId eq ${profileState?.user?.id}`
-  );
+  const [selectedDateRange, setSelectedDateRange] = React.useState<RangeValue<Dayjs> | undefined>(undefined);
+  const [selectedType, setSelectedType] = React.useState<number | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = React.useState<number | undefined>(undefined);
+  const [query, setQuery] = React.useState<string>(`?$filter=EmployeeId eq ${profileState?.user?.id}`);
 
   const statusOptions = Object.keys(LeaveStatus)
     .filter((v) => isNaN(Number(v)))
@@ -201,6 +175,7 @@ export const EmpLeave: React.FC = () => {
 
   useEffect(() => {
     fetchLeave();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const successCallback = () => {
@@ -214,7 +189,7 @@ export const EmpLeave: React.FC = () => {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: 16,
+          marginBottom: "2rem",
         }}
       >
         <Form
@@ -224,13 +199,19 @@ export const EmpLeave: React.FC = () => {
           form={form}
         >
           <Space.Compact block>
-            <Form.Item noStyle name={"rangepicker"}>
+            <Form.Item
+              noStyle
+              name={"rangepicker"}
+            >
               <DatePicker.RangePicker
                 style={{ width: "20%" }}
                 onChange={setSelectedDateRange}
               />
             </Form.Item>
-            <Form.Item noStyle name={"type"}>
+            <Form.Item
+              noStyle
+              name={"type"}
+            >
               <Select
                 style={{ width: "15%" }}
                 placeholder={"ALL TYPE"}
@@ -238,7 +219,10 @@ export const EmpLeave: React.FC = () => {
                 options={[{ value: "", label: "ALL TYPE" }, ...typeOptions]}
               />
             </Form.Item>
-            <Form.Item noStyle name={"status"}>
+            <Form.Item
+              noStyle
+              name={"status"}
+            >
               <Select
                 style={{ width: "15%" }}
                 placeholder={"ALL STATUS"}

@@ -1,4 +1,5 @@
 import { EmployeeStatus, Gender, Role } from "../../../constants/enum";
+import { AttendanceModel } from "../../attendance/models";
 import { ContractModel } from "../../contract/models";
 
 export type EmployeeModel = {
@@ -16,4 +17,5 @@ export type EmployeeModel = {
   Status: EmployeeStatus;
   IsFirstLogin: true;
   Contracts: ContractModel[];
+  Attendances: AttendanceModel[];
 };

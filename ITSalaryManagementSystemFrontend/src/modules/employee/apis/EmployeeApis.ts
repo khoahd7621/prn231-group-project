@@ -8,6 +8,7 @@ const EmployeeApis = {
   post: (data: EmployeePost): Promise<void> => AxiosClient.post("/Employee", data),
   put: (id: number, data: EmployeePut): Promise<void> => AxiosClient.put(`/Employee/${id}`, data),
   delete: (id: number): Promise<void> => AxiosClient.delete(`/Employee/${id}`),
+  getCurrentEmployee: (query?: string): Promise<EmployeeModel> => AxiosClient.get(`/SpecificEmployee${query ?? ""}`),
 };
 
 export default EmployeeApis;
