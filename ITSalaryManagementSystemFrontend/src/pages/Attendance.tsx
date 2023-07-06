@@ -27,7 +27,10 @@ export const Attendance: React.FC = () => {
       sorter: (a, b) => a.EmployeeId - b.EmployeeId,
       filterMultiple: false,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <div
+          style={{ padding: 8 }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <Input
             placeholder="Search name"
             value={selectedKeys[0]}
@@ -43,10 +46,15 @@ export const Attendance: React.FC = () => {
               }}
               icon={<SearchOutlined />}
               size="small"
-              style={{ width: 90 }}>
+              style={{ width: 90 }}
+            >
               Search
             </Button>
-            <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+            <Button
+              onClick={clearFilters}
+              size="small"
+              style={{ width: 90 }}
+            >
               Reset
             </Button>
           </Space>
@@ -68,7 +76,10 @@ export const Attendance: React.FC = () => {
       dataIndex: "Date",
       filterMultiple: false,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 10 }} onKeyDown={(e) => e.stopPropagation()}>
+        <div
+          style={{ padding: 10 }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <RangePicker
             value={selectedKeys[0]}
             onChange={(e) => {
@@ -86,7 +97,8 @@ export const Attendance: React.FC = () => {
               }}
               icon={<SearchOutlined />}
               size="small"
-              style={{ width: 90 }}>
+              style={{ width: 90 }}
+            >
               Search
             </Button>
             <Button
@@ -95,7 +107,8 @@ export const Attendance: React.FC = () => {
                 confirm();
               }}
               size="small"
-              style={{ width: 90 }}>
+              style={{ width: 90 }}
+            >
               Reset
             </Button>
           </Space>
@@ -202,14 +215,27 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[0] as any).valueOf():
             return (
               <Space>
-                <Button style={{ backgroundColor: "#00cc00", color: "white" }} onClick={() => handleApprove(record.Id)}>
+                <Button
+                  style={{ backgroundColor: "#00cc00", color: "white" }}
+                  onClick={() => handleApprove(record.Id)}
+                >
                   Aprrove
                 </Button>
-                <Button danger onClick={() => handleReject(record.Id)}>
+                <Button
+                  danger
+                  onClick={() => handleReject(record.Id)}
+                >
                   Reject
                 </Button>
-                <EditModal data={record} successCallback={fetchAttendances} />
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+                <EditModal
+                  data={record}
+                  successCallback={fetchAttendances}
+                />
+                <DeleteModal
+                  data={record}
+                  isDisable={false}
+                  successCallback={successCallback}
+                />
               </Space>
             );
           case (AttendanceStatus[1] as any).valueOf():
@@ -217,7 +243,11 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[2] as any).valueOf():
             return (
               <Space>
-                <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+                <DeleteModal
+                  data={record}
+                  isDisable={false}
+                  successCallback={successCallback}
+                />
               </Space>
             );
         }
@@ -267,19 +297,22 @@ export const Attendance: React.FC = () => {
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          marginBottom: 16,
-        }}>
-        <CreateModal isEmp={false} successCallback={successCallback} />
+          marginBottom: "2rem",
+        }}
+      >
+        <CreateModal
+          isEmp={false}
+          successCallback={successCallback}
+        />
       </div>
       <Table
-        size="large"
+        scroll={{ x: 1200 }}
         columns={columns}
         dataSource={attendances}
         loading={loading}
         pagination={{
           pageSizeOptions,
           showSizeChanger: true,
-          position: ["topLeft"],
         }}
       />
     </>

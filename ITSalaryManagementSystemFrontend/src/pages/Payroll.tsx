@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import { Input, Space, Table } from "antd";
+import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { PayrollStatus } from "../constants/enum";
@@ -13,8 +13,6 @@ import { formatMoney } from "../utils/formatter";
 type DataType = {
   key: number;
 } & PayrollModel;
-
-const { Search } = Input;
 
 export const Payroll: React.FC = () => {
   const DEFAULT_QUERY = "?$expand=Contract($expand=User,Position,Level)";
@@ -101,9 +99,7 @@ export const Payroll: React.FC = () => {
     },
   ];
 
-  const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
-  const [total, setTotal] = useState<number>(0);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [query] = useState<string>(DEFAULT_QUERY);
@@ -119,7 +115,6 @@ export const Payroll: React.FC = () => {
     PayrollApis.getAll(query)
       .then((res) => {
         setPayrolls(res.value.map((item) => ({ ...item, key: item.Id })));
-        setTotal(res.value.length);
       })
       .catch((err) => console.error(err));
     setLoading(false);
@@ -135,31 +130,24 @@ export const Payroll: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
+          justifyContent: "flex-end",
+          marginBottom: "2rem",
         }}
       >
-        <Search
-          placeholder="Search by staff code"
-          style={{
-            width: 400,
-          }}
-          allowClear
-        />
-
         <CreateModal successCallback={successCallback} />
       </div>
       <Table
+        scroll={{ x: 1000 }}
         columns={columns}
         dataSource={payrolls}
         loading={loading}
         pagination={{
           current: page,
-          pageSize: limit,
-          total: total,
-          onChange: (page, pageSize) => {
+          defaultPageSize: 10,
+          pageSizeOptions: ["10", "20", "50"],
+          showSizeChanger: true,
+          onChange: (page) => {
             setPage(page);
-            setLimit(pageSize || 5);
           },
         }}
       />

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Input, Space, Table } from "antd";
+import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import LevelApis from "../modules/level/apis/LevelApis";
@@ -10,8 +10,6 @@ import { LevelModel } from "../modules/level/models";
 type DataType = {
   key: number;
 } & LevelModel;
-
-const { Search } = Input;
 
 export const Level: React.FC = () => {
   const columns: ColumnsType<DataType> = [
@@ -38,10 +36,7 @@ export const Level: React.FC = () => {
     },
   ];
 
-  const [limit, setLimit] = React.useState<number>(5);
   const [page, setPage] = React.useState<number>(1);
-  const [total, setTotal] = React.useState<number>(0);
-
   const [loading, setLoading] = React.useState<boolean>(true);
   const [positions, setPositions] = React.useState<DataType[]>([]);
 
@@ -54,7 +49,6 @@ export const Level: React.FC = () => {
     LevelApis.getAll()
       .then((res) => {
         setPositions(res.value.map((item) => ({ ...item, key: item.Id })));
-        setTotal(res.value.length);
       })
       .catch((err) => console.log(err));
     setLoading(false);
@@ -70,18 +64,10 @@ export const Level: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
+          justifyContent: "flex-end",
+          marginBottom: "2rem",
         }}
       >
-        <Search
-          placeholder="Search level"
-          style={{
-            width: 400,
-          }}
-          allowClear
-        />
-
         <CreateModal successCallback={successCallback} />
       </div>
       <Table
@@ -90,11 +76,11 @@ export const Level: React.FC = () => {
         loading={loading}
         pagination={{
           current: page,
-          pageSize: limit,
-          total: total,
-          onChange: (page, pageSize) => {
+          defaultPageSize: 10,
+          pageSizeOptions: ["10", "20", "50"],
+          showSizeChanger: true,
+          onChange: (page) => {
             setPage(page);
-            setLimit(pageSize || 5);
           },
         }}
       />

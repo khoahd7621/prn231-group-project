@@ -83,10 +83,7 @@ export const Contract: React.FC = () => {
     },
   ];
 
-  const [limit, setLimit] = React.useState<number>(10);
   const [page, setPage] = React.useState<number>(1);
-  const [total, setTotal] = React.useState<number>(0);
-
   const [loading, setLoading] = React.useState<boolean>(true);
   const [contracts, setContracts] = React.useState<DataType[]>([]);
 
@@ -99,7 +96,6 @@ export const Contract: React.FC = () => {
     ContractApis.getAll()
       .then((res) => {
         setContracts(res.value.map((item) => ({ ...item, key: item.Id })));
-        setTotal(res.value.length);
       })
       .catch((err) => console.log(err));
     setLoading(false);
@@ -115,31 +111,24 @@ export const Contract: React.FC = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
+          justifyContent: "flex-end",
+          marginBottom: "2rem",
         }}
       >
-        <Search
-          placeholder="Search by staff code"
-          style={{
-            width: 400,
-          }}
-          allowClear
-        />
-
         <CreateModal successCallback={successCallback} />
       </div>
       <Table
+        scroll={{ x: 1000 }}
         columns={columns}
         dataSource={contracts}
         loading={loading}
         pagination={{
           current: page,
-          pageSize: limit,
-          total: total,
-          onChange: (page, pageSize) => {
+          defaultPageSize: 10,
+          pageSizeOptions: ["10", "20", "50"],
+          showSizeChanger: true,
+          onChange: (page) => {
             setPage(page);
-            setLimit(pageSize || 5);
           },
         }}
       />
