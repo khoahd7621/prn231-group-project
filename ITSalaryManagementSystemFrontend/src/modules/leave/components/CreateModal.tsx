@@ -83,8 +83,8 @@ export const CreateModal = ({ successCallback }: Props) => {
       ...value,
       employeeId: isEmp ? profileState.user.id : value.employeeId,
       status: LeaveStatus.WAITING,
-      startDate: value.startDate.toISOString().slice(0, 10),
-      endDate: value.endDate.toISOString().slice(0, 10),
+      startDate: value.startDate.toISOString(),
+      endDate: value.endDate.toISOString(),
     })
       .then(() => {
         setIsModalOpen(false);

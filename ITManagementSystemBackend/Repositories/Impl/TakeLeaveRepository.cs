@@ -1,11 +1,13 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
+using static BusinessObject.Enum.EnumList;
 
 namespace Repositories.Impl
 {
     public class TakeLeaveRepository : EfEntityRepositoryBase<TakeLeave, MyDbContext>, ITakeLeaveRepository
     {
         private readonly EfEntityRepositoryBase<Contract, MyDbContext> _contractRepository = new EfEntityRepositoryBase<Contract, MyDbContext>();
+        private readonly EfEntityRepositoryBase<Attendance, MyDbContext> _attendenceRepository = new EfEntityRepositoryBase<Attendance, MyDbContext>();
         private static readonly List<DateTime> publicHolidays = new List<DateTime>
         {
             new DateTime(2023, 1, 1),    // New Year's Day
@@ -96,5 +98,7 @@ namespace Repositories.Impl
                 })
                 .Sum();
         }
+
+        public bool existApprovedAttendanceByDateEqualAndEmployeeEqual(int employeeId, DateTime startDate, DateTime endDate) => _attendenceRepository.GetFirstOrDefault(a => a.Date.Date>=(startDate.Date)&&a.Date.Date<=endDate.Date && a.EmployeeId == employeeId && a.Status.Equals(AttendanceStatus.Approved)) != null;
     }
 }
