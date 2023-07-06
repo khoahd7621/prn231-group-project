@@ -3,6 +3,7 @@ using BusinessObject.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using static BusinessObject.Enum.EnumList;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataAccess
 {
@@ -101,6 +102,7 @@ namespace DataAccess
         {
             try
             {
+                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday || attendance.Date.DayOfWeek == DayOfWeek.Saturday) { throw new Exception("Can not create attendance at Sunday or Saturday")}
                 attendance.Status = EnumList.AttendanceStatus.Waiting;
 
                 using (var context = new MyDbContext())
@@ -134,6 +136,7 @@ namespace DataAccess
         {
             try
             {
+                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday || attendance.Date.DayOfWeek == DayOfWeek.Saturday) { throw new Exception("Can not create attendance at Sunday or Saturday")}
                 attendance.Status = EnumList.AttendanceStatus.Waiting;
 
                 var context = new MyDbContext();

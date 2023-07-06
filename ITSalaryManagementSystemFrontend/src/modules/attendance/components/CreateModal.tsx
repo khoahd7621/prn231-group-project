@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, InputNumber, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, InputNumber, Modal, Select, Space, notification } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 
 import { AttendanceType } from "../../../constants/enum";
@@ -18,7 +18,7 @@ type OptionItem = {
   value: number;
   label: string;
 };
-
+type NotificationType = "success" | "info" | "warning" | "error";
 export const CreateModal = ({ isEmp, successCallback }: Props) => {
   const TODAY = dayjs(Date.now());
   const [form] = Form.useForm();
@@ -29,8 +29,16 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [employees, setEmployees] = useState<OptionItem[]>([]);
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
+    api[type]({
+      message: message,
+      description: description,
+      duration: 1,
+    });
+  };
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return current < dayjs().startOf("week");
+    return current < dayjs().startOf("week") || current.day() === 0 || current.day() === 6;
   };
 
   useEffect(() => {
@@ -75,10 +83,11 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
         setIsModalOpen(false);
         form.resetFields();
         successCallback?.();
+        openNotificationWithIcon("success", "Create", "Create attendance success");
       })
       .catch((error) => {
-        console.log(error);
-        alert("Create employee failed! Please refresh page and try again!");
+        openNotificationWithIcon("error", "Create", error.response.data.error.message);
+        //alert("Create employee failed! Please refresh page and try again!");
       })
       .finally(() => setSending(false));
   };
@@ -93,10 +102,12 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
         setIsModalOpen(false);
         form.resetFields();
         successCallback?.();
+        openNotificationWithIcon("success", "Create", "Create attendance success");
       })
       .catch((error) => {
-        console.log(error);
-        alert("Create employee failed! Please refresh page and try again!");
+        console.log(error.response.data.message);
+        openNotificationWithIcon("error", "Create", error.response.data.message);
+        // alert("Create employee failed! Please refresh page and try again!");
       })
       .finally(() => setSending(false));
   };
@@ -109,6 +120,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button type="primary" onClick={showModal}>
         Create new attendance
       </Button>
@@ -158,11 +170,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
               label="Date of work"
               name="date"
               rules={[{ required: true, message: "Please input date of work!" }]}>
-              <DatePicker
-                disabledDate={disabledDate}
-                placeholder="Select date of work"
-                style={{ width: "100%" }}
-              />
+              <DatePicker disabledDate={disabledDate} placeholder="Select date of work" style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               label="Hour"
@@ -202,11 +210,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
             <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
               <Space>
                 {isEmp ? (
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    disabled={!submittable}
-                    loading={sending}>
+                  <Button type="primary" htmlType="submit" disabled={!submittable} loading={sending}>
                     Submit
                   </Button>
                 ) : (
@@ -224,10 +228,7 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
               </Space>
             </Form.Item>
           </Form>
-          <Form
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 }}
-            style={{ maxWidth: 600, margin: "2rem 0" }}></Form>
+          <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ maxWidth: 600, margin: "2rem 0" }}></Form>
         </Modal>
       </>
     </>
