@@ -1,18 +1,21 @@
 import dayjs from "dayjs";
-import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
-
 import React, { useEffect } from "react";
+
+import { SearchOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
+
 import { Button, DatePicker, Space, Table, Tag } from "antd";
 import { AttendanceStatus, AttendanceType } from "../constants/enum";
+import AttendanceApis from "../modules/attendance/apis/AttendanceApis";
 import { AttendanceStatusTag, CreateModal, DeleteModal, EditModal } from "../modules/attendance/components";
 import { AttendanceModel } from "../modules/attendance/models";
-import { SearchOutlined } from "@ant-design/icons";
 
 type DataType = {
   key: number;
 } & AttendanceModel;
+
 const { RangePicker } = DatePicker;
+
 export const EmpAttendance: React.FC = () => {
   const columns: ColumnsType<DataType> = [
     {
@@ -20,7 +23,10 @@ export const EmpAttendance: React.FC = () => {
       dataIndex: "Date",
       filterMultiple: false,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 10 }} onKeyDown={(e) => e.stopPropagation()}>
+        <div
+          style={{ padding: 10 }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <RangePicker
             value={selectedKeys[0]}
             onChange={(e) => {
@@ -38,7 +44,8 @@ export const EmpAttendance: React.FC = () => {
               }}
               icon={<SearchOutlined />}
               size="small"
-              style={{ width: 90 }}>
+              style={{ width: 90 }}
+            >
               Search
             </Button>
             <Button
@@ -47,7 +54,8 @@ export const EmpAttendance: React.FC = () => {
                 confirm();
               }}
               size="small"
-              style={{ width: 90 }}>
+              style={{ width: 90 }}
+            >
               Reset
             </Button>
           </Space>
@@ -152,8 +160,14 @@ export const EmpAttendance: React.FC = () => {
         if (record.Status != AttendanceStatus[1].valueOf())
           return (
             <Space>
-              <EditModal data={record} successCallback={fetchAttendances} />
-              <DeleteModal data={record} successCallback={successCallback} />
+              <EditModal
+                data={record}
+                successCallback={fetchAttendances}
+              />
+              <DeleteModal
+                data={record}
+                successCallback={successCallback}
+              />
             </Space>
           );
       },
@@ -186,19 +200,21 @@ export const EmpAttendance: React.FC = () => {
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          marginBottom: 16,
-        }}>
-        <CreateModal isEmp={true} successCallback={successCallback} />
+          marginBottom: "2rem",
+        }}
+      >
+        <CreateModal
+          isEmp={true}
+          successCallback={successCallback}
+        />
       </div>
       <Table
-        size="large"
         columns={columns}
         dataSource={attendances}
         loading={loading}
         pagination={{
           pageSizeOptions,
           showSizeChanger: true,
-          position: ["topLeft"],
         }}
       />
     </>
