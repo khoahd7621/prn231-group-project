@@ -23,7 +23,12 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.12.1",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "node-sass": "^8.0.0",
+    "react-bootstrap": "^2.7.0",
+    "react-color": "^2.19.3",
+    "bootstrap": "^5.2.3",
+    "react-apexcharts": "^1.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.13",

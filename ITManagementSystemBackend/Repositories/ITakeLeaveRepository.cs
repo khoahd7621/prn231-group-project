@@ -16,6 +16,7 @@ namespace Repositories
         int CalculateLeaveDays(DateTime startDate, DateTime endDate);
         int CalculateLeaveDaysByEmployeeIdEqualAndYearEqual(int employeeId, int year);
         public int CalculateLeaveDaysByEmployeeIdEqualAndMonthEqualAndYearEqual(int employeeId, DateTime startDate, DateTime endDate);
+        bool existApprovedAttendanceByDateEqualAndEmployeeEqual(int employeeId, DateTime startDate, DateTime endDate);
 
     }
 }
