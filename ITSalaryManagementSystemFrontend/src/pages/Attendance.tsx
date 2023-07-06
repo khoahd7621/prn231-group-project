@@ -227,20 +227,8 @@ export const Attendance: React.FC = () => {
                 >
                   Reject
                 </Button>
-<<<<<<< Updated upstream
-                <EditModal
-                  data={record}
-                  successCallback={fetchAttendances}
-                />
-                <DeleteModal
-                  data={record}
-                  isDisable={false}
-                  successCallback={successCallback}
-                />
-=======
                 <EditModal data={record} successCallback={fetchAttendances} />
                 <DeleteModal data={record} successCallback={successCallback} />
->>>>>>> Stashed changes
               </Space>
             );
           case (AttendanceStatus[1] as any).valueOf():
@@ -248,15 +236,7 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[2] as any).valueOf():
             return (
               <Space>
-<<<<<<< Updated upstream
-                <DeleteModal
-                  data={record}
-                  isDisable={false}
-                  successCallback={successCallback}
-                />
-=======
                 <DeleteModal data={record} successCallback={successCallback} />
->>>>>>> Stashed changes
               </Space>
             );
         }
