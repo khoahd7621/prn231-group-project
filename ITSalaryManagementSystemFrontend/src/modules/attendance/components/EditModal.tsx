@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, notification } from "antd";
 
 import { RangePickerProps } from "antd/es/date-picker";
 import { AttendanceType } from "../../../constants/enum";
@@ -12,7 +12,7 @@ type Props = {
   data: AttendanceModel;
   successCallback?: () => void;
 };
-
+type NotificationType = "success" | "info" | "warning" | "error";
 export const EditModal = ({ data, successCallback }: Props) => {
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
@@ -21,8 +21,16 @@ export const EditModal = ({ data, successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
+    api[type]({
+      message: message,
+      description: description,
+      duration: 1,
+    });
+  };
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return current < dayjs().startOf("week");
+    return current < dayjs().startOf("week") || current.day() === 0 || current.day() === 6;
   };
 
   useEffect(() => {
@@ -48,10 +56,13 @@ export const EditModal = ({ data, successCallback }: Props) => {
       .then(() => {
         setIsModalOpen(false);
         successCallback?.();
+        openNotificationWithIcon("success", "Edit", "Edit attendance success");
       })
-      .catch((err) => {
-        console.log(err);
-        alert("Something went wrong! Please refresh page and try again later.");
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.message);
+        openNotificationWithIcon("error", "Edit", error.response.data.message);
+        //alert("Something went wrong! Please refresh page and try again later.");
       })
       .finally(() => setSending(false));
   };
@@ -64,13 +75,12 @@ export const EditModal = ({ data, successCallback }: Props) => {
 
   return (
     <>
+      {contextHolder}
       <Button type="primary" onClick={showModal}>
         Edit
       </Button>
       <Modal
-        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${
-          (data.User as any).EmployeeName
-        }`}
+        title={`Edit Attendance ${(data.User as any).EmployeeCode} - ${(data.User as any).EmployeeName}`}
         open={isModalOpen}
         footer={null}
         cancelButtonProps={{

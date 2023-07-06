@@ -1,21 +1,29 @@
 import dayjs from "dayjs";
 import { useState } from "react";
 
-import { Button, Modal, Tag } from "antd";
+import { Button, Modal, Tag, notification } from "antd";
 
 import AttendanceApis from "../apis/AttendanceApis";
 import { AttendanceModel } from "../models";
 
 type Props = {
   data: AttendanceModel;
-  isDisable: boolean;
   successCallback?: () => void;
 };
 
-export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
+type NotificationType = "success" | "info" | "warning" | "error";
+export const DeleteModal = ({ data, successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
+    api[type]({
+      message: message,
+      description: description,
+      duration: 1,
+    });
+  };
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -26,10 +34,14 @@ export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
       .then(() => {
         setIsModalOpen(false);
         successCallback?.();
-      })
-      .catch((err) => {
-        console.log(err);
         alert("Something went wrong! Please refresh page and try again later.");
+        openNotificationWithIcon("success", "Delete", "Delete attendance success");
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.message);
+        openNotificationWithIcon("error", "Delete", error.response.data.message);
+        //alert("Something went wrong! Please refresh page and try again later.");
       })
       .finally(() => setSending(false));
   };
@@ -41,12 +53,8 @@ export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
 
   return (
     <>
-      <Button
-        type="primary"
-        danger
-        onClick={showModal}
-        disabled={isDisable}
-      >
+      {contextHolder}
+      <Button type="primary" danger onClick={showModal}>
         Delete
       </Button>
       <Modal
@@ -60,8 +68,7 @@ export const DeleteModal = ({ data, isDisable, successCallback }: Props) => {
         cancelButtonProps={{
           disabled: sending,
         }}
-        onCancel={handleCancel}
-      >
+        onCancel={handleCancel}>
         <p>
           Are you sure to delete:<p></p>
           <Tag color="orange">{(data.User as any).EmployeeName} </Tag>

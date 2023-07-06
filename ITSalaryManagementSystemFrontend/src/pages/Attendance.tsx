@@ -2,7 +2,7 @@
 import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
-import { Button, DatePicker, Input, Space, Table, Tag } from "antd";
+import { Button, DatePicker, Input, Space, Table, Tag, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { AttendanceStatus, AttendanceType } from "../constants/enum";
@@ -14,7 +14,7 @@ import { SearchOutlined } from "@ant-design/icons";
 type DataType = {
   key: number;
 } & AttendanceModel;
-
+type NotificationType = "success" | "info" | "warning" | "error";
 export const Attendance: React.FC = () => {
   const pageSizeOptions = [5, 10, 20, 50];
 
@@ -227,6 +227,7 @@ export const Attendance: React.FC = () => {
                 >
                   Reject
                 </Button>
+<<<<<<< Updated upstream
                 <EditModal
                   data={record}
                   successCallback={fetchAttendances}
@@ -236,6 +237,10 @@ export const Attendance: React.FC = () => {
                   isDisable={false}
                   successCallback={successCallback}
                 />
+=======
+                <EditModal data={record} successCallback={fetchAttendances} />
+                <DeleteModal data={record} successCallback={successCallback} />
+>>>>>>> Stashed changes
               </Space>
             );
           case (AttendanceStatus[1] as any).valueOf():
@@ -243,11 +248,15 @@ export const Attendance: React.FC = () => {
           case (AttendanceStatus[2] as any).valueOf():
             return (
               <Space>
+<<<<<<< Updated upstream
                 <DeleteModal
                   data={record}
                   isDisable={false}
                   successCallback={successCallback}
                 />
+=======
+                <DeleteModal data={record} successCallback={successCallback} />
+>>>>>>> Stashed changes
               </Space>
             );
         }
@@ -256,7 +265,14 @@ export const Attendance: React.FC = () => {
   ];
   const [loading, setLoading] = React.useState<boolean>(true);
   const [attendances, setAttendances] = React.useState<DataType[]>([]);
-
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
+    api[type]({
+      message: message,
+      description: description,
+      duration: 1,
+    });
+  };
   useEffect(() => {
     fetchAttendances();
   }, []);
@@ -279,20 +295,29 @@ export const Attendance: React.FC = () => {
     AttendanceApis.patch(id, AttendanceStatus.Approved.valueOf())
       .then(() => {
         fetchAttendances();
+        openNotificationWithIcon("success", "Approve", "Approve attendance success");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        openNotificationWithIcon("error", "Approve", err.response.data.message);
+      });
   };
 
   const handleReject = (id: number) => {
     AttendanceApis.patch(id, AttendanceStatus.Rejected.valueOf())
       .then(() => {
+        openNotificationWithIcon("success", "Reject", "Reject attendance success");
         fetchAttendances();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        openNotificationWithIcon("error", "Reject", err.response.data.message);
+      });
   };
   const { RangePicker } = DatePicker;
   return (
     <>
+      {contextHolder}
       <div
         style={{
           display: "flex",

@@ -153,7 +153,7 @@ export const EmpAttendance: React.FC = () => {
           return (
             <Space>
               <EditModal data={record} successCallback={fetchAttendances} />
-              <DeleteModal data={record} isDisable={false} successCallback={successCallback} />
+              <DeleteModal data={record} successCallback={successCallback} />
             </Space>
           );
       },
