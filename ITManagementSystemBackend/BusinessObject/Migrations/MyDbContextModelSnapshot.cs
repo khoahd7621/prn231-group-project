@@ -170,6 +170,9 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CCCD")
+                        .IsUnique();
+
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -184,14 +187,14 @@ namespace BusinessObject.Migrations
                             Id = 1,
                             Address = "HCM",
                             CCCD = "1234567890",
-                            CreatedDate = new DateTime(2023, 7, 5, 20, 45, 57, 246, DateTimeKind.Local).AddTicks(9484),
+                            CreatedDate = new DateTime(2023, 7, 12, 20, 58, 52, 929, DateTimeKind.Local).AddTicks(9441),
                             Dob = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@projectx.com",
                             EmployeeCode = "SD0001",
                             EmployeeName = "Admin",
                             Gender = 0,
                             IsFirstLogin = true,
-                            Password = "$2a$11$Hqjd5HaxrGCrlBUTia8gAeuJoUOSN9wB2U2ppKC35tB2jGNMHF6.C",
+                            Password = "$2a$11$pdlTtuwSy1hRVtoKPIdTNekKEeYdYIHiYIeL39Xl/5.Cuk52MtbgG",
                             Phone = "0792123456",
                             Role = 0,
                             Status = 0

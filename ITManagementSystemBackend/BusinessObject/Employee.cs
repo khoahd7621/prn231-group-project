@@ -7,6 +7,7 @@ namespace BusinessObject
 {
     [Index(nameof(Email), IsUnique = true)]
     [Index(nameof(EmployeeCode), IsUnique = true)]
+    [Index(nameof (CCCD), IsUnique = true)]
     public class Employee
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,7 +22,7 @@ namespace BusinessObject
         public Enum.EnumList.Role Role { get; set; }
         [Required]
         public DateTime Dob { get; set; }
-        [Required, MinLength(10), MaxLength(12)]
+        [Required, MinLength(9), MaxLength(12)]
         public string CCCD { get; set; }
         [Required]
         public string Address { get; set; }

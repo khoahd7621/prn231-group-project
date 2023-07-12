@@ -34,6 +34,9 @@ namespace ITManagementSystemWebAPI.Controllers
 
         public IActionResult Post([FromBody] ContractReq req)
         {
+            var checkEmployeeTypeIsDefined = !Enum.IsDefined(typeof(EnumList.EmployeeType), req.EmployeeType);
+            var checkSalaryTypeIsDefined = !Enum.IsDefined(typeof(EnumList.SalaryType), req.SalaryType);
+            if (checkEmployeeTypeIsDefined || checkSalaryTypeIsDefined) return BadRequest("Employee Type or Salary Type is not defined");
             var check = _contractRepository.CreateContract(req);
             return check.Equals("ok") ? Ok() : BadRequest(check);
         }

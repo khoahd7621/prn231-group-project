@@ -116,5 +116,12 @@ namespace DataAccess
             if (!BCrypt.Net.BCrypt.Verify(password, employee.Password)) return null;
             return employee;
         }
+
+        public static bool FindEmployeeByCCCD(string cccd)
+        {
+            var context = new MyDbContext();
+            var empl = context.Users.FirstOrDefault(x => x.CCCD.Equals(cccd));
+            return empl != null;
+        }
     }
 }

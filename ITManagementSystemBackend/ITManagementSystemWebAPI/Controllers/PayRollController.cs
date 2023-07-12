@@ -30,7 +30,7 @@ namespace ITManagementSystemWebAPI.Controllers
             var checkEmployeeHasAnyPayrollOfThisMonth = _payrollRepository.CheckEmployeeAlreadyHasPayroll(payrollReq.dateTime, payrollReq.EmployeeId);
             if (!checkEmployeeHasAnyPayrollOfThisMonth) return BadRequest("This user already has payroll");
             var check = _payrollRepository.CreatePayroll(payrollReq);
-            return check.Count > 0 ? Ok(check) : BadRequest("This User don't has any contract in this month Or Don't have Attendance & day off has salary");
+            return Ok(check);
         }
         [HttpPatch("odata/PayRoll/Approve/{key}")]
         public IActionResult Approve(int key)
