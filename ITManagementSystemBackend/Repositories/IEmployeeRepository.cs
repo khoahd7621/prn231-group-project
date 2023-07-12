@@ -13,5 +13,6 @@ namespace Repositories
         public Employee GetEmployeeById(int id);
         public string DeactivateEmployee(int id);
         public void ActiveEmployee(int id);
+        public bool CheckCCCDIsExist(string cccd);
     }
 }

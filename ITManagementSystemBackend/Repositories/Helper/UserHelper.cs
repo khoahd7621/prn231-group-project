@@ -104,5 +104,18 @@ namespace Repositories.Helper
             return total;
         }
 
+        public static bool CheckAgeLessThan18 (DateTime dob)
+        {
+            DateTime currentDate = DateTime.Now;
+
+            int age = currentDate.Year - dob.Year;
+
+            if (currentDate.Month < dob.Month || (currentDate.Month == dob.Month && currentDate.Day < dob.Day))
+            {
+                age--;
+            }
+            return age < 18;
+        }
+
     }
 }

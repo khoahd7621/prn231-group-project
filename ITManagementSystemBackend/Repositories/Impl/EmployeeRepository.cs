@@ -23,6 +23,7 @@ namespace Repositories.Impl
             var password = Helper.UserHelper.GeneratedEmployeePassword(employeeReal.EmployeeName.ToLower(), employee.Dob);
             var employeeEmail = Helper.UserHelper.GeneratedEmployeeEmail(employeeReal.EmployeeName.ToLower());
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            employeeReal.Role = EnumList.Role.Employee;
             employeeReal.Email = employeeEmail;
             employeeReal.Password = passwordHash;
             employeeReal.Status = EnumList.EmployeeStatus.Active;
@@ -90,6 +91,11 @@ namespace Repositories.Impl
             }
             EmployeeDAO.DeleteEmployee(employee);
             return true;
+        }
+
+        public bool CheckCCCDIsExist(string cccd)
+        {
+            return EmployeeDAO.FindEmployeeByCCCD(cccd);
         }
     }
 }

@@ -13,11 +13,9 @@ namespace BusinessObject.DTO
         public EnumList.Gender Gender { get; set; }
         [Required]
         public DateTime Dob { get; set; }
-        [Required]
-        public Enum.EnumList.Role Role { get; set; }
-        [Required]
+        [Required, MinLength(9), MaxLength(12)]
         public string CCCD { get; set; }
-        [Required]
+        [Required, MinLength(9), MaxLength(12)]
         public string Phone { get; set; }
         [Required]
         public string Address { get; set; }

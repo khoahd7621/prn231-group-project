@@ -46,7 +46,6 @@ namespace Repositories.Impl
                 foreach (var contract in contractInMonth)
                 {
                     var payroll = new PayRoll();
-                    var check = true;
                     payroll.StartDate = startDateOfMonth;
                     payroll.EndDate = lastDateOfMonth;
                     payroll.ContractId = contract.Id;
@@ -63,10 +62,6 @@ namespace Repositories.Impl
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
                             payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
                             payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
-                            if (dayTakeLeave == 0 && payroll.RealWorkingHours == 0)
-                            {
-                                check = false;
-                            }
                             payroll.Bonus = 0;
                             payroll.Total = UserHelper.TotalPayroll(payroll.BaseSalaryPerHours, (decimal)payroll.RealWorkingHours, payroll.OTSalaryPerHours, (decimal)payroll.OTWorkingHours, dayTakeLeave, payroll.Bonus);
                         }
@@ -79,10 +74,6 @@ namespace Repositories.Impl
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
                             payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
                             payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
-                            if (payroll.RealWorkingHours == 0)
-                            {
-                                check = false;
-                            }
                             payroll.Bonus = 0;
                             payroll.Total = UserHelper.TotalPayroll(payroll.BaseSalaryPerHours, (decimal)payroll.RealWorkingHours, payroll.OTSalaryPerHours, (decimal)payroll.OTWorkingHours, 0, payroll.Bonus);
                         }
@@ -90,9 +81,7 @@ namespace Repositories.Impl
                         {
                             payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
                         }
-                        if (check)
-                            listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
-                        check = true;
+                        listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
                         startDate = contract.EndDate.Date.AddDays(1);
                     }
                     else if (contract.Status == BusinessObject.Enum.EnumList.ContractStatus.Active)
@@ -107,10 +96,6 @@ namespace Repositories.Impl
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
                             payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
                             payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
-                            if (dayTakeLeave == 0 && payroll.RealWorkingHours == 0)
-                            {
-                                check = false;
-                            }
                             payroll.Bonus = 0;
                             payroll.Total = UserHelper.TotalPayroll(payroll.BaseSalaryPerHours, (decimal)payroll.RealWorkingHours, payroll.OTSalaryPerHours, (decimal)payroll.OTWorkingHours, dayTakeLeave, payroll.Bonus);
 
@@ -124,10 +109,6 @@ namespace Repositories.Impl
                             payroll.BaseWorkingHours = hoursWorkingInMonth;
                             payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
                             payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, contract.EndDate.Date);
-                            if (payroll.RealWorkingHours == 0)
-                            {
-                                check = false;
-                            }
                             payroll.Bonus = 0;
                             payroll.Total = UserHelper.TotalPayroll(payroll.BaseSalaryPerHours, (decimal)payroll.RealWorkingHours, payroll.OTSalaryPerHours, (decimal)payroll.OTWorkingHours, 0, payroll.Bonus);
 
@@ -138,9 +119,7 @@ namespace Repositories.Impl
 
 
                         }
-                        if (check)
-                            listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
-                        check = true;
+                        listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
                     }
 
                 }
@@ -148,7 +127,6 @@ namespace Repositories.Impl
             else if (contractActiveOfThisEmployee != null)
             {
                 var payroll = new PayRoll();
-                var check = true;
                 payroll.StartDate = startDateOfMonth;
                 payroll.EndDate = lastDateOfMonth;
                 payroll.ContractId = contractActiveOfThisEmployee.Id;
@@ -162,10 +140,6 @@ namespace Repositories.Impl
                     payroll.BaseWorkingHours = hoursWorkingInMonth;
                     payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, lastDate.Date);
                     payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, lastDate.Date);
-                    if (dayTakeLeave == 0 && payroll.RealWorkingHours == 0)
-                    {
-                        check = false;
-                    }
                     payroll.Bonus = 0;
                     payroll.Total = UserHelper.TotalPayroll(payroll.BaseSalaryPerHours, (decimal)payroll.RealWorkingHours, payroll.OTSalaryPerHours, (decimal)payroll.OTWorkingHours, dayTakeLeave, payroll.Bonus);
 
@@ -179,10 +153,6 @@ namespace Repositories.Impl
                     payroll.BaseWorkingHours = hoursWorkingInMonth;
                     payroll.RealWorkingHours = AttendanceDAO.getHour(req.EmployeeId, startDate.Date, lastDate.Date);
                     payroll.OTWorkingHours = AttendanceDAO.getOtHour(req.EmployeeId, startDate.Date, lastDate.Date);
-                    if (payroll.RealWorkingHours == 0)
-                    {
-                        check = false;
-                    }
                     payroll.Bonus = 0;
                     payroll.Total = UserHelper.TotalPayroll(payroll.BaseSalaryPerHours, (decimal)payroll.RealWorkingHours, payroll.OTSalaryPerHours, (decimal)payroll.OTWorkingHours, 0, payroll.Bonus);
 
@@ -192,9 +162,7 @@ namespace Repositories.Impl
                     payroll.Total -= (payroll.Total * ((decimal)payroll.TotalDeductionRate / 100));
 
                 }
-                if (check)
-                    listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
-                check = true;
+                listIdPayroll.Add(PayrollDAO.CreatePayroll(payroll).Id);
             }
             else
             {
