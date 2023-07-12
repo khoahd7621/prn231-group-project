@@ -111,8 +111,8 @@ namespace DataAccess
                     List<TakeLeave> takeLeave = context.TakeLeaves
                         .Where(c => c.EmployeeId == attendance.EmployeeId
                         && c.Status.Equals(TakeLeaveStatus.APPROVED)
-                        && c.StartDate >= attendance.Date
-                        && c.EndDate <= attendance.Date
+                        && c.StartDate.Date >= attendance.Date.Date
+                        && c.EndDate.Date <= attendance.Date.Date
                         ).ToList();
                     if (takeLeave.Count != 0) throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
@@ -147,8 +147,8 @@ namespace DataAccess
                 List<TakeLeave> takeLeave = context.TakeLeaves
                        .Where(c => c.EmployeeId == attendance.EmployeeId
                        && c.Status.Equals(TakeLeaveStatus.APPROVED)
-                       && c.StartDate >= attendance.Date
-                       && c.EndDate <= attendance.Date
+                       && c.StartDate.Date >= attendance.Date.Date
+                       && c.EndDate.Date <= attendance.Date.Date
                        ).ToList();
                 if (takeLeave.Count != 0)
                     throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
@@ -184,8 +184,8 @@ namespace DataAccess
                     List<TakeLeave> takeLeave = context.TakeLeaves
                        .Where(c => c.EmployeeId == attendance.EmployeeId
                        && c.Status.Equals(TakeLeaveStatus.APPROVED)
-                       && c.StartDate >= attendance.Date
-                       && c.EndDate <= attendance.Date
+                       && c.StartDate.Date >= attendance.Date.Date
+                       && c.EndDate.Date <= attendance.Date.Date
                        ).ToList();
                     if (takeLeave.Count() != 0)
                         throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
