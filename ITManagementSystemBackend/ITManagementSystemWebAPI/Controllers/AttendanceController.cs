@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -11,6 +12,7 @@ using System.Globalization;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize]
     public class AttendanceController : ODataController
     {
         private readonly IAttendanceRepository attendanceRepository = new AttendaceReposiory();
@@ -133,6 +135,7 @@ namespace ITManagementSystemWebAPI.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Patch(int key, EnumList.AttendanceStatus attendanceStatus)
         {
             var attendance = attendanceRepository.FindAttendanceById(key);

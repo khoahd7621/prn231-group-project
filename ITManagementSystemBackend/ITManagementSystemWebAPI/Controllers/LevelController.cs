@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -8,6 +9,7 @@ using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class LevelController : ODataController
     {
         private readonly ILevelRepository levelRepository = new LevelRepository();

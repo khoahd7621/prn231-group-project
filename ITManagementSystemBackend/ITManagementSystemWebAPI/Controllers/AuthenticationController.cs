@@ -34,6 +34,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return Ok(employeeLogged);
         }
 
+        [Authorize]
         [HttpPatch("ChangePassword")]
         public IActionResult ChangePassword(ChangePasswordReq req)
         {
@@ -50,6 +51,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check ? Ok() : BadRequest("Confirm password not match password");
         }
 
+        [Authorize]
         [HttpPatch("FirstChangePassword")]
         public IActionResult FirstChangePassword(FirstChangePasswordReq req)
         {

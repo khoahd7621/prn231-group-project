@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObject;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
@@ -9,6 +10,7 @@ using Repositories;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize]
     public class TakeLeaveController : ODataController
     {
         private readonly ITakeLeaveRepository takeLeaveRepository;
@@ -22,7 +24,7 @@ namespace ITManagementSystemWebAPI.Controllers
 
         [EnableQuery]
         public IActionResult Get() => Ok(takeLeaveRepository.GetTakeLeaves());
-
+        
         [EnableQuery]
         public ActionResult<Position> Get([FromRoute] int key)
         {
@@ -84,6 +86,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return Created(_mappedTakeLeave);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Put([FromRoute] int key, [FromBody] TakeLeaveReq postTakeLeave)
         {
             var tempContract = takeLeaveRepository.GetActiveContractByEmployeeIdEqual(postTakeLeave.EmployeeId);
@@ -137,6 +140,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Patch([FromRoute] int key, [FromBody] Delta<TakeLeave> delta)
         {
             var takeLeave = takeLeaveRepository.GetTakeLeaveById(key);
@@ -175,7 +179,6 @@ namespace ITManagementSystemWebAPI.Controllers
                     return BadRequest("An attendance record already exists for the selected leave period.");
                 }
             }
-
             takeLeaveRepository.UpdateTakeLeave(takeLeave);
             return Ok(takeLeave);
         }

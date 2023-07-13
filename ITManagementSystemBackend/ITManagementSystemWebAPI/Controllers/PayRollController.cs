@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Enum;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -7,6 +8,7 @@ using Repositories;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize]
     public class PayRollController : ODataController
     {
         private readonly IPayrollRepository _payrollRepository;
@@ -14,17 +16,21 @@ namespace ITManagementSystemWebAPI.Controllers
         {
             _payrollRepository = payrollRepository;
         }
+
+        
         [EnableQuery]
         public IActionResult Get()
         {
             return Ok(_payrollRepository.GetAllPayrolls());
         }
+
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
             var check = _payrollRepository.GetPayRollById(key);
             return check == null ? NotFound() : Ok(check);
         }
+
         public IActionResult Post([FromBody] PayrollReq payrollReq)
         {
             var checkEmployeeHasAnyPayrollOfThisMonth = _payrollRepository.CheckEmployeeAlreadyHasPayroll(payrollReq.dateTime, payrollReq.EmployeeId);
@@ -32,6 +38,7 @@ namespace ITManagementSystemWebAPI.Controllers
             var check = _payrollRepository.CreatePayroll(payrollReq);
             return check.Count() > 0 ? Ok(check) : BadRequest("This User don't have any contract active in this month");
         }
+
         [HttpPatch("odata/PayRoll/Approve/{key}")]
         public IActionResult Approve(int key)
         {
@@ -43,6 +50,7 @@ namespace ITManagementSystemWebAPI.Controllers
             _payrollRepository.UpdatePayroll(checkPayroll);
             return Ok("Approved");
         }
+
         [HttpPatch("odata/PayRoll/Reject/{key}")]
         public IActionResult Reject(int key)
         {
@@ -54,6 +62,7 @@ namespace ITManagementSystemWebAPI.Controllers
             _payrollRepository.UpdatePayroll(checkPayroll);
             return Ok("Rejected");
         }
+
         [HttpPatch("odata/PayRoll/Delete/{key}")]
         public IActionResult Delete(int key)
         {

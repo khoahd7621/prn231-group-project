@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Enum;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -8,6 +9,7 @@ using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize]
     public class ContractController : ODataController
     {
         private IContractRepository _contractRepository = new ContractRepository();
@@ -23,6 +25,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check == null ? NotFound() : Ok(check);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete([FromRoute] int key)
         {
             var checkContract = _contractRepository.GetContract(key);
@@ -32,6 +35,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check ? Ok() : BadRequest("Contract with different status watting cannot be deleted");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] ContractReq req)
         {
             var checkEmployeeTypeIsDefined = !Enum.IsDefined(typeof(EnumList.EmployeeType), req.EmployeeType);
@@ -41,6 +45,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check.Equals("ok") ? Ok() : BadRequest(check);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Put([FromRoute] int key, [FromBody] ContractReq req)
         {
             var checkContract = _contractRepository.GetContract(key);
@@ -50,6 +55,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check ? Ok() : BadRequest("Contract has status is active can't edit");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("odata/Contract/Deactivate/{key}")]
         public IActionResult Deactivate([FromRoute] int key)
         {
@@ -62,6 +68,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("odata/Contract/Activate/{key}")]
         public IActionResult Activate([FromRoute] int key)
         {

@@ -44,15 +44,18 @@ export const EmpLeave: React.FC = () => {
           .slice(0, 10)}`
       );
     }
-    if (selectedType || selectedType === 0) {
+    if (selectedType && selectedType !== -1) {
       filters.push(`Type eq '${LeaveType[selectedType]}'`);
     }
-    if (selectedStatus) {
+    if (selectedStatus && selectedStatus !== -1) {
       filters.push(`Status eq '${LeaveStatus[selectedStatus]}'`);
     }
     // Join the filter expressions with 'and' operator
-    setQuery(`?$filter=${filters.join(" and ")}`);
-    console.error(query);
+    
+    if (filters.length > 0) {
+      const tmpQuery = `?$filter=${filters.join(" and ")}`;
+      setQuery(tmpQuery);
+    }
     fetchLeave();
   };
 
@@ -176,7 +179,7 @@ export const EmpLeave: React.FC = () => {
   useEffect(() => {
     fetchLeave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [query]);
 
   const successCallback = () => {
     setPage(1);
@@ -211,40 +214,45 @@ export const EmpLeave: React.FC = () => {
             <Form.Item
               noStyle
               name={"type"}
+              initialValue={-1}
             >
               <Select
                 style={{ width: "15%" }}
-                placeholder={"ALL TYPE"}
                 onChange={setSelectedType}
-                options={[{ value: "", label: "ALL TYPE" }, ...typeOptions]}
+                options={[{ value: -1, label: "ALL TYPE" }, ...typeOptions]}
               />
             </Form.Item>
             <Form.Item
               noStyle
               name={"status"}
+              initialValue={-1}
             >
               <Select
                 style={{ width: "15%" }}
-                placeholder={"ALL STATUS"}
                 onChange={setSelectedStatus}
-                options={[{ value: "", label: "ALL STATUS" }, ...statusOptions]}
+                options={[{ value: -1, label: "ALL STATUS" }, ...statusOptions]}
               />
             </Form.Item>
             <Form.Item noStyle>
-              <Button
-                onClick={() => {
-                  form.resetFields();
-                  setSelectedDateRange(undefined);
-                  setSelectedStatus(undefined);
-                  setSelectedType(undefined);
-                }}
-                icon={<DeleteOutlined />}
-              />
+              {query !==`?$filter=EmployeeId eq ${profileState?.user?.id}` && (
+                <Button
+                  onClick={() => {
+                    form.resetFields();
+                    setQuery(`?$filter=EmployeeId eq ${profileState?.user?.id}`);
+                    setSelectedDateRange(undefined);
+                    setSelectedStatus(undefined);
+                    setSelectedType(undefined);
+                  }}
+                  icon={<DeleteOutlined />}
+                  style={{
+                    borderRadius: 0,
+                  }}
+                />
+              )}
               <Button
                 type="primary"
                 icon={<SearchOutlined />}
                 onClick={handleSearch}
-                loading={sending}
               >
                 Search
               </Button>

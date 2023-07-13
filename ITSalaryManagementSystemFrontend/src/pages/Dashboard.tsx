@@ -181,16 +181,12 @@ export const DashBoard: React.FC = () => {
   ] = React.useState<number>(0);
   const effectRan = React.useRef(false);
   const [totalSalary, setTotalSalary] = React.useState<number>(0);
-  const [salaryByYear, setSalaryByYear] =
-    React.useState<Map<number, Map<number, number>>>();
   const [thisYearSalary, setThisYearSalary] = React.useState<number>(0);
   const [lastYearSalary, setLastYearSalary] = React.useState<number>(0);
   const [thisMonthSalary, setThisMonthSalary] = React.useState<number>(0);
   const [lastMonthSalary, setLastMonthSalary] = React.useState<number>(0);
-  const [thisYearDataBar, SetThisYearDataBar] =
-    React.useState<number[]>();
-    const [lastYearDataBar, SetLastYearDataBar] =
-    React.useState<number[]>();
+  const [thisYearDataBar, SetThisYearDataBar] = React.useState<number[]>();
+  const [lastYearDataBar, SetLastYearDataBar] = React.useState<number[]>();
   const dataBarEmployeeByPosition = {
     labels: positionLabel,
     datasets: [
@@ -261,10 +257,12 @@ export const DashBoard: React.FC = () => {
       setWaitingRequestCount(0);
       fetchData();
     }
-    return () => (effectRan.current = true);
+    return () => {
+      effectRan.current = true;
+    };
   }, []);
-  const calculatePercentage = (value: number, total: number) => {
-    return total === 0 ? 0 : (value / total) * 100;
+  const calculatePercentage: (value: number, total: number) => number = (value, total) => {
+    return total === 0 ? 0 : parseFloat(((value / total) * 100).toFixed(0));
   };
   const fetchData = () => {
     setLoading(true);
@@ -400,10 +398,6 @@ export const DashBoard: React.FC = () => {
             salaryByYearMap.set(dayjs(salary.StartDate).year(), monthMap);
           }
         });
-
-        setSalaryByYear(salaryByYearMap);
-        console.log(salaryByYear);
-
         const currentYear = dayjs().year();
         const currentMonth = dayjs().month();
         const lastMonth = dayjs().subtract(1, "month").month();
@@ -412,7 +406,7 @@ export const DashBoard: React.FC = () => {
 
         salaryByYearMap.forEach((value, key) => {
           if (key === currentYear) {
-            value.forEach((flatValue, flatKey) => (sum += flatValue));
+            value.forEach((flatValue) => (sum += flatValue));
           }
         });
         setThisYearSalary(sum);
@@ -421,7 +415,7 @@ export const DashBoard: React.FC = () => {
 
         salaryByYearMap.forEach((value, key) => {
           if (key === lastYear) {
-            value.forEach((flatValue, flatKey) => (sum += flatValue));
+            value.forEach((flatValue) => (sum += flatValue));
           }
         });
         setLastYearSalary(sum);

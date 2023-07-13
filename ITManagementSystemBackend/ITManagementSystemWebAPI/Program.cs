@@ -35,7 +35,6 @@ builder.Services.AddCors(option =>
 // Add services to the container.
 builder.Services.AddTransient<ITakeLeaveRepository, TakeLeaveRepository>();
 builder.Services.AddTransient<IPayrollRepository, PayrollRepository>();
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
