@@ -20,7 +20,9 @@ export const DetailModal = ({ data, setData }: Props) => {
 
   if (data === null) return null;
 
-  const TOTAL_INCOME = data.BaseSalaryPerHours * data.RealWorkingHours + data.OTSalaryPerHours * data.OTWorkingHours;
+  const TOTAL_INCOME =
+    data.BaseSalaryPerHours * (data.RealWorkingHours + data.DayOfHasSalary * 8) +
+    data.OTSalaryPerHours * data.OTWorkingHours;
 
   return (
     <Modal
@@ -112,13 +114,13 @@ export const DetailModal = ({ data, setData }: Props) => {
                     </tr>
                     <tr>
                       <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>Paid leave hours:</td>
-                      <td>{data.DayOfHasSalary}</td>
+                      <td>{data.DayOfHasSalary * 8}</td>
                     </tr>
                     <tr>
                       <td style={{ fontWeight: "600", textAlign: "start", paddingRight: "2rem" }}>
                         Unpaid leave hours:
                       </td>
-                      <td>{data.BaseWorkingHours - data.RealWorkingHours - data.DayOfHasSalary}</td>
+                      <td>{data.BaseWorkingHours - data.RealWorkingHours - data.DayOfHasSalary * 8}</td>
                     </tr>
                   </>
                 ) : (
@@ -180,8 +182,8 @@ export const DetailModal = ({ data, setData }: Props) => {
               <td></td>
               <td>1. Actual Working</td>
               <td style={{ textAlign: "end" }}>
-                {formatMoney.format(data.BaseSalaryPerHours)} * {data.RealWorkingHours} ={" "}
-                {formatMoney.format(data.BaseSalaryPerHours * data.RealWorkingHours)}
+                {formatMoney.format(data.BaseSalaryPerHours)} * ({data.RealWorkingHours} + {data.DayOfHasSalary * 8}) ={" "}
+                {formatMoney.format(data.BaseSalaryPerHours * (data.RealWorkingHours + data.DayOfHasSalary * 8))}
               </td>
             </tr>
             {+EmployeeType[data.Contract.EmployeeType] === EmployeeType.FullTime && (
