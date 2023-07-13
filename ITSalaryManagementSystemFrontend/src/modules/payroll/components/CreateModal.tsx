@@ -9,7 +9,6 @@ import EmployeeApis from "../../employee/apis/EmployeeApis";
 import { EmployeeModel } from "../../employee/models";
 import PayrollApis from "../apis/PayrollApis";
 import { CreateForm, CreatePayload } from "../models";
-import { PayrollModel } from "../models/PayrollModel";
 
 const antIcon = (
   <LoadingOutlined
@@ -34,8 +33,6 @@ export const CreateModal = ({ successCallback }: Props) => {
   const [sending, setSending] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [resultIds, setResultIds] = useState<number[]>([]);
-  const [payrolls, setPayrolls] = useState<PayrollModel[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
@@ -66,17 +63,22 @@ export const CreateModal = ({ successCallback }: Props) => {
 
   const handleSubmit = (value: CreateForm) => {
     setSending(true);
-    resetState();
+    setErrorMessage("");
     setHasSubmitted(true);
     const createPayload: CreatePayload = {
       ...value,
       dateTime: value.dateTime.format("YYYY-MM-DD"),
     };
     PayrollApis.post(createPayload)
-      .then((res) => {
-        setResultIds(res.value);
-        fetchPayroll(res.value);
+      .then(() => {
+        messageApi.open({
+          type: "success",
+          content: "Create payroll successfully!",
+        });
+        handleCancel();
+        successCallback?.();
       })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((error: any) => {
         console.error(error);
         if (error.response?.status === 400) {
@@ -97,34 +99,13 @@ export const CreateModal = ({ successCallback }: Props) => {
       });
   };
 
-  const fetchPayroll = (ids: number[]) => {
-    const query = `?$filter=${ids.map((v) => `Id eq ${v}`).join(" or ")}&expand=Contract($expand=User)`;
-    PayrollApis.getAll(query)
-      .then((res) => {
-        setPayrolls(res.value);
-      })
-      .catch((error) => {
-        console.error(error);
-        messageApi.open({
-          type: "error",
-          content: "Create payroll success but fetch payroll failed! Please refresh page and try again!",
-        });
-      });
-  };
-
   const handleCancel = () => {
     if (sending) return;
     form.resetFields();
-    resetState();
+    setErrorMessage("");
     setHasSubmitted(false);
     setIsModalOpen(false);
     if (hasSubmitted && successCallback) successCallback();
-  };
-
-  const resetState = () => {
-    setResultIds([]);
-    setPayrolls([]);
-    setErrorMessage("");
   };
 
   return (
@@ -201,7 +182,7 @@ export const CreateModal = ({ successCallback }: Props) => {
                 onClick={() => {
                   form.resetFields();
                   setHasSubmitted(false);
-                  resetState();
+                  setErrorMessage("");
                 }}
                 disabled={sending}
               >
@@ -221,18 +202,7 @@ export const CreateModal = ({ successCallback }: Props) => {
               <Spin indicator={antIcon} />
             </div>
           )}
-          {hasSubmitted &&
-            !sending &&
-            resultIds.length > 0 &&
-            (payrolls.length > 0 ? (
-              <div>Table payrolls</div>
-            ) : (
-              <Alert
-                message="Payroll created successfully but fetch payroll failed! Please refresh page!"
-                type="info"
-              />
-            ))}
-          {hasSubmitted && !sending && resultIds.length === 0 && (
+          {hasSubmitted && !sending && (
             <Alert
               message={errorMessage || "Create payroll failed! Please refresh page and try again!"}
               type="error"

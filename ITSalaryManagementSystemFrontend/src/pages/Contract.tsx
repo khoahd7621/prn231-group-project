@@ -12,6 +12,7 @@ import {
   CreateModal,
   DeactivateModal,
   DeleteModal,
+  DetailModal,
 } from "../modules/contract/components";
 import { ContractModel } from "../modules/contract/models";
 import { EmployeeTypeTag } from "../modules/employee/components";
@@ -26,19 +27,59 @@ export const Contract: React.FC = () => {
     {
       title: "Employee",
       dataIndex: "User",
-      render: (value: EmployeeModel) => `${value.EmployeeCode} - ${value.EmployeeName}`,
+      render: (value: EmployeeModel, record: DataType) => (
+        <div
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => setCurrentContract(record)}
+        >
+          {value.EmployeeCode} - {value.EmployeeName}
+        </div>
+      ),
+    },
+    {
+      title: "Job Title",
+      render: (_, record: DataType) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => setCurrentContract(record)}
+          >
+            {record.Level.LevelName} {record.Position.PositionName}
+          </div>
+        );
+      },
     },
     {
       title: "Start Date",
       dataIndex: "StartDate",
-      render: (value: string) => new Date(value).toLocaleDateString(),
+      render: (value: string, record: DataType) => (
+        <div
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => setCurrentContract(record)}
+        >
+          {new Date(value).toLocaleDateString()}
+        </div>
+      ),
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => dayjs(a.StartDate).unix() - dayjs(b.StartDate).unix(),
     },
     {
       title: "End Date",
       dataIndex: "EndDate",
-      render: (value: string) => new Date(value).toLocaleDateString(),
+      render: (value: string, record: DataType) => (
+        <div
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => setCurrentContract(record)}
+        >
+          {new Date(value).toLocaleDateString()}
+        </div>
+      ),
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => dayjs(a.StartDate).unix() - dayjs(b.StartDate).unix(),
     },
@@ -47,12 +88,30 @@ export const Contract: React.FC = () => {
       dataIndex: "EmployeeType",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeType.toString().localeCompare(b.EmployeeType.toString()),
-      render: (value: EmployeeType) => <EmployeeTypeTag type={value} />,
+      render: (value: EmployeeType, record: DataType) => (
+        <div
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => setCurrentContract(record)}
+        >
+          <EmployeeTypeTag type={value} />
+        </div>
+      ),
     },
     {
       title: "Status",
       dataIndex: "Status",
-      render: (value: ContractStatus) => <ContractStatusTag status={value} />,
+      render: (value: ContractStatus, record: DataType) => (
+        <div
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => setCurrentContract(record)}
+        >
+          <ContractStatusTag status={value} />
+        </div>
+      ),
     },
     {
       width: "2rem",
@@ -84,6 +143,7 @@ export const Contract: React.FC = () => {
   const [page, setPage] = React.useState<number>(1);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [contracts, setContracts] = React.useState<DataType[]>([]);
+  const [currentContract, setCurrentContract] = React.useState<DataType | null>(null);
 
   useEffect(() => {
     fetchContracts();
@@ -129,6 +189,10 @@ export const Contract: React.FC = () => {
             setPage(page);
           },
         }}
+      />
+      <DetailModal
+        data={currentContract}
+        setData={setCurrentContract}
       />
     </>
   );

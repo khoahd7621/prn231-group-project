@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 import { Button, DatePicker, Form, InputNumber, Modal, Select, Space, message } from "antd";
 
@@ -217,7 +218,17 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="Start date"
             name="startDate"
-            rules={[{ required: true, message: "Please input start date!" }]}
+            rules={[
+              { required: true, message: "Please input start date!" },
+              {
+                validator: (_, value) => {
+                  if (dayjs(value).isBefore(dayjs().startOf("day"))) {
+                    return Promise.reject("Start date must be greater or equal today!");
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           >
             <DatePicker
               placeholder="Select start date"
@@ -230,7 +241,17 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="End date"
             name="endDate"
-            rules={[{ required: true, message: "Please input end date!" }]}
+            rules={[
+              { required: true, message: "Please input end date!" },
+              {
+                validator: (_, value) => {
+                  if (dayjs(value).isBefore(dayjs(form.getFieldValue("startDate")))) {
+                    return Promise.reject("End date must be greater than start date!");
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           >
             <DatePicker
               placeholder="Select end date"
