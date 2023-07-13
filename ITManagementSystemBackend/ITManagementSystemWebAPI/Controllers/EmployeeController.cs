@@ -23,14 +23,12 @@ namespace ITManagementSystemWebAPI.Controllers
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
-
-
             var check = employeeRepository.GetEmployeeById(key);
             return check == null ? NotFound() : Ok(check);
         }
 
         public IActionResult Post([FromBody] EmployeeReq employee)
-        {  
+        {
             var checkGenderIsDefined = !Enum.IsDefined(typeof(EnumList.Gender), employee.Gender);
             if (checkGenderIsDefined) return BadRequest("Role or Gender is not defined");
             var checkAgeOfEmployeeLessThan18 = UserHelper.CheckAgeLessThan18(employee.Dob);

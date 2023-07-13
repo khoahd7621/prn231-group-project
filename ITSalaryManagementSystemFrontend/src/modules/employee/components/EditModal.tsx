@@ -132,13 +132,13 @@ export const EditModal = ({ data, successCallback }: Props) => {
             />
           </Form.Item>
           <Form.Item
-            label="CCCD"
+            label="CMND/CCCD"
             name="cccd"
             rules={[
-              { required: true, message: "Please input CCCD!" },
+              { required: true, message: "Please input CMND/CCCD!" },
               {
-                pattern: /^\d{12}$/g,
-                message: "Please input valid CCCD!",
+                pattern: /^(?=(?:.{9}|.{12})$)\d*$/g,
+                message: "Please input valid CMND/CCCD!",
               },
             ]}
           >
@@ -163,22 +163,6 @@ export const EditModal = ({ data, successCallback }: Props) => {
             rules={[{ required: true, message: "Please input address!" }]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item
-            label="Role"
-            name="role"
-            rules={[{ required: true }]}
-          >
-            <Select
-              options={Object.keys(Role)
-                .filter((v) => isNaN(Number(v)))
-                .map((key) => {
-                  return {
-                    value: Role[key as keyof typeof Role],
-                    label: key,
-                  };
-                })}
-            />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
             <Space>

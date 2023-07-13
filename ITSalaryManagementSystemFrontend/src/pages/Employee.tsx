@@ -129,7 +129,7 @@ export const Employee: React.FC = () => {
         <Space>
           <EditModal
             data={record}
-            successCallback={fetchLevels}
+            successCallback={fetchEmployees}
           />
           <Button
             type="primary"
@@ -141,7 +141,7 @@ export const Employee: React.FC = () => {
           </Button>
           <DeleteModal
             data={record}
-            successCallback={fetchLevels}
+            successCallback={fetchEmployees}
           />
         </Space>
       ),
@@ -151,18 +151,18 @@ export const Employee: React.FC = () => {
   const [page, setPage] = React.useState<number>(1);
 
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [positions, setPositions] = React.useState<DataType[]>([]);
+  const [employees, setEmployees] = React.useState<DataType[]>([]);
   const [current, setCurrent] = React.useState<DataType | null>(null);
 
   useEffect(() => {
-    fetchLevels();
+    fetchEmployees();
   }, []);
 
-  const fetchLevels = () => {
+  const fetchEmployees = () => {
     setLoading(true);
     EmployeeApis.getAll()
       .then((res) => {
-        setPositions(
+        setEmployees(
           res.value.filter((v) => +Role[v.Role] === Role.Employee).map((item) => ({ ...item, key: item.Id }))
         );
       })
@@ -172,7 +172,7 @@ export const Employee: React.FC = () => {
 
   const successCallback = () => {
     setPage(1);
-    fetchLevels();
+    fetchEmployees();
   };
 
   return (
@@ -189,7 +189,7 @@ export const Employee: React.FC = () => {
       <Table
         scroll={{ x: 1200 }}
         columns={columns}
-        dataSource={positions}
+        dataSource={employees}
         loading={loading}
         pagination={{
           current: page,

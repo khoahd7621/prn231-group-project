@@ -104,7 +104,7 @@ namespace Repositories.Helper
             return total;
         }
 
-        public static bool CheckAgeLessThan18 (DateTime dob)
+        public static bool CheckAgeLessThan18(DateTime dob)
         {
             DateTime currentDate = DateTime.Now;
 

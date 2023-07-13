@@ -99,6 +99,6 @@ namespace Repositories.Impl
                 .Sum();
         }
 
-        public bool existApprovedAttendanceByDateEqualAndEmployeeEqual(int employeeId, DateTime startDate, DateTime endDate) => _attendenceRepository.GetFirstOrDefault(a => a.Date.Date>=(startDate.Date)&&a.Date.Date<=endDate.Date && a.EmployeeId == employeeId && a.Status.Equals(AttendanceStatus.Approved)) != null;
+        public bool existApprovedAttendanceByDateEqualAndEmployeeEqual(int employeeId, DateTime startDate, DateTime endDate) => _attendenceRepository.GetFirstOrDefault(a => a.Date.Date >= (startDate.Date) && a.Date.Date <= endDate.Date && a.EmployeeId == employeeId && a.Status.Equals(AttendanceStatus.Approved)) != null;
     }
 }

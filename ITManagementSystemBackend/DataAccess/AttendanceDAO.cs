@@ -1,7 +1,6 @@
 ﻿using BusinessObject;
 using BusinessObject.Enum;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using static BusinessObject.Enum.EnumList;
 
 namespace DataAccess
@@ -101,8 +100,8 @@ namespace DataAccess
         {
             try
             {
-                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday 
-                    || attendance.Date.DayOfWeek == DayOfWeek.Saturday) 
+                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday
+                    || attendance.Date.DayOfWeek == DayOfWeek.Saturday)
                 { throw new Exception("Can not create attendance at Sunday or Saturday"); }
                 attendance.Status = EnumList.AttendanceStatus.Waiting;
 
@@ -137,8 +136,8 @@ namespace DataAccess
         {
             try
             {
-                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday 
-                    || attendance.Date.DayOfWeek == DayOfWeek.Saturday) 
+                if (attendance.Date.DayOfWeek == DayOfWeek.Sunday
+                    || attendance.Date.DayOfWeek == DayOfWeek.Saturday)
                 { throw new Exception("Can not create attendance at Sunday or Saturday"); }
                 attendance.Status = EnumList.AttendanceStatus.Waiting;
 

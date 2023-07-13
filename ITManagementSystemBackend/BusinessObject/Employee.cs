@@ -7,7 +7,7 @@ namespace BusinessObject
 {
     [Index(nameof(Email), IsUnique = true)]
     [Index(nameof(EmployeeCode), IsUnique = true)]
-    [Index(nameof (CCCD), IsUnique = true)]
+    [Index(nameof(CCCD), IsUnique = true)]
     public class Employee
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
