@@ -63,8 +63,8 @@ namespace DataAccess
         {
             var context = new MyDbContext();
             return context.Contracts.Where(x => x.EmployeeId == empId
-                                            && ((dateTime.Date.Month == x.StartDate.Date.Month && dateTime.Date.Year == x.StartDate.Date.Year)
-                                            || (dateTime.Date.Month == x.EndDate.Date.Month && dateTime.Date.Year == x.EndDate.Date.Year))
+                                            && ((dateTime.Year == x.StartDate.Year && dateTime.Month == x.StartDate.Month)
+                                            || (dateTime.Year == x.EndDate.Year && dateTime.Month == x.EndDate.Month))
                                             && x.Status != EnumList.ContractStatus.Waiting)
                                             .ToList();
         }
@@ -73,5 +73,13 @@ namespace DataAccess
             var context = new MyDbContext();
             return context.Contracts.Where(x => x.EmployeeId == empId).ToList();
         }
+        public static List<Contract> GetContractInThisMonthAndYear(int empId, DateTime dateTime)
+        {
+            var context = new MyDbContext();
+            return context.Contracts.Where(x => x.EmployeeId == empId && x.Status != EnumList.ContractStatus.Waiting
+                                                  && dateTime.Year >= x.StartDate.Year && dateTime.Year <= x.EndDate.Year
+                                                  && dateTime.Month >= x.StartDate.Month && dateTime.Month <= x.EndDate.Month).ToList();    
+        }
+    
     }
 }
