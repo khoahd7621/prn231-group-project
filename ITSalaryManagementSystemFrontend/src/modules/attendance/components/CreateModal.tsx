@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, DatePicker, Form, InputNumber, Modal, Select, Space, notification } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 
-import { AttendanceType } from "../../../constants/enum";
+import { AttendanceType, Role } from "../../../constants/enum";
 import EmployeeApis from "../../employee/apis/EmployeeApis";
 import AttendanceApis from "../apis/AttendanceApis";
 import { AttendanceEmployeeForm, AttendanceForm } from "../models";
@@ -61,10 +61,12 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
     EmployeeApis.getAll()
       .then((res) => {
         setEmployees(
-          res.value.map((item) => ({
-            value: item.Id,
-            label: item.EmployeeCode,
-          }))
+          res.value
+            .filter((v) => +Role[v.Role] === Role.Employee)
+            .map((item) => ({
+              value: item.Id,
+              label: `${item.EmployeeCode} - ${item.EmployeeName}`,
+            }))
         );
       })
       .catch((err) => console.error(err));
@@ -162,12 +164,10 @@ export const CreateModal = ({ isEmp, successCallback }: Props) => {
                 rules={[{ required: true, message: "Please select employee!" }]}
               >
                 <Select
-                  options={employees.map((key) => {
-                    return {
-                      value: key.value,
-                      label: key.label,
-                    };
-                  })}
+                  placeholder="Select an employee"
+                  showSearch
+                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                  options={employees}
                 />
               </Form.Item>
             ) : (

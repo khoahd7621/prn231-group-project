@@ -10,8 +10,6 @@ namespace DataTransfer.Request
         [Required]
         public EnumList.Gender Gender { get; set; }
         [Required]
-        public EnumList.Role Role { get; set; }
-        [Required]
         public DateTime Dob { get; set; }
         [Required, MinLength(10), MaxLength(12)]
         public string CCCD { get; set; }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Button, DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
-import { Gender, Role } from "../../../constants/enum";
+import { Gender } from "../../../constants/enum";
 import EmployeeApis from "../apis/EmployeeApis";
 import { EmployeePostForm } from "../models";
 
@@ -46,10 +46,16 @@ export const CreateModal = ({ successCallback }: Props) => {
       })
       .catch((error) => {
         console.error(error);
-        messageApi.open({
-          type: "error",
-          content: "Create employee failed! Please refresh page and try again!",
-        });
+        if (error.response?.status === 400)
+          messageApi.open({
+            type: "error",
+            content: error.response?.data?.error?.message,
+          });
+        else
+          messageApi.open({
+            type: "error",
+            content: "Create employee failed! Please refresh page and try again!",
+          });
       })
       .finally(() => setSending(false));
   };
@@ -90,7 +96,13 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="First Name"
             name="firstName"
-            rules={[{ required: true, message: "Please input first name!" }]}
+            rules={[
+              { required: true, message: "Please input first name!" },
+              {
+                pattern: /^\w+$/,
+                message: "Please input valid first name!",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -121,7 +133,17 @@ export const CreateModal = ({ successCallback }: Props) => {
           <Form.Item
             label="Date of birth"
             name="dob"
-            rules={[{ required: true, message: "Please input date of birth!" }]}
+            rules={[
+              { required: true, message: "Please input date of birth!" },
+              {
+                validator: (_, value) => {
+                  if (value && new Date().getFullYear() - new Date(value).getFullYear() < 18) {
+                    return Promise.reject(new Error("Employee must be at least 18 years old!"));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           >
             <DatePicker
               placeholder="Select date of birth"
@@ -132,13 +154,13 @@ export const CreateModal = ({ successCallback }: Props) => {
             />
           </Form.Item>
           <Form.Item
-            label="CCCD"
+            label="CMND/CCCD"
             name="cccd"
             rules={[
-              { required: true, message: "Please input CCCD!" },
+              { required: true, message: "Please input CMND/CCCD!" },
               {
-                pattern: /^\d{12}$/g,
-                message: "Please input valid CCCD!",
+                pattern: /^(?=(?:.{9}|.{12})$)\d*$/g,
+                message: "Please input valid CMND/CCCD!",
               },
             ]}
           >
@@ -163,23 +185,6 @@ export const CreateModal = ({ successCallback }: Props) => {
             rules={[{ required: true, message: "Please input address!" }]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item
-            label="Role"
-            name="role"
-            initialValue={Role.Employee}
-            rules={[{ required: true }]}
-          >
-            <Select
-              options={Object.keys(Role)
-                .filter((v) => isNaN(Number(v)))
-                .map((key) => {
-                  return {
-                    value: Role[key as keyof typeof Role],
-                    label: key,
-                  };
-                })}
-            />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
             <Space>

@@ -1,8 +1,9 @@
 import { Modal, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 
-import { EmployeeStatusTag, EmployeeTypeTag, RenderAvatar } from ".";
+import { EmployeeStatusTag, RenderAvatar } from ".";
 import { ContractStatus, Gender } from "../../../constants/enum";
+import { ContractDetail } from "../../contract/components";
 import { EmployeeModel } from "../models";
 
 const { Title } = Typography;
@@ -20,6 +21,7 @@ export const DetailModal = ({ data, setData }: Props) => {
   if (data === null) return null;
 
   const activeContract = data.Contracts.find((item) => +ContractStatus[item.Status] === ContractStatus.Active);
+  if (activeContract) activeContract.User = data;
 
   return (
     <Modal
@@ -132,52 +134,7 @@ export const DetailModal = ({ data, setData }: Props) => {
           }}
         >
           <Title level={4}>Contract information</Title>
-          {activeContract ? (
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "0.2rem",
-                }}
-              >
-                <strong>Job title:</strong>
-                <Tag color="#108ee9">
-                  {activeContract.Level.LevelName} {activeContract.Position.PositionName}
-                </Tag>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "0.2rem",
-                }}
-              >
-                <strong>Employee type:</strong>
-                <EmployeeTypeTag type={activeContract.EmployeeType} />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "0.2rem",
-                }}
-              >
-                <strong>Start date:</strong> {dayjs(activeContract.StartDate).format("DD/MM/YYYY")}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "0.2rem",
-                }}
-              >
-                <strong>End date:</strong> {dayjs(activeContract.EndDate).format("DD/MM/YYYY")}
-              </div>
-            </>
-          ) : (
-            <Tag color="#2D4356">Not Available</Tag>
-          )}
+          {activeContract ? <ContractDetail data={activeContract} /> : <Tag color="#2D4356">Not Available</Tag>}
         </div>
       </div>
     </Modal>

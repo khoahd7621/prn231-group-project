@@ -48,7 +48,7 @@ namespace ITManagementSystemWebAPI.Controllers
             {
                 return BadRequest("Please provide the start day and end date within the same calendar year. This will help us accurately calculate the duration leave of your request. Thank you!");
             }
-            if (takeLeaveRepository.existApprovedAttendanceByDateEqualAndEmployeeEqual(postTakeLeave.EmployeeId,postTakeLeave.StartDate,postTakeLeave.EndDate))
+            if (takeLeaveRepository.existApprovedAttendanceByDateEqualAndEmployeeEqual(postTakeLeave.EmployeeId, postTakeLeave.StartDate, postTakeLeave.EndDate))
             {
                 return BadRequest("An attendance record already exists for the selected leave period.");
             }

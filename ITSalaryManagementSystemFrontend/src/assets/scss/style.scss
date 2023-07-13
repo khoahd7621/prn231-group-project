@@ -7,10 +7,10 @@ Contact: themepixels@gmail.com
 */
 
 // Fonts
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap");
 
 // Variables & Mixins
 @import "variables";
@@ -36,9 +36,15 @@ Contact: themepixels@gmail.com
 @import "plugins/vmap";
 @import "plugins/gridjs";
 
-
 // Utilities
 @import "utils";
 
+@import "component/badge";
 
-@import "component/badge"
+p {
+  margin-bottom: 0 !important;
+}
+
+.anticon {
+  vertical-align: 0.125rem !important;
+}

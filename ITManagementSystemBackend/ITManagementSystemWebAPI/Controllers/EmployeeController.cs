@@ -1,9 +1,11 @@
 ﻿using BusinessObject.DTO;
+using BusinessObject.Enum;
 using DataTransfer.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
+using Repositories.Helper;
 using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
@@ -21,14 +23,18 @@ namespace ITManagementSystemWebAPI.Controllers
         [EnableQuery]
         public IActionResult Get([FromRoute] int key)
         {
-
-
             var check = employeeRepository.GetEmployeeById(key);
             return check == null ? NotFound() : Ok(check);
         }
 
         public IActionResult Post([FromBody] EmployeeReq employee)
         {
+            var checkGenderIsDefined = !Enum.IsDefined(typeof(EnumList.Gender), employee.Gender);
+            if (checkGenderIsDefined) return BadRequest("Role or Gender is not defined");
+            var checkAgeOfEmployeeLessThan18 = UserHelper.CheckAgeLessThan18(employee.Dob);
+            if (checkAgeOfEmployeeLessThan18) return BadRequest("Employee can't less than 18 years old");
+            var checkCCCDAlreadyExist = employeeRepository.CheckCCCDIsExist(employee.CCCD);
+            if (checkCCCDAlreadyExist) return BadRequest("CCCD already exist");
             var check = employeeRepository.CreateUser(employee);
             return check == "success" ? Ok() : BadRequest("Email already exist");
         }

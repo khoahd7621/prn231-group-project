@@ -7,7 +7,7 @@
 namespace BusinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB02 : Migration
+    public partial class InitDB01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -215,7 +215,7 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Address", "CCCD", "CreatedDate", "Dob", "Email", "EmployeeCode", "EmployeeName", "Gender", "IsFirstLogin", "Password", "Phone", "Role", "Status" },
-                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 5, 20, 45, 57, 246, DateTimeKind.Local).AddTicks(9484), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$Hqjd5HaxrGCrlBUTia8gAeuJoUOSN9wB2U2ppKC35tB2jGNMHF6.C", "0792123456", 0, 0 });
+                values: new object[] { 1, "HCM", "1234567890", new DateTime(2023, 7, 12, 20, 58, 52, 929, DateTimeKind.Local).AddTicks(9441), new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projectx.com", "SD0001", "Admin", 0, true, "$2a$11$pdlTtuwSy1hRVtoKPIdTNekKEeYdYIHiYIeL39Xl/5.Cuk52MtbgG", "0792123456", 0, 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_EmployeeId",
@@ -246,6 +246,12 @@ namespace BusinessObject.Migrations
                 name: "IX_TakeLeaves_EmployeeId",
                 table: "TakeLeaves",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_CCCD",
+                table: "Users",
+                column: "CCCD",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
