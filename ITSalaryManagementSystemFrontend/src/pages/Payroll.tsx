@@ -19,7 +19,7 @@ export const Payroll: React.FC = () => {
   const columns: ColumnsType<DataType> = [
     {
       title: "Month",
-      dataIndex: "CreatedDate",
+      dataIndex: "StartDate",
       render: (value: string, record: DataType) => (
         <div
           style={{ cursor: "pointer" }}

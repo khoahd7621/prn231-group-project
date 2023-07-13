@@ -45,7 +45,7 @@ export const DetailModal = ({ data, setData }: Props) => {
           level={5}
           style={{ textAlign: "center", marginTop: 0 }}
         >
-          Month: <span style={{ color: "purple" }}>{dayjs(data.CreatedDate).format("MM/YYYY")}</span>
+          Month: <span style={{ color: "purple" }}>{dayjs(data.StartDate).format("MM/YYYY")}</span>
         </Title>
         <div style={{ display: "flex", gap: "1rem" }}>
           <div

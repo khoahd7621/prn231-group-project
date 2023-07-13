@@ -76,7 +76,7 @@ export const EmpDashBoard: React.FC = () => {
             const temp = dayjs(attendance.Date, "YYYY-MM-DD");
             const dayOfWeek = temp.format("dddd");
             if (dayOfWeek.toUpperCase() === item) {
-              value = attendance.Hour;
+              value = attendance.OTHour;
               break;
             }
           }
