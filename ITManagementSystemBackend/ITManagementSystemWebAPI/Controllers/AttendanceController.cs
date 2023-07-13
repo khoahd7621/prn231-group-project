@@ -93,34 +93,44 @@ namespace ITManagementSystemWebAPI.Controllers
 
         public IActionResult Put(int key, [FromBody] AttendanceReq attendanceReq)
         {
-            var attendance = attendanceRepository.FindAttendanceById(key);
+            try
+            {
+                var attendance = attendanceRepository.FindAttendanceById(key);
 
-            if (attendance == null) return NotFound();
+                if (attendance == null) return NotFound();
 
-            var current = CultureInfo.CurrentCulture.Calendar
-                .GetWeekOfYear(attendanceReq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            var now = CultureInfo.CurrentCulture.Calendar
-                .GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
-            if (current < now && attendanceReq.Date.Year < DateTime.Now.Year) return Conflict("Date time create is out!");
+                var current = CultureInfo.CurrentCulture.Calendar
+                    .GetWeekOfYear(attendanceReq.Date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+                var now = CultureInfo.CurrentCulture.Calendar
+                    .GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday);
+                if (current < now && attendanceReq.Date.Year < DateTime.Now.Year) return Conflict("Date time create is out!");
 
-            attendance.Date = attendanceReq.Date;
-            attendance.Hour = attendanceReq.Hour;
-            attendance.OTHour = attendanceReq.OTHour;
-            attendance.Type = attendanceReq.Type;
-            attendance.EmployeeId = attendanceReq.EmployeeId;
+                attendance.Date = attendanceReq.Date;
+                attendance.Hour = attendanceReq.Hour;
+                attendance.OTHour = attendanceReq.OTHour;
+                attendance.Type = attendanceReq.Type;
+                attendance.EmployeeId = attendanceReq.EmployeeId;
 
-            attendanceRepository.UpdateAttendance(attendance);
+                attendanceRepository.UpdateAttendance(attendance);
 
-            return Updated(attendance);
+
+                return Updated(attendance);
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         public IActionResult Delete(int key)
         {
-            var attendance = attendanceRepository.FindAttendanceById(key);
-            if (attendance == null)
-                return NotFound();
-            attendanceRepository.DeleteAttendance(attendance);
-            return NoContent();
+            try
+            {
+
+                var attendance = attendanceRepository.FindAttendanceById(key);
+                if (attendance == null)
+                    return NotFound();
+                attendanceRepository.DeleteAttendance(attendance);
+                return NoContent();
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         public IActionResult Patch(int key, EnumList.AttendanceStatus attendanceStatus)
@@ -129,9 +139,12 @@ namespace ITManagementSystemWebAPI.Controllers
 
             if (attendance == null)
                 return NotFound();
-
-            attendanceRepository.UpdateStatusAttendance(key, attendanceStatus);
-            return Ok();
+            try
+            {
+                attendanceRepository.UpdateStatusAttendance(key, attendanceStatus);
+                return Ok();
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }
 }
