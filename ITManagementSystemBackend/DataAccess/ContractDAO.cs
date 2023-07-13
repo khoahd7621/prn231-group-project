@@ -76,9 +76,11 @@ namespace DataAccess
         public static List<Contract> GetContractInThisMonthAndYear(int empId, DateTime dateTime)
         {
             var context = new MyDbContext();
-            return context.Contracts.Where(x => x.EmployeeId == empId && x.Status != EnumList.ContractStatus.Waiting
-                                                  && dateTime.Year >= x.StartDate.Year && dateTime.Year <= x.EndDate.Year
-                                                  && dateTime.Month >= x.StartDate.Month && dateTime.Month <= x.EndDate.Month).ToList();    
+            return context.Contracts.Where(x => x.EmployeeId == empId
+                                        && x.Status != EnumList.ContractStatus.Waiting
+                                        && (dateTime.Year > x.StartDate.Year || (dateTime.Year == x.StartDate.Year && dateTime.Month >= x.StartDate.Month))
+                                        && (dateTime.Year < x.EndDate.Year || (dateTime.Year == x.EndDate.Year && dateTime.Month <= x.EndDate.Month)))
+                                        .ToList();
         }
     
     }
