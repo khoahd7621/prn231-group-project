@@ -82,6 +82,6 @@ namespace DataAccess
                             && (dateTime.Year < x.EndDate.Year || (dateTime.Year == x.EndDate.Year && dateTime.Month <= x.EndDate.Month)))
                             .ToList();
         }
-    
+
     }
 }

@@ -288,7 +288,7 @@ export const Attendance: React.FC = () => {
       })
       .catch((err) => {
         console.error(err);
-        openNotificationWithIcon("error", "Approve", err.response.data.message);
+        openNotificationWithIcon("error", "Approve", err?.response?.data?.error?.message);
       });
   };
 

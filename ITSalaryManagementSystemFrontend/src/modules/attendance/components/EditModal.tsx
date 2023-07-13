@@ -59,7 +59,7 @@ export const EditModal = ({ data, successCallback }: Props) => {
       })
       .catch((error) => {
         console.error(error);
-        openNotificationWithIcon("error", "Edit", error.response.data.message);
+        openNotificationWithIcon("error", "Edit", error?.response?.data?.error?.message);
       })
       .finally(() => setSending(false));
   };

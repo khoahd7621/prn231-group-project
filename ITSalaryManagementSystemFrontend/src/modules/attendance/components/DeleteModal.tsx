@@ -38,7 +38,7 @@ export const DeleteModal = ({ data, successCallback }: Props) => {
       })
       .catch((error) => {
         console.error(error);
-        openNotificationWithIcon("error", "Delete", error.response.data.message);
+        openNotificationWithIcon("error", "Delete", error.response.data?.error.message);
       })
       .finally(() => setSending(false));
   };
