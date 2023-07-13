@@ -6,7 +6,9 @@ import type { ColumnsType } from "antd/es/table";
 import { ContractStatus, EmployeeStatus, Role } from "../constants/enum";
 import EmployeeApis from "../modules/employee/apis/EmployeeApis";
 import {
+  ActiveModal,
   CreateModal,
+  DeactivateModal,
   DeleteModal,
   DetailModal,
   EditModal,
@@ -131,14 +133,18 @@ export const Employee: React.FC = () => {
             data={record}
             successCallback={fetchEmployees}
           />
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "#2D4356",
-            }}
-          >
-            Deactive
-          </Button>
+          {+EmployeeStatus[record.Status] === EmployeeStatus.Active && (
+            <DeactivateModal
+              data={record}
+              successCallback={fetchEmployees}
+            />
+          )}
+          {+EmployeeStatus[record.Status] === EmployeeStatus.Deactive && (
+            <ActiveModal
+              data={record}
+              successCallback={fetchEmployees}
+            />
+          )}
           <DeleteModal
             data={record}
             successCallback={fetchEmployees}

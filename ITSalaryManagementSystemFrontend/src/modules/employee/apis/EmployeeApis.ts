@@ -8,6 +8,8 @@ const EmployeeApis = {
   post: (data: EmployeePost): Promise<void> => AxiosClient.post("/Employee", data),
   put: (id: number, data: EmployeePut): Promise<void> => AxiosClient.put(`/Employee/${id}`, data),
   delete: (id: number): Promise<void> => AxiosClient.delete(`/Employee/${id}`),
+  active: (id: number): Promise<void> => AxiosClient.patch(`/Employee/Active/${id}`),
+  deactivate: (id: number): Promise<void> => AxiosClient.patch(`/Employee/Deactivate/${id}`),
   getCurrentEmployee: (query?: string): Promise<EmployeeModel> => AxiosClient.get(`/SpecificEmployee${query ?? ""}`),
 };
 
