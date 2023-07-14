@@ -68,16 +68,18 @@ export const Leave: React.FC = () => {
           .slice(0, 10)}`
       );
     }
-    if (selectedType || selectedType === 0) {
+    if (selectedType && selectedType !== -1) {
       filters.push(`Type eq '${LeaveType[selectedType]}'`);
     }
-    if (selectedStatus) {
+    if (selectedStatus && selectedStatus !== -1) {
       filters.push(`Status eq '${LeaveStatus[selectedStatus]}'`);
     }
     // Join the filter expressions with 'and' operator
     if (filters.length > 0) {
       const tmpQuery = `&$filter=${filters.join(" and ")}`;
       setQuery(tmpQuery);
+    }else{
+      setQuery("");
     }
   };
 

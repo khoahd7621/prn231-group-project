@@ -1,6 +1,7 @@
 ﻿using BusinessObject.DTO;
 using BusinessObject.Enum;
 using DataTransfer.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -10,6 +11,7 @@ using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize]
     public class EmployeeController : ODataController
     {
         private readonly IEmployeeRepository employeeRepository = new EmployeeRepository();
@@ -27,6 +29,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check == null ? NotFound() : Ok(check);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] EmployeeReq employee)
         {
             var checkGenderIsDefined = !Enum.IsDefined(typeof(EnumList.Gender), employee.Gender);
@@ -39,12 +42,14 @@ namespace ITManagementSystemWebAPI.Controllers
             return check == "success" ? Ok() : BadRequest("Email already exist");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Put([FromRoute] int key, [FromBody] EmployeeUpdateDTO employee)
         {
             var check = employeeRepository.UpdateUser(key, employee);
             return check ? Ok() : BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete([FromRoute] int key)
         {
             var checkEmp = employeeRepository.GetEmployeeById(key);
@@ -57,6 +62,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check ? Ok() : BadRequest("This employee has some contracts");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("/odata/Employee/Deactivate/{key}")]
         public IActionResult Deactivate([FromRoute] int key)
         {
@@ -67,6 +73,7 @@ namespace ITManagementSystemWebAPI.Controllers
             return check.Equals("1") ? Ok() : BadRequest(check);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("/odata/Employee/Active/{key}")]
         public IActionResult Active([FromRoute] int key)
         {

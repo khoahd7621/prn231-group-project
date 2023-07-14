@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repositories;
@@ -7,6 +8,7 @@ using Repositories.Impl;
 
 namespace ITManagementSystemWebAPI.Controllers
 {
+    [Authorize]
     public class SpecificEmployeeController : ODataController
     {
         private readonly IEmployeeRepository employeeRepository = new EmployeeRepository();
