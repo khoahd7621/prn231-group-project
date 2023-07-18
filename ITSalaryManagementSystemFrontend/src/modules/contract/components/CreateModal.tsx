@@ -269,7 +269,7 @@ export const CreateModal = ({ successCallback }: Props) => {
           >
             <InputNumber
               min={1}
-              addonAfter="VND"
+              addonAfter={`VND/${form.getFieldValue("employeeType") === EmployeeType.FullTime ? "month" : "hour"}`}
               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             />
           </Form.Item>
