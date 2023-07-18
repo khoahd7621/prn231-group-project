@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Button, Space, Table, Tag } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { ContractStatus, EmployeeStatus, Role } from "../constants/enum";
@@ -17,6 +17,7 @@ import {
   RenderAvatar,
 } from "../modules/employee/components";
 import { EmployeeModel } from "../modules/employee/models";
+import { SearchOutlined } from "@ant-design/icons";
 
 type DataType = {
   key: number;
@@ -38,6 +39,48 @@ export const Employee: React.FC = () => {
       dataIndex: "EmployeeCode",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeCode.localeCompare(b.EmployeeCode),
+
+      filterMultiple: false,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div
+          style={{ padding: 8 }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Input
+            placeholder="Search name"
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={clearFilters}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+      onFilter: (value, record) =>
+        (record).EmployeeCode.toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
+
       render: (value: string, record: DataType) => (
         <div
           style={{ cursor: "pointer" }}
@@ -52,6 +95,47 @@ export const Employee: React.FC = () => {
       dataIndex: "EmployeeName",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.EmployeeName.localeCompare(b.EmployeeName),
+      filterMultiple: false,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div
+          style={{ padding: 8 }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Input
+            placeholder="Search name"
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={clearFilters}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+      onFilter: (value, record) =>
+        (record).EmployeeName.toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
+
       render: (value: string, record: DataType) => (
         <div
           style={{ cursor: "pointer" }}
@@ -123,6 +207,18 @@ export const Employee: React.FC = () => {
     {
       title: "Status",
       dataIndex: "Status",
+      filters: [
+        {
+          text: EmployeeStatus[0],
+          value: EmployeeStatus[0],
+        },
+        {
+          text: EmployeeStatus[1],
+          value: EmployeeStatus[1],
+        },
+      ],
+      filterMode: "tree",
+      onFilter: (value: any, record) => record.Status.toString() === value.toString(),
       render: (value: EmployeeStatus) => <EmployeeStatusTag status={value} />,
     },
     {
