@@ -41,64 +41,6 @@ const positionLabel = [
 
 const ctxColor1 = "#506fd9";
 
-const optionBar = {
-  maintainAspectRatio: false,
-  responsive: true,
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      max: 500,
-    },
-  },
-};
-
-// Portfolio
-
-const optionTwo = {
-  chart: {
-    parentHeightOffset: 0,
-    toolbar: { show: false },
-    sparkline: { enabled: true },
-  },
-  colors: ["#85b6ff", "#506fd9"],
-  grid: {
-    borderColor: "rgba(72, 94, 144, .1)",
-    padding: {
-      top: -20,
-      left: 0,
-    },
-    yaxis: { lines: { show: false } },
-  },
-  dataLabels: { enabled: false },
-  stroke: {
-    curve: "straight",
-    width: 1.5,
-  },
-  xaxis: {
-    categories: monthLabel,
-    labels: {
-      style: {
-        colors: "#6e7985",
-        fontSize: "5px",
-      },
-    },
-  },
-  yaxis: { max: 180 },
-  fill: {
-    type: "gradient",
-    gradient: {
-      opacityFrom: 0.5,
-      opacityTo: 0,
-    },
-  },
-  legend: { show: false },
-  tooltip: { enabled: false },
-};
 //draw line
 const dp3=[[0,40],[1,39],[2,35],[3,33],[4,28],[5,28],[6,24],[7,20],[8,17],[9,16],[10,19],[11,16],[12,13],[13,18],[14,17],[15,18],[16,18],[17,19],[18,18],[19,17],[20,20],[21,18],[22,17],[23,17],[24,15],[25,15],[26,14],[27,15],[28,18],[29,19],[30,23],[31,27],[32,30],[33,28],[34,29],[35,29],[36,27],[37,24],[38,22],[39,26],[40,28],[41,27],[42,30],[43,26],[44,22],[45,19],[46,16],[47,17],[48,20],[49,16],[50,12],[51,10],[52,7],[53,11],[54,15],[55,20],[56,22],[57,19],[58,18],[59,20],[60,17],[61,19],[62,18],[63,14],[64,9],[65,10],[66,6],[67,10],[68,12],[69,13],[70,18],[71,22],[72,22],[73,26],[74,22],[75,18],[76,19],[77,19],[78,18],[79,23],[80,20],[81,25],[82,28],[83,29],[84,27],[85,25],[86,25],[87,24],[88,20],[89,18],[90,18],[91,18],[92,22],[93,21],[94,26],[95,29],[96,26],[97,28],[98,30],[99,28],[100,30],[101,27],[102,30],[103,26],];
 const seriesSix = [
@@ -242,7 +184,24 @@ export const DashBoard: React.FC = () => {
       },
     ],
   };
-  const seriesTwo = [
+  const optionMonthlySalary = {
+    maintainAspectRatio: false,
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: thisYearDataBar
+        ? Math.max(...thisYearDataBar.values())
+        : 0,
+      },
+    },
+  };
+  const dataEmployeeRemuneration = [
     {
       name: "series1",
       data: thisYearDataBar??[],
@@ -252,6 +211,48 @@ export const DashBoard: React.FC = () => {
       data: lastYearDataBar??[],
     },
   ];
+  const optionEmployeeRemuneration = {
+    chart: {
+      parentHeightOffset: 0,
+      toolbar: { show: false },
+      sparkline: { enabled: true },
+    },
+    colors: ["#506fd9", "#85b6ff"],
+    grid: {
+      borderColor: "rgba(72, 94, 144, .1)",
+      padding: {
+        top: -20,
+        left: 0,
+      },
+      yaxis: { lines: { show: false } },
+    },
+    dataLabels: { enabled: false },
+    stroke: {
+      curve: "straight",
+      width: 1.5,
+    },
+    xaxis: {
+      categories: monthLabel,
+      labels: {
+        style: {
+          colors: "#6e7985",
+          fontSize: "5px",
+        },
+      },
+    },
+    yaxis: { max: thisYearDataBar||lastYearDataBar
+      ? Math.max(...lastYearDataBar?.values()??[1],...thisYearDataBar?.values()??[])*1.25
+      : 0 },
+    fill: {
+      type: "gradient",
+      gradient: {
+        opacityFrom: 0.5,
+        opacityTo: 0,
+      },
+    },
+    legend: { show: false },
+    tooltip: { enabled: false },
+  };
   useEffect(() => {
     if (!effectRan.current) {
       setWaitingRequestCount(0);
@@ -429,15 +430,14 @@ export const DashBoard: React.FC = () => {
         const dataBar1 = [];
         const dataBar2 = [];
 
-        for (let month = 1; month <= 12; month++) {
+        for (let month = 0; month < 12; month++) {
           let salary = salaryByYearMap?.get(currentYear)?.get(month) ?? 0;
           dataBar1.push(salary);
           salary = salaryByYearMap?.get(lastYear)?.get(month) ?? 0;
           dataBar2.push(salary);
         }
         SetThisYearDataBar(dataBar1);
-        SetLastYearDataBar(dataBar2);
-        
+        SetLastYearDataBar(dataBar2);        
       })
       .catch((error) => {
         console.error("Error fetching count:", error);
@@ -538,8 +538,8 @@ export const DashBoard: React.FC = () => {
                 </div>
 
                 <ReactApexChart
-                  series={seriesTwo}
-                  options={optionTwo}
+                  series={dataEmployeeRemuneration}
+                  options={optionEmployeeRemuneration}
                   type="area"
                   height={195}
                   className="apex-chart-ten mb-4"
@@ -876,7 +876,7 @@ export const DashBoard: React.FC = () => {
                     <Card.Body>
                       <Bar
                         data={dataBarMonthlySalary}
-                        options={optionBar}
+                        options={optionMonthlySalary}
                         className="ht-300"
                       />
                     </Card.Body>
