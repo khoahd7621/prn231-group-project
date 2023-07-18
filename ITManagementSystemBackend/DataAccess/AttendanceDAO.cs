@@ -13,7 +13,7 @@ namespace DataAccess
             {
                 using (var context = new MyDbContext())
                 {
-                    return context.Attendances.Include(s => s.User).ToList();
+                    return context.Attendances.Include(s => s.User).OrderBy(c => c.Status).ToList();
                 }
             }
             catch (Exception e)
@@ -110,8 +110,8 @@ namespace DataAccess
                     List<TakeLeave> takeLeave = context.TakeLeaves
                         .Where(c => c.EmployeeId == attendance.EmployeeId
                         && c.Status.Equals(TakeLeaveStatus.APPROVED)
-                        && c.StartDate.Date >= attendance.Date.Date
-                        && c.EndDate.Date <= attendance.Date.Date
+                        && (c.StartDate.Date <= attendance.Date.Date && attendance.Date.Date <= c.EndDate.Date)
+                       || c.StartDate.Date == attendance.Date.Date
                         ).ToList();
                     if (takeLeave.Count != 0) throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
 
@@ -146,8 +146,8 @@ namespace DataAccess
                 List<TakeLeave> takeLeave = context.TakeLeaves
                        .Where(c => c.EmployeeId == attendance.EmployeeId
                        && c.Status.Equals(TakeLeaveStatus.APPROVED)
-                       && c.StartDate.Date >= attendance.Date.Date
-                       && c.EndDate.Date <= attendance.Date.Date
+                       && (c.StartDate.Date <= attendance.Date.Date && attendance.Date.Date <= c.EndDate.Date)
+                       || c.StartDate.Date == attendance.Date.Date
                        ).ToList();
                 if (takeLeave.Count != 0)
                     throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
@@ -183,8 +183,8 @@ namespace DataAccess
                     List<TakeLeave> takeLeave = context.TakeLeaves
                        .Where(c => c.EmployeeId == attendance.EmployeeId
                        && c.Status.Equals(TakeLeaveStatus.APPROVED)
-                       && c.StartDate.Date >= attendance.Date.Date
-                       && c.EndDate.Date <= attendance.Date.Date
+                       && (c.StartDate.Date <= attendance.Date.Date && attendance.Date.Date <= c.EndDate.Date)
+                       || c.StartDate.Date == attendance.Date.Date
                        ).ToList();
                     if (takeLeave.Count() != 0)
                         throw new ArgumentException("Can not create attendance of employee already have TakeLeave");
