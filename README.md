@@ -20,9 +20,9 @@ such as managing employees, contracts, timesheets, leaves, and payrolls.
 |-|----|-----------|
 |1|[Backend](https://github.com/khoahd7621/prn231-group-project/tree/main/ITManagementSystemBackend)|Backend source code|
 |2|[Frontend](https://github.com/khoahd7621/prn231-group-project/tree/main/ITSalaryManagementSystemFrontend)|Frontend source code|
-|3|[Documentation]()|Group project documentation|
+|3|[Documentation](https://github.com/khoahd7621/prn231-group-project/blob/main/Resources/Documentation.docx)|Group project documentation|
 |4|[Script](https://github.com/khoahd7621/prn231-group-project/blob/main/Resources/script.sql)|Database script (Schema + Data)|
-|5|[PPT]()|Final Presentation|
+|5|[PPT](https://github.com/khoahd7621/prn231-group-project/blob/main/Resources/Documentation.pdf)|Final Presentation|
 
 ### Technology Stack
 #### &emsp;&emsp; Backend
